@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Engineering Glossary</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17212b;
+      --muted: #5d6875;
+      --line: #d8dee6;
+      --paper: #f8fafc;
+      --panel: #ffffff;
+      --teal: #0f766e;
+      --amber: #b45309;
+      --blue: #2563eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+    }
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+    header {
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 22px;
+      margin-bottom: 26px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+    .lede {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    article {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      min-height: 190px;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.08rem;
+      letter-spacing: 0;
+    }
+    p { margin: 0 0 10px; }
+    .tag {
+      display: inline-block;
+      font-size: .75rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: var(--teal);
+      border-radius: 999px;
+      padding: 2px 8px;
+      margin-bottom: 10px;
+    }
+    .tag.runtime { background: var(--blue); }
+    .tag.risk { background: var(--amber); }
+    a { color: var(--blue); text-decoration-thickness: 2px; }
+    footer {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    @media print {
+      body { background: #ffffff; }
+      main { padding: 24px; }
+      article { break-inside: avoid; }
+      a { color: #000000; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>AI Engineering Glossary</h1>
+      <p class="lede">A practical reference for building AI products. Each term is framed as an engineering decision, not as trivia.</p>
+    </header>
+
+    <section class="grid" aria-label="Glossary terms">
+      <article>
+        <span class="tag runtime">Runtime</span>
+        <h2>LLM</h2>
+        <p>A large language model predicts useful text or structured data from context. In product code, treat it as a probabilistic service behind clear input and output contracts.</p>
+      </article>
+      <article>
+        <span class="tag runtime">Runtime</span>
+        <h2>Token</h2>
+        <p>A chunk of text the model reads or writes. Tokens drive context length, latency, and cost, so token budgets are product constraints.</p>
+      </article>
+      <article>
+        <span class="tag runtime">Runtime</span>
+        <h2>Context Window</h2>
+        <p>The maximum amount of information the model can consider in one request. AI engineers decide what deserves to fit inside it.</p>
+      </article>
+      <article>
+        <span class="tag">Contract</span>
+        <h2>Prompt</h2>
+        <p>The instruction and context sent to the model. A strong prompt names the task, boundaries, examples, output format, and failure behavior.</p>
+      </article>
+      <article>
+        <span class="tag">Contract</span>
+        <h2>Structured Output</h2>
+        <p>A model response constrained to a schema such as JSON. This is what lets AI behavior feed normal application code without fragile parsing.</p>
+      </article>
+      <article>
+        <span class="tag">Contract</span>
+        <h2>Tool Calling</h2>
+        <p>The model requests an external action through a declared function schema. Your application still owns execution, permissions, retries, and audit logs.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
+        <h2>Embedding</h2>
+        <p>A vector representation of content used for similarity search, clustering, and retrieval. Embeddings are the bridge between language and search infrastructure.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
+        <h2>RAG</h2>
+        <p>Retrieval-augmented generation: retrieve relevant external information, put it into context, then ask the model to answer grounded in that context.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
+        <h2>Reranking</h2>
+        <p>A second pass that reorders retrieved chunks for relevance. It is often used after a broad vector or hybrid search pass.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Eval</h2>
+        <p>A repeatable test of AI behavior. Evals can use expected answers, human labels, code-based checks, or model-based judges.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Trace</h2>
+        <p>A record of the model calls, prompts, retrieved context, tool calls, outputs, costs, and latency from a run. Traces make failures debuggable.</p>
+      </article>
+      <article>
+        <span class="tag risk">Risk</span>
+        <h2>Hallucination</h2>
+        <p>A plausible but unsupported output. Good systems reduce this with grounding, citations, uncertainty behavior, and evals.</p>
+      </article>
+      <article>
+        <span class="tag risk">Risk</span>
+        <h2>Prompt Injection</h2>
+        <p>An attempt to make the model ignore intended instructions or misuse tools. It can come directly from a user or indirectly through retrieved content.</p>
+      </article>
+      <article>
+        <span class="tag risk">Risk</span>
+        <h2>Excessive Agency</h2>
+        <p>A system gives a model more power than the task requires. The fix is least privilege, scoped tools, confirmations, and auditability.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Agent</h2>
+        <p>A system where the model can choose steps, call tools, use state, and continue over multiple turns or tasks. Useful agents need boundaries.</p>
+      </article>
+    </section>
+
+    <footer>
+      Sources to revisit: <a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI structured outputs</a>,
+      <a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI function calling</a>,
+      <a href="https://developers.openai.com/api/docs/guides/embeddings">OpenAI embeddings</a>,
+      <a href="https://www.braintrust.dev/docs/evaluate">Braintrust evals</a>,
+      and <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a>.
+    </footer>
+  </main>
+</body>
+</html>

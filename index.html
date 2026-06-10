@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Engineering Roadmap</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #14202b;
+      --muted: #5d6875;
+      --line: #d7dee7;
+      --paper: #f7f9fc;
+      --panel: #ffffff;
+      --teal: #0f766e;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --green: #15803d;
+      --rose: #be123c;
+      --violet: #6d28d9;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 38px 22px 64px;
+    }
+
+    header {
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--teal);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(2.2rem, 5vw, 4.5rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .lede {
+      margin: 16px 0 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    section { margin: 26px 0; }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 1.03rem;
+      letter-spacing: 0;
+    }
+
+    p { margin: 0 0 12px; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .lesson,
+    .reference {
+      display: block;
+      min-height: 190px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--teal);
+      border-radius: 8px;
+      background: var(--panel);
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+
+    .lesson:hover,
+    .reference:hover {
+      transform: translateY(-2px);
+      border-color: #b8c4d2;
+      box-shadow: 0 12px 30px rgba(20, 32, 43, .08);
+    }
+
+    .lesson:nth-child(2) { border-top-color: var(--blue); }
+    .lesson:nth-child(3) { border-top-color: var(--amber); }
+    .lesson:nth-child(4) { border-top-color: var(--green); }
+    .lesson:nth-child(5) { border-top-color: var(--rose); }
+
+    .number {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .summary {
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .reference {
+      min-height: 0;
+      border-top-color: var(--violet);
+    }
+
+    footer {
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 2px solid var(--line);
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    @media (max-width: 760px) {
+      main { padding: 26px 16px 48px; }
+      .lesson { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">AI Engineering Roadmap</p>
+      <h1>Learn AI engineering by building one durable product contract at a time.</h1>
+      <p class="lede">A compact lesson path for turning model calls into reliable, observable, user-ready software.</p>
+    </header>
+
+    <section>
+      <h2>Lessons</h2>
+      <div class="grid">
+        <a class="lesson" href="lessons/0001-ai-engineering-map.html">
+          <span class="number">Lesson 0001</span>
+          <h3>AI Engineering Map</h3>
+          <p class="summary">Wrap probabilistic models in product contracts and see the full shape of the roadmap.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0002-anatomy-of-a-model-call.html">
+          <span class="number">Lesson 0002</span>
+          <h3>Anatomy of a Model Call</h3>
+          <p class="summary">Understand input, instructions, parameters, response handling, and telemetry as one application boundary.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0003-structured-outputs.html">
+          <span class="number">Lesson 0003</span>
+          <h3>Structured Outputs</h3>
+          <p class="summary">Turn model text into product data that your application can validate and trust.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0004-streaming-ux.html">
+          <span class="number">Lesson 0004</span>
+          <h3>Streaming UX</h3>
+          <p class="summary">Treat streaming as a product decision with clear states, feedback, and recovery paths.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0005-tool-calling-boundaries.html">
+          <span class="number">Lesson 0005</span>
+          <h3>Tool Calling Boundaries</h3>
+          <p class="summary">Let the model ask for actions while your application decides what is allowed, blocked, or escalated.</p>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Reference</h2>
+      <a class="reference" href="reference/ai-engineering-glossary.html">
+        <span class="number">Glossary</span>
+        <h3>AI Engineering Glossary</h3>
+        <p class="summary">A quick reference for the core terms used across the roadmap.</p>
+      </a>
+    </section>
+
+    <footer>
+      <p>Open this page locally, from GitHub Pages, or from a simple development server. The links are relative so they travel with the repository.</p>
+    </footer>
+  </main>
+</body>
+</html>

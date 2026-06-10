@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0001: AI Engineering Map</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #14202b;
+      --muted: #5d6875;
+      --line: #d7dee7;
+      --paper: #f7f9fc;
+      --panel: #ffffff;
+      --teal: #0f766e;
+      --teal-soft: #e6f4f1;
+      --amber: #b45309;
+      --amber-soft: #fff3d8;
+      --blue: #2563eb;
+      --blue-soft: #e8f0ff;
+      --rose: #be123c;
+      --rose-soft: #ffe8ee;
+      --green: #15803d;
+      --green-soft: #e7f7ed;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+    }
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 38px 22px 64px;
+    }
+    header {
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 26px;
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+    h1 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(2.15rem, 5vw, 4.4rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .lede {
+      margin: 16px 0 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+    section { margin: 26px 0; }
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+    h3 {
+      margin: 0 0 8px;
+      font-size: 1.03rem;
+      letter-spacing: 0;
+    }
+    p { margin: 0 0 12px; }
+    a { color: var(--blue); text-decoration-thickness: 2px; }
+    .band {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .two {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+    .contracts {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(130px, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+    .contract {
+      min-height: 150px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+    .contract:nth-child(1) { border-top: 5px solid var(--teal); }
+    .contract:nth-child(2) { border-top: 5px solid var(--blue); }
+    .contract:nth-child(3) { border-top: 5px solid var(--amber); }
+    .contract:nth-child(4) { border-top: 5px solid var(--green); }
+    .contract:nth-child(5) { border-top: 5px solid var(--rose); }
+    .contract:nth-child(6) { border-top: 5px solid #6d28d9; }
+    .contract p, .small { color: var(--muted); font-size: .94rem; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; }
+    th, td { padding: 13px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: .82rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: #f1f5f9; }
+    tr:last-child td { border-bottom: 0; }
+    .quiz {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+    }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 14px;
+    }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 10px;
+      min-height: 42px;
+      font: inherit;
+      font-size: .9rem;
+      cursor: pointer;
+      text-align: left;
+    }
+    button:hover { border-color: var(--blue); background: var(--blue-soft); }
+    button.correct { border-color: var(--green); background: var(--green-soft); }
+    button.wrong { border-color: var(--rose); background: var(--rose-soft); }
+    .answer {
+      min-height: 28px;
+      margin-top: 10px;
+      font-size: .92rem;
+      color: var(--muted);
+    }
+    .prompt-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .92rem;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .reveal {
+      margin-top: 12px;
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--green-soft);
+      padding: 14px;
+    }
+    .callout {
+      border-left: 5px solid var(--amber);
+      background: var(--amber-soft);
+      padding: 16px;
+      border-radius: 8px;
+    }
+    ul { padding-left: 20px; margin: 0 0 12px; }
+    li { margin: 6px 0; }
+    code {
+      background: #e8edf4;
+      border: 1px solid #d7dee7;
+      border-radius: 6px;
+      padding: 1px 5px;
+      font-size: .92em;
+    }
+    footer {
+      margin-top: 32px;
+      padding-top: 18px;
+      border-top: 2px solid var(--line);
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    @media (max-width: 900px) {
+      .two { grid-template-columns: 1fr; }
+      .contracts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      main { padding: 26px 16px 48px; }
+      .contracts, .choices { grid-template-columns: 1fr; }
+      .contract { min-height: 0; }
+    }
+    @media print {
+      body { background: #ffffff; }
+      main { padding: 24px; }
+      button { display: none; }
+      .reveal { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0001 - 20 minutes</p>
+      <h1>The AI engineering map: wrap probabilistic models in product contracts.</h1>
+      <p class="lede">You already know how to build software. The new skill is designing the boundaries around model behavior so the product is useful, measurable, and safe enough to ship.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Traditional product code is mostly deterministic: given the same input and state, you expect the same output. AI features include a probabilistic model call, so the engineering job changes.</p>
+      <p><strong>AI engineering is not "find a magic prompt."</strong> It is the discipline of surrounding model calls with contracts: what goes in, what context is allowed, what shape comes out, what actions may happen, how quality is measured, and what risks are blocked.</p>
+    </section>
+
+    <section>
+      <h2>The Six Contracts</h2>
+      <div class="contracts" aria-label="Six AI product contracts">
+        <article class="contract">
+          <h3>1. Input</h3>
+          <p>What user intent, product state, and constraints enter the model call?</p>
+        </article>
+        <article class="contract">
+          <h3>2. Context</h3>
+          <p>What retrieved docs, history, files, or examples are allowed into the context window?</p>
+        </article>
+        <article class="contract">
+          <h3>3. Model</h3>
+          <p>Which model, parameters, latency target, cost budget, and fallback path are used?</p>
+        </article>
+        <article class="contract">
+          <h3>4. Output</h3>
+          <p>Does the answer need prose, JSON, citations, confidence, or a refusal state?</p>
+        </article>
+        <article class="contract">
+          <h3>5. Action</h3>
+          <p>Which tools can the model request, and what does your app execute or require approval for?</p>
+        </article>
+        <article class="contract">
+          <h3>6. Quality and Safety</h3>
+          <p>How do you test, trace, monitor, and constrain the system before and after release?</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="two">
+      <div class="band">
+        <h2>Why The Roadmap Starts Small</h2>
+        <p>Your draft plan is strong, but the order should avoid a common trap: learning RAG, agents, evals, and security as separate theory islands.</p>
+        <p>Instead, build a small product loop first, then improve the same loop. That gives every new concept a place to live.</p>
+      </div>
+      <div class="band">
+        <h2>First Portfolio Spine</h2>
+        <p>Use one cumulative system:</p>
+        <ul>
+          <li><strong>Chat slice:</strong> product triage assistant with streaming and structured output.</li>
+          <li><strong>RAG slice:</strong> assistant grounded in a docs corpus with citations and retrieval tests.</li>
+          <li><strong>Agent slice:</strong> controlled workflow that proposes actions and asks for approval.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>How The Same Product Evolves</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>User Request</th>
+              <th>Engineering Move</th>
+              <th>Proof It Works</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Thin LLM app</td>
+              <td>"Turn this vague feature idea into a product brief."</td>
+              <td>Prompt, model call, streaming UI, structured output schema.</td>
+              <td>Saved examples produce complete briefs with valid JSON.</td>
+            </tr>
+            <tr>
+              <td>RAG app</td>
+              <td>"Use our internal product docs and cite your sources."</td>
+              <td>Chunk docs, embed them, retrieve relevant context, answer with citations.</td>
+              <td>Retrieval tests find the right source chunks for known questions.</td>
+            </tr>
+            <tr>
+              <td>Agent workflow</td>
+              <td>"Prepare the Jira implementation plan and test checklist."</td>
+              <td>State machine, tools, memory, approval gates, traceable actions.</td>
+              <td>The agent stops for approval before side effects and leaves an audit trail.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Mini Quiz: Name The Contract</h2>
+      <p class="small">Click the contract that best matches each engineering decision.</p>
+      <div class="quiz" id="quiz">
+        <article class="q" data-answer="Output">
+          <h3>Force the model to return <code>{summary, riskLevel, nextQuestion}</code>.</h3>
+          <div class="choices"></div>
+          <p class="answer" aria-live="polite"></p>
+        </article>
+        <article class="q" data-answer="Action">
+          <h3>Let the model request <code>createTicket</code>, but require user approval before execution.</h3>
+          <div class="choices"></div>
+          <p class="answer" aria-live="polite"></p>
+        </article>
+        <article class="q" data-answer="Context">
+          <h3>Retrieve the three most relevant policy chunks before answering.</h3>
+          <div class="choices"></div>
+          <p class="answer" aria-live="polite"></p>
+        </article>
+        <article class="q" data-answer="Quality">
+          <h3>Run 20 saved scenarios before accepting a prompt change.</h3>
+          <div class="choices"></div>
+          <p class="answer" aria-live="polite"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Practice: Upgrade A Weak Prompt</h2>
+      <p>Weak prompt:</p>
+      <div class="prompt-box">You are helpful. Summarize this feature request and say what to do next.</div>
+      <p style="margin-top: 14px;">Before revealing the answer, say out loud what contract is missing. Hint: there are at least four.</p>
+      <button type="button" id="revealButton">Reveal a stronger version</button>
+      <div class="reveal" id="reveal">
+        <p><strong>Stronger prompt skeleton:</strong></p>
+        <div class="prompt-box">Task: Convert a vague feature request into a product triage brief.
+
+Audience: Senior product and engineering reviewers.
+
+Use only the user's request and the provided product context. If required information is missing, ask one focused follow-up question instead of inventing details.
+
+Return valid JSON matching:
+{
+  "summary": "one sentence",
+  "assumptions": ["short bullets"],
+  "riskLevel": "low | medium | high",
+  "risks": ["product, technical, or compliance risks"],
+  "nextQuestion": "one question",
+  "suggestedNextAction": "one practical action"
+}</div>
+        <p class="small">This adds input boundaries, context boundaries, output shape, uncertainty behavior, and review-oriented product framing.</p>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Your First Build Target</h2>
+      <p>Build the smallest useful version of a Product Triage Assistant. The first version does not need RAG, agents, or a database.</p>
+      <ul>
+        <li>A textarea accepts a feature request.</li>
+        <li>The model streams a short response for the user.</li>
+        <li>The app also stores a structured JSON brief.</li>
+        <li>Five saved test cases check that the JSON shape is valid and the next question is useful.</li>
+      </ul>
+      <p>This is enough to start learning like an AI engineer because every later topic improves a visible system.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <p>Keep this light today. Read or skim only these references:</p>
+      <ul>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI structured outputs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI function calling</a></li>
+        <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust evals overview</a></li>
+      </ul>
+      <p class="small">Ask the agent follow-up questions whenever a term feels slippery. The point is not to memorize the map; it is to use it while building.</p>
+    </section>
+
+    <footer>
+      Lesson source basis: OpenAI API docs for structured outputs, function calling, embeddings, agents, and evals; Anthropic docs for prompt engineering and tool use; Braintrust docs for systematic evaluation; OWASP LLM Top 10 for security framing.
+    </footer>
+  </main>
+
+  <script>
+    const labels = ["Input", "Context", "Output", "Action", "Quality", "Model"];
+    const explanations = {
+      Input: "Input contract: what user intent, state, and constraints enter the model call.",
+      Context: "Context contract: what retrieved or provided information the model may rely on.",
+      Output: "Output contract: the shape and semantics your application can safely consume.",
+      Action: "Action contract: what the model may request and what the app is allowed to execute.",
+      Quality: "Quality contract: repeatable checks that show behavior improved or regressed.",
+      Model: "Model contract: which model, settings, latency, cost, and fallback policy are used."
+    };
+
+    document.querySelectorAll(".q").forEach((card) => {
+      const choices = card.querySelector(".choices");
+      labels.forEach((label) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        button.addEventListener("click", () => {
+          choices.querySelectorAll("button").forEach((btn) => {
+            btn.classList.remove("correct", "wrong");
+          });
+          const answer = card.dataset.answer;
+          if (label === answer) {
+            button.classList.add("correct");
+            card.querySelector(".answer").textContent = "Correct. " + explanations[label];
+          } else {
+            button.classList.add("wrong");
+            card.querySelector(".answer").textContent = "Close, but this one is mainly " + answer + ". " + explanations[answer];
+          }
+        });
+        choices.appendChild(button);
+      });
+    });
+
+    document.getElementById("revealButton").addEventListener("click", () => {
+      document.getElementById("reveal").style.display = "block";
+    });
+  </script>
+</body>
+</html>

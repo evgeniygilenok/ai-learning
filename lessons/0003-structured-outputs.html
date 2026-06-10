@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0003: Structured Outputs</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .pillrow { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .pill { border:1px solid var(--line); border-radius:999px; padding:6px 10px; background:#fff; font-size:.9rem; }
+    .good { background:#e7f7ed; border-color:#b7e2c5; }
+    .warn { background:#fff3d8; border-color:#f1d38a; }
+    .quiz { display:grid; gap:10px; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .answer { min-height:28px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
+    table { width:100%; border-collapse:collapse; min-width:720px; }
+    th, td { padding:13px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; color:var(--muted); font-size:.82rem; text-transform:uppercase; letter-spacing:.06em; }
+    tr:last-child td { border-bottom:0; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0003 - 30 minutes</p>
+      <h1>Structured outputs turn model text into product data.</h1>
+      <p class="lede">A chatbot can return prose. A product feature usually needs typed fields, validation, and predictable failure behavior.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Structured output is the difference between "the model said something useful" and "the application received data it can safely route, render, store, or test."</p>
+      <p>For your first portfolio app, structured output lets a product triage assistant create a brief your UI can display consistently and your evals can inspect field by field.</p>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Product Brief Schema</h2>
+        <pre><code>{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "summary",
+    "assumptions",
+    "riskLevel",
+    "risks",
+    "nextQuestion",
+    "suggestedNextAction"
+  ],
+  "properties": {
+    "summary": { "type": "string" },
+    "assumptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "riskLevel": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "nextQuestion": { "type": "string" },
+    "suggestedNextAction": { "type": "string" }
+  }
+}</code></pre>
+      </article>
+      <article class="band">
+        <h2>Why Each Field Exists</h2>
+        <div class="pillrow">
+          <span class="pill good">summary: UI preview</span>
+          <span class="pill good">assumptions: honesty</span>
+          <span class="pill good">riskLevel: routing</span>
+          <span class="pill good">risks: review</span>
+          <span class="pill good">nextQuestion: uncertainty</span>
+          <span class="pill good">suggestedNextAction: workflow</span>
+        </div>
+        <p class="muted">The schema is not just formatting. It encodes what the product needs from the model. If a field does not drive UI, workflow, evals, or storage, it may not belong.</p>
+      </article>
+    </section>
+
+    <section>
+      <h2>Good Schema Versus Fragile Schema</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Choice</th><th>Weak</th><th>Better</th><th>Why</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Risk</td>
+              <td><code>"risk": "seems bad"</code></td>
+              <td><code>"riskLevel": "low | medium | high"</code></td>
+              <td>Enums make routing and tests easier.</td>
+            </tr>
+            <tr>
+              <td>Uncertainty</td>
+              <td>No place for doubt.</td>
+              <td><code>assumptions</code> and <code>nextQuestion</code></td>
+              <td>The model can say what it does not know instead of inventing.</td>
+            </tr>
+            <tr>
+              <td>Extensibility</td>
+              <td>One giant markdown blob.</td>
+              <td>Small fields with single jobs.</td>
+              <td>Fields can be rendered, filtered, stored, and evaluated independently.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Mini Quiz: Should This Be A Field?</h2>
+      <div class="quiz">
+        <article class="card" data-answer="yes">
+          <h3>"riskLevel" will decide whether the brief needs engineering review.</h3>
+          <button type="button">Yes, make it a field</button>
+          <button type="button">No, leave it in prose</button>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="no">
+          <h3>"delightfulTone" is interesting, but no UI, workflow, storage, or eval uses it.</h3>
+          <button type="button">Yes, make it a field</button>
+          <button type="button">No, leave it out</button>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="yes">
+          <h3>"nextQuestion" forces the model to expose missing information.</h3>
+          <button type="button">Yes, make it a field</button>
+          <button type="button">No, leave it in prose</button>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Design the v1 schema for your Product Triage Assistant. Keep it small. Aim for six fields or fewer.</p>
+      <ul>
+        <li>Every field must have a product reason.</li>
+        <li>Use enums when the app needs routing decisions.</li>
+        <li>Use arrays for repeatable bullets.</li>
+        <li>Include one field that handles uncertainty.</li>
+      </ul>
+      <p class="small">After you draft it, ask the agent to review it like a senior engineer: "Which fields are unnecessary, ambiguous, or hard to evaluate?"</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0004-streaming-ux.html">Lesson 0004: Streaming UX</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI structured outputs docs</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI structured outputs docs and the roadmap's Product Triage Assistant project.</footer>
+  </main>
+  <script>
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const buttons = card.querySelectorAll("button");
+      const answer = card.querySelector(".answer");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = index === 0 ? "yes" : "no";
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = "Correct. Fields earn their place when product code or evaluation needs them.";
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Ask whether UI, workflow, storage, or evals will use this value.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

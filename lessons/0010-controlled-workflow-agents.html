@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0010: Controlled Workflow Agents</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .state { border-top:5px solid var(--teal); min-height:150px; }
+    .state:nth-child(2) { border-top-color:var(--blue); }
+    .state:nth-child(3) { border-top-color:var(--amber); }
+    .state:nth-child(4) { border-top-color:var(--green); }
+    .state:nth-child(5) { border-top-color:var(--rose); }
+    .state:nth-child(6) { border-top-color:var(--violet); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--teal); background:#e6f4f1; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0010 - 35 minutes</p>
+      <h1>A useful agent is a controlled workflow, not a loose chatbot.</h1>
+      <p class="lede">Agents become production-shaped when state, tools, approvals, retries, and stop conditions are explicit.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>An agent can choose steps and use tools, but the application should still own the workflow boundary. Treat autonomy as a dial, not a switch.</p>
+      <p>For senior AI engineering work, the strongest pattern is often a state machine where the model helps inside each state and product code decides allowed transitions.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card state">
+        <h3>1. Intake</h3>
+        <p class="muted">Read the task, classify risk, and decide whether enough information exists.</p>
+      </article>
+      <article class="card state">
+        <h3>2. Clarify</h3>
+        <p class="muted">Ask a targeted question instead of guessing when the task is underspecified.</p>
+      </article>
+      <article class="card state">
+        <h3>3. Plan</h3>
+        <p class="muted">Produce a small, inspectable plan with expected files, tools, or evidence.</p>
+      </article>
+      <article class="card state">
+        <h3>4. Dry Run</h3>
+        <p class="muted">Call read-only or draft tools and collect results without external side effects.</p>
+      </article>
+      <article class="card state">
+        <h3>5. Human Review</h3>
+        <p class="muted">Pause before risky writes, customer communication, money movement, or irreversible changes.</p>
+      </article>
+      <article class="card state">
+        <h3>6. Execute</h3>
+        <p class="muted">Run approved actions, capture trace data, and produce a final summary.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Workflow Sketch</h2>
+        <pre><code>intake
+  -> clarify when required fields are missing
+  -> plan when task is understood
+  -> dry_run for read-only tools
+  -> human_review for risky actions
+  -> execute after approval
+  -> complete or recoverable_error</code></pre>
+      </article>
+      <article class="band">
+        <h2>Boundary Rules</h2>
+        <ul>
+          <li>The model may propose a next state.</li>
+          <li>The app validates whether that transition is allowed.</li>
+          <li>Risky tools require explicit approval.</li>
+          <li>Every run has a max step count and a stop condition.</li>
+          <li>Tool results become state, not hidden memory.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Pick The Next State</h2>
+      <div class="grid">
+        <article class="card" data-answer="clarify">
+          <h3>The user says "fix checkout" with no error, repo context, or expected behavior.</h3>
+          <div class="choices">
+            <button type="button">Clarify</button>
+            <button type="button">Execute</button>
+            <button type="button">Complete</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="review">
+          <h3>The agent drafted a customer email about a payment incident.</h3>
+          <div class="choices">
+            <button type="button">Dry run</button>
+            <button type="button">Human review</button>
+            <button type="button">Execute automatically</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="dryrun">
+          <h3>The agent needs to inspect public docs and summarize matching sections.</h3>
+          <div class="choices">
+            <button type="button">Dry run</button>
+            <button type="button">Human review</button>
+            <button type="button">Execute write tools</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Portfolio Angle</h2>
+      <p>A controlled workflow agent is easier to defend in interviews than a demo that just loops until it looks done. You can explain states, permissions, recovery, traces, and why each tool is scoped.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Design a dry-run coding workflow agent for a Jira-style ticket.</p>
+      <ul>
+        <li>Define six states from intake to final checklist.</li>
+        <li>List the tools available in each state.</li>
+        <li>Mark each tool as read-only, draft, or side-effecting.</li>
+        <li>Add two approval gates and two stop conditions.</li>
+      </ul>
+      <p class="small">Ask the agent to critique the workflow for excessive agency and missing recovery paths.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="https://developers.openai.com/api/docs/guides/agents">OpenAI Agents SDK docs</a></li>
+        <li><a href="https://docs.langchain.com/oss/javascript/langgraph/overview">LangGraph TypeScript docs</a></li>
+        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI Agents SDK docs, LangGraph TypeScript docs, and OWASP LLM Top 10 guidance on excessive agency.</footer>
+  </main>
+  <script>
+    const labels = [
+      ["clarify", "execute", "complete"],
+      ["dryrun", "review", "execute"],
+      ["dryrun", "review", "execute"]
+    ];
+    const copy = {
+      clarify: "Correct. The agent should ask a focused question before planning or acting.",
+      review: "Correct. External communication about payments needs human approval.",
+      dryrun: "Correct. Read-only inspection can usually run without a risky side effect."
+    };
+    document.querySelectorAll("[data-answer]").forEach((card, cardIndex) => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, buttonIndex) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = labels[cardIndex][buttonIndex];
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = copy[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Match the next state to ambiguity, risk, and reversibility.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

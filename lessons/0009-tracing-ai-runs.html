@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0009: Tracing AI Runs</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
+    table { width:100%; border-collapse:collapse; min-width:720px; }
+    th, td { padding:13px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; color:var(--muted); font-size:.82rem; text-transform:uppercase; letter-spacing:.06em; }
+    tr:last-child td { border-bottom:0; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .signal { border-top:5px solid var(--teal); }
+    .signal:nth-child(2) { border-top-color:var(--blue); }
+    .signal:nth-child(3) { border-top-color:var(--amber); }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0009 - 30 minutes</p>
+      <h1>If you cannot trace an AI run, you cannot debug it.</h1>
+      <p class="lede">AI product failures are usually cross-boundary failures: prompt, retrieval, model choice, tool call, schema validation, latency, or cost.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>A trace is the story of one run. It captures the inputs, model calls, retrieved evidence, tool calls, outputs, validation results, latency, and usage.</p>
+      <p>Tracing turns "the model was bad" into a debuggable question: which boundary failed, and can we reproduce it?</p>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Run Trace Shape</h2>
+        <pre><code>{
+  "runId": "run_2026_06_001",
+  "userTask": "Triage enterprise refund request",
+  "spans": [
+    { "name": "retrieve", "latencyMs": 84, "chunkIds": ["refunds:enterprise:30-day"] },
+    { "name": "model", "model": "primary-small", "inputTokens": 1320, "outputTokens": 210 },
+    { "name": "validate", "schema": "ProductBriefV1", "status": "passed" }
+  ],
+  "result": "completed",
+  "costBucket": "low"
+}</code></pre>
+      </article>
+      <article class="band">
+        <h2>What A Trace Lets You Ask</h2>
+        <ul>
+          <li>Was the wrong evidence retrieved?</li>
+          <li>Did the model ignore a rule or lack the rule?</li>
+          <li>Did schema validation catch a malformed output?</li>
+          <li>Was latency dominated by retrieval, model generation, or a tool?</li>
+          <li>Did the request exceed a product cost budget?</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>Signals To Capture First</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Signal</th><th>Why It Matters</th><th>Do Not Log</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Prompt version</td>
+              <td>Connects behavior changes to deployed prompt changes.</td>
+              <td>Secrets or raw private data without a retention policy.</td>
+            </tr>
+            <tr>
+              <td>Retrieved chunk IDs</td>
+              <td>Shows whether the answer had the right evidence available.</td>
+              <td>Full restricted documents unless access and retention are designed.</td>
+            </tr>
+            <tr>
+              <td>Validation status</td>
+              <td>Separates model generation from application acceptance.</td>
+              <td>User-sensitive fields that are not needed for debugging.</td>
+            </tr>
+            <tr>
+              <td>Latency and token usage</td>
+              <td>Turns speed and cost into product budgets.</td>
+              <td>API keys, access tokens, or hidden system secrets.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Which Span Is Most Useful?</h2>
+      <div class="grid">
+        <article class="card signal" data-answer="retrieval">
+          <h3>The final answer cites a policy that does not exist in the retrieved evidence.</h3>
+          <div class="choices">
+            <button type="button">Retrieval span</button>
+            <button type="button">Model span</button>
+            <button type="button">Validation span</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card signal" data-answer="validation">
+          <h3>The UI refuses to render the brief because <code>riskLevel</code> is missing.</h3>
+          <div class="choices">
+            <button type="button">Retrieval span</button>
+            <button type="button">Model span</button>
+            <button type="button">Validation span</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card signal" data-answer="model">
+          <h3>Median response time doubled after switching to a larger model.</h3>
+          <div class="choices">
+            <button type="button">Retrieval span</button>
+            <button type="button">Model span</button>
+            <button type="button">Validation span</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Add a trace design to the Product Triage Assistant.</p>
+      <ul>
+        <li>Name the spans for input validation, retrieval, model call, output validation, and tool execution.</li>
+        <li>Choose five fields you will log for every run.</li>
+        <li>Choose three fields you will intentionally avoid logging.</li>
+        <li>Define one latency budget and one cost budget in product terms.</li>
+      </ul>
+      <p class="small">Ask the agent to review your trace schema for debuggability and privacy risk.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0010-controlled-workflow-agents.html">Lesson 0010: Controlled Workflow Agents</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust evaluation docs</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI production best practices, Braintrust evaluation docs, and standard distributed tracing habits adapted for AI features.</footer>
+  </main>
+  <script>
+    const answers = {
+      retrieval: "Correct. First prove which evidence was available to the model.",
+      validation: "Correct. The app rejected the output contract, so validation details matter most.",
+      model: "Correct. Model span latency and token usage help explain the regression."
+    };
+    const labels = ["retrieval", "model", "validation"];
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = labels[index];
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = answers[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Pick the span closest to the boundary where the symptom appears.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

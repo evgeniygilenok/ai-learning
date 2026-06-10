@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0007: RAG Context Packets</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .packet { border-top:5px solid var(--blue); min-height:155px; }
+    .packet:nth-child(2) { border-top-color:var(--teal); }
+    .packet:nth-child(3) { border-top-color:var(--amber); }
+    .packet:nth-child(4) { border-top-color:var(--green); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--rose); background:#ffe8ee; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0007 - 30 minutes</p>
+      <h1>RAG is the art of sending the model the right evidence packet.</h1>
+      <p class="lede">Retrieval-augmented generation works when search, filtering, context assembly, and citation rules act as one product contract.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>RAG does not make a model magically know your documents. Your application retrieves candidate evidence, builds a context packet, and asks the model to answer only from that packet.</p>
+      <p>A strong context packet is relevant, permission-safe, concise, cited, and explicit about what the model should do when evidence is missing.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card packet">
+        <h3>Retrieved Evidence</h3>
+        <p class="muted">The smallest useful chunks, ranked by relevance and filtered by permissions.</p>
+      </article>
+      <article class="card packet">
+        <h3>Source Handles</h3>
+        <p class="muted">IDs, titles, URLs, and section paths that the final answer can cite.</p>
+      </article>
+      <article class="card packet">
+        <h3>Answer Rules</h3>
+        <p class="muted">Instructions to use only provided evidence, cite claims, and say when the packet is insufficient.</p>
+      </article>
+      <article class="card packet">
+        <h3>Budget</h3>
+        <p class="muted">A token budget that reserves space for the user's question and the final answer.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Context Packet Shape</h2>
+        <pre><code>{
+  "question": "Can enterprise customers get a refund?",
+  "evidence": [
+    {
+      "id": "refunds:enterprise:30-day",
+      "title": "Enterprise refund policy",
+      "sectionPath": ["Billing", "Refunds"],
+      "text": "Enterprise customers can request a refund within 30 days if onboarding has not started."
+    }
+  ],
+  "rules": [
+    "Answer only from evidence.",
+    "Cite every policy claim by evidence id.",
+    "If evidence is missing, ask a follow-up question."
+  ]
+}</code></pre>
+      </article>
+      <article class="band">
+        <h2>Good Answer Behavior</h2>
+        <p>The answer should be narrow: "Yes, if the request is within 30 days and onboarding has not started."</p>
+        <p>It should cite the source handle and avoid adding policy details that were not retrieved.</p>
+        <p>If the user asks about a region, customer tier, or exception that is absent from the packet, the system should say it lacks evidence.</p>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Decision: What Should Go In The Packet?</h2>
+      <div class="grid">
+        <article class="card" data-answer="include">
+          <h3>A top-ranked chunk that directly answers the question and includes source metadata.</h3>
+          <div class="choices">
+            <button type="button">Include</button>
+            <button type="button">Leave out</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="exclude">
+          <h3>A retrieved chunk from a restricted document the current user cannot access.</h3>
+          <div class="choices">
+            <button type="button">Include</button>
+            <button type="button">Leave out</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="exclude">
+          <h3>Ten loosely related chunks that fill the whole context window.</h3>
+          <div class="choices">
+            <button type="button">Include</button>
+            <button type="button">Leave out</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Security Habit</h2>
+      <p>Filter by authorization before generation. Do not rely on the model to ignore evidence the user should not see.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Design the context packet for three questions from Lesson 0006.</p>
+      <ul>
+        <li>List the retrieved chunk IDs in ranked order.</li>
+        <li>Add a source title and section path for each chunk.</li>
+        <li>Write one refusal rule for missing or inaccessible evidence.</li>
+        <li>Draft a final answer that cites chunk IDs.</li>
+      </ul>
+      <p class="small">Ask the agent to inspect whether the answer says more than the evidence supports.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0008-retrieval-evals.html">Lesson 0008: Retrieval Evals</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/text">OpenAI text generation docs</a></li>
+        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI text generation docs, OWASP LLM Top 10, and production RAG design patterns.</footer>
+  </main>
+  <script>
+    const messages = {
+      include: "Correct. The packet should contain direct, citeable evidence the user is allowed to see.",
+      exclude: "Correct. Relevance is not enough. Permission, precision, and budget all matter."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = index === 0 ? "include" : "exclude";
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = messages[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Build the packet from allowed, compact, directly useful evidence.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

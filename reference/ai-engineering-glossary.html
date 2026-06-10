@@ -130,8 +130,23 @@
       </article>
       <article>
         <span class="tag">Search</span>
+        <h2>Chunk</h2>
+        <p>A meaningful unit of source content prepared for retrieval. Good chunks are precise enough to search and complete enough to support an answer.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
         <h2>Embedding</h2>
         <p>A vector representation of content used for similarity search, clustering, and retrieval. Embeddings are the bridge between language and search infrastructure.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
+        <h2>Vector Search</h2>
+        <p>Search that compares embedding vectors by similarity. It is useful for finding meaning matches that do not share exact keywords.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
+        <h2>Hybrid Search</h2>
+        <p>A retrieval strategy that combines semantic vector search with keyword or metadata search. It often improves results for exact names, IDs, and domain terms.</p>
       </article>
       <article>
         <span class="tag">Search</span>
@@ -145,13 +160,38 @@
       </article>
       <article>
         <span class="tag">Quality</span>
+        <h2>Citation</h2>
+        <p>A pointer from an answer claim back to source evidence. Citations make RAG answers inspectable and easier to debug.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
         <h2>Eval</h2>
         <p>A repeatable test of AI behavior. Evals can use expected answers, human labels, code-based checks, or model-based judges.</p>
       </article>
       <article>
         <span class="tag">Quality</span>
+        <h2>Golden Dataset</h2>
+        <p>A curated set of representative test cases with expected behavior. It is the regression suite for prompts, retrieval, tools, and workflows.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Groundedness</h2>
+        <p>The degree to which an answer is supported by supplied evidence. A grounded answer should not add claims beyond its sources.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
         <h2>Trace</h2>
         <p>A record of the model calls, prompts, retrieved context, tool calls, outputs, costs, and latency from a run. Traces make failures debuggable.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Latency Budget</h2>
+        <p>A product constraint for how long a user should wait. It helps decide when to stream, cache, route models, or move work to the background.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Cost Budget</h2>
+        <p>A product constraint for how much an AI run, user, tenant, or workflow may spend. It turns model usage into an engineering tradeoff.</p>
       </article>
       <article>
         <span class="tag risk">Risk</span>
@@ -173,12 +213,24 @@
         <h2>Agent</h2>
         <p>A system where the model can choose steps, call tools, use state, and continue over multiple turns or tasks. Useful agents need boundaries.</p>
       </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Workflow State</h2>
+        <p>A named step in a controlled agent process, such as intake, clarify, plan, review, or execute. State makes autonomy inspectable.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Human-In-The-Loop</h2>
+        <p>A workflow pattern where a person reviews or approves important decisions before execution. It is essential for risky tools and external side effects.</p>
+      </article>
     </section>
 
     <footer>
       Sources to revisit: <a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI structured outputs</a>,
       <a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI function calling</a>,
       <a href="https://developers.openai.com/api/docs/guides/embeddings">OpenAI embeddings</a>,
+      <a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals</a>,
+      <a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a>,
       <a href="https://www.braintrust.dev/docs/evaluate">Braintrust evals</a>,
       and <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a>.
     </footer>

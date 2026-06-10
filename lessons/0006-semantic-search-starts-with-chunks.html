@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0006: Semantic Search Starts With Chunks</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .step { border-top:5px solid var(--teal); min-height:150px; }
+    .step:nth-child(2) { border-top-color:var(--blue); }
+    .step:nth-child(3) { border-top-color:var(--amber); }
+    .step:nth-child(4) { border-top-color:var(--green); }
+    .step:nth-child(5) { border-top-color:var(--rose); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choice-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--amber); background:#fff3d8; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0006 - 25 minutes</p>
+      <h1>Semantic search starts with the chunk, not the vector.</h1>
+      <p class="lede">Embeddings make language searchable, but your retrieval quality depends on what you choose to embed.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>An embedding is a numeric representation of a piece of text. Similar text lands near similar text, which lets your app search by meaning instead of exact keywords.</p>
+      <p>The engineering decision is the chunk. A chunk should be small enough to retrieve precisely and large enough to preserve the idea a user needs.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card step">
+        <h3>1. Source</h3>
+        <p class="muted">Start with a document, ticket, policy page, meeting note, or product spec.</p>
+      </article>
+      <article class="card step">
+        <h3>2. Chunk</h3>
+        <p class="muted">Split the source into meaningful units with stable IDs and metadata.</p>
+      </article>
+      <article class="card step">
+        <h3>3. Embed</h3>
+        <p class="muted">Convert each chunk into a vector using an embedding model.</p>
+      </article>
+      <article class="card step">
+        <h3>4. Store</h3>
+        <p class="muted">Save vectors plus text, source, permissions, and other metadata.</p>
+      </article>
+      <article class="card step">
+        <h3>5. Retrieve</h3>
+        <p class="muted">Embed the query, search nearest chunks, then filter by product rules.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Chunk Record Shape</h2>
+        <pre><code>type Chunk = {
+  id: string;
+  sourceId: string;
+  title: string;
+  text: string;
+  url?: string;
+  sectionPath: string[];
+  updatedAt: string;
+  audience: "public" | "internal" | "restricted";
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Why Metadata Matters</h2>
+        <ul>
+          <li><strong>sourceId</strong> gives citations a stable target.</li>
+          <li><strong>sectionPath</strong> helps users inspect where evidence came from.</li>
+          <li><strong>updatedAt</strong> lets you downrank stale content.</li>
+          <li><strong>audience</strong> supports access-control filtering before generation.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Good Chunk Or Needs Split?</h2>
+      <div class="grid">
+        <article class="card" data-answer="good">
+          <h3>Refund policy: Enterprise customers can request a refund within 30 days if onboarding has not started.</h3>
+          <div class="choice-row">
+            <button type="button">Good chunk</button>
+            <button type="button">Needs split</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="split">
+          <h3>Release notes, account deletion policy, OAuth setup, sales discount rules, and incident escalation process.</h3>
+          <div class="choice-row">
+            <button type="button">Good chunk</button>
+            <button type="button">Needs split</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="split">
+          <h3>Section 1: Security. Section 2: Security Exceptions. Section 3: Security Exception Approval Workflow.</h3>
+          <div class="choice-row">
+            <button type="button">Good chunk</button>
+            <button type="button">Needs split</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Production Habit</h2>
+      <p>Never treat the vector database as the source of truth. Store enough metadata to re-fetch, re-index, cite, delete, and permission-check every chunk.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Create a tiny corpus for the Product Triage Assistant: five fake product docs, each with two to four chunks.</p>
+      <ul>
+        <li>Give every chunk a stable ID.</li>
+        <li>Add source title, section path, audience, and updated date.</li>
+        <li>Write three user questions that should retrieve one specific chunk.</li>
+      </ul>
+      <p class="small">Ask the agent to review whether each chunk is too broad, too tiny, or missing useful metadata.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0007-rag-context-packets.html">Lesson 0007: RAG Context Packets</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/embeddings">OpenAI embeddings docs</a></li>
+        <li><a href="https://qdrant.tech/documentation/">Qdrant documentation</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI embeddings docs, Qdrant documentation, and pgvector-style vector search patterns.</footer>
+  </main>
+  <script>
+    const feedback = {
+      good: "Correct. It is one coherent policy fact with enough context to answer a specific question.",
+      split: "Correct. A chunk should not mix unrelated topics or several nested concepts that users may search for separately."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = index === 0 ? "good" : "split";
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = feedback[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Ask whether one user question would want this exact unit of evidence.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0011: Memory And Persistence</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .memory { border-top:5px solid var(--teal); min-height:150px; }
+    .memory:nth-child(2) { border-top-color:var(--blue); }
+    .memory:nth-child(3) { border-top-color:var(--amber); }
+    .memory:nth-child(4) { border-top-color:var(--green); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--amber); background:#fff3d8; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0011 - 30 minutes</p>
+      <h1>Agent memory is persisted state with a product reason.</h1>
+      <p class="lede">Do not let "memory" become a vague bucket. Decide what should be saved, why it matters, who can see it, and when it expires.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>In an agentic workflow, memory is not magic recall. It is application state that survives long enough to improve the next step or the next run.</p>
+      <p>The senior engineering move is to separate working state, durable facts, user preferences, and audit history. Each one has different privacy, retention, and retrieval rules.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card memory">
+        <h3>Working State</h3>
+        <p class="muted">Temporary state for the current run: ticket ID, current plan, tool results, missing fields, and step count.</p>
+      </article>
+      <article class="card memory">
+        <h3>Durable Facts</h3>
+        <p class="muted">Stable project knowledge such as service ownership, docs locations, architecture decisions, or team conventions.</p>
+      </article>
+      <article class="card memory">
+        <h3>User Preferences</h3>
+        <p class="muted">Explicit preferences that shape future behavior, such as preferred output format or review strictness.</p>
+      </article>
+      <article class="card memory">
+        <h3>Audit History</h3>
+        <p class="muted">A record of actions, approvals, tool calls, and outcomes for debugging, compliance, and accountability.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Memory Record Shape</h2>
+        <pre><code>type MemoryRecord = {
+  id: string;
+  tenantId: string;
+  subject: "run" | "project" | "user" | "audit";
+  text: string;
+  source: "explicit_user" | "tool_result" | "system_event";
+  visibility: "private" | "team" | "admin";
+  expiresAt?: string;
+  createdAt: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Memory Rules</h2>
+        <ul>
+          <li>Only save memory with a named product use.</li>
+          <li>Prefer explicit user-provided preferences over inferred ones.</li>
+          <li>Keep secrets and transient credentials out of memory.</li>
+          <li>Store tool results as state with provenance, not as hidden vibes.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Save Or Do Not Save?</h2>
+      <div class="grid">
+        <article class="card" data-answer="save">
+          <h3>The user says: "For this project, always produce PR checklists in markdown."</h3>
+          <div class="choices">
+            <button type="button">Save as memory</button>
+            <button type="button">Do not save</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="skip">
+          <h3>A temporary OAuth token appears in a tool error log.</h3>
+          <div class="choices">
+            <button type="button">Save as memory</button>
+            <button type="button">Do not save</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="save">
+          <h3>A tool confirms that ticket PAY-431 belongs to the billing service owned by Team Ledger.</h3>
+          <div class="choices">
+            <button type="button">Save as memory</button>
+            <button type="button">Do not save</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Security Habit</h2>
+      <p>Memory expands blast radius. Every persisted fact needs a visibility boundary, a deletion path, and a reason it should outlive the current request.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Add memory design to the dry-run coding workflow agent from Lesson 0010.</p>
+      <ul>
+        <li>List five things the agent may store.</li>
+        <li>List five things it must never store.</li>
+        <li>Define a retention policy for working state and audit history.</li>
+        <li>Decide which memories are visible to user, team, or admin roles.</li>
+      </ul>
+      <p class="small">Ask the agent to review your memory rules for privacy risk and missing product purpose.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0012-model-routing-and-caching.html">Lesson 0012: Model Routing And Caching</a></li>
+        <li><a href="https://docs.langchain.com/oss/javascript/langgraph/overview">LangGraph TypeScript docs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/safety-best-practices">OpenAI safety best practices</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: LangGraph TypeScript docs, OpenAI production best practices, and OpenAI safety best practices.</footer>
+  </main>
+  <script>
+    const messages = {
+      save: "Correct. This has a product purpose and can be stored with source, visibility, and retention rules.",
+      skip: "Correct. Secrets and transient credentials should not become durable memory."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = index === 0 ? "save" : "skip";
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = messages[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Ask whether the data has product purpose, safe visibility, and a retention rule.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

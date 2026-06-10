@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0020: AI Infrastructure Decisions</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .infra { border-top:5px solid var(--teal); min-height:150px; }
+    .infra:nth-child(2) { border-top-color:var(--blue); }
+    .infra:nth-child(3) { border-top-color:var(--amber); }
+    .infra:nth-child(4) { border-top-color:var(--violet); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--teal); background:#e6f4f1; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0020 - 35 minutes</p>
+      <h1>AI infrastructure is a set of tradeoffs, not a trophy case.</h1>
+      <p class="lede">Use infrastructure when it solves a product constraint: reliability, data control, latency, cost, compliance, or portability.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Plan v2 treats AI infrastructure as optional because the first goal is becoming an AI product engineer. You should understand infrastructure without letting it swallow the portfolio.</p>
+      <p>The right question is not "Should I use Kubernetes, self-hosted inference, or an AI gateway?" It is "What constraint do I have that simpler product architecture cannot meet?"</p>
+    </section>
+
+    <section class="grid">
+      <article class="card infra">
+        <h3>Managed API</h3>
+        <p class="muted">Best default for fast product iteration, strong model quality, and minimal operational load.</p>
+      </article>
+      <article class="card infra">
+        <h3>AI Gateway</h3>
+        <p class="muted">Useful for provider routing, rate limits, audit policy, cost controls, and centralized observability.</p>
+      </article>
+      <article class="card infra">
+        <h3>Self-Hosted Inference</h3>
+        <p class="muted">Consider for data control, specialized models, predictable high volume, or hard provider constraints.</p>
+      </article>
+      <article class="card infra">
+        <h3>Container Platform</h3>
+        <p class="muted">Useful when deployment, scaling, background workers, and service boundaries need reproducibility.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Decision Record Shape</h2>
+        <pre><code>type InfraDecision = {
+  constraint: "latency" | "cost" | "data_control" | "reliability" | "compliance";
+  defaultChoice: "managed_api";
+  considered: ["gateway", "self_hosted", "containers"];
+  decision: string;
+  tradeoffs: string[];
+  revisitWhen: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Questions To Ask</h2>
+        <ul>
+          <li>What latency and cost budget are we missing?</li>
+          <li>What data cannot leave our control boundary?</li>
+          <li>What reliability problem does this infrastructure solve?</li>
+          <li>Who will operate and debug it?</li>
+          <li>What simpler option did we reject, and why?</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Which Infrastructure Choice?</h2>
+      <div class="grid">
+        <article class="card" data-answer="managed">
+          <h3>You are building a portfolio demo with low traffic and need the best model quickly.</h3>
+          <div class="choices">
+            <button type="button">Managed API</button>
+            <button type="button">Self-hosted inference</button>
+            <button type="button">Kubernetes first</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="gateway">
+          <h3>A company needs central rate limits, provider routing, usage budgets, and model audit logs.</h3>
+          <div class="choices">
+            <button type="button">Managed API only</button>
+            <button type="button">AI gateway</button>
+            <button type="button">Rewrite the app</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="selfhost">
+          <h3>A regulated tenant requires a specialized model and strict data-control boundary.</h3>
+          <div class="choices">
+            <button type="button">Managed API by default</button>
+            <button type="button">Self-hosted inference</button>
+            <button type="button">No observability</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Portfolio Habit</h2>
+      <p>It is fine to say "I would not use Kubernetes here." Senior judgment includes declining infrastructure that adds operational burden before the product needs it.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Write an infrastructure decision record for your portfolio system.</p>
+      <ul>
+        <li>State the default deployment choice for v1.</li>
+        <li>Name one reason to add an AI gateway later.</li>
+        <li>Name one condition that would justify self-hosted inference.</li>
+        <li>Name one infrastructure choice you are intentionally postponing.</li>
+      </ul>
+      <p class="small">Ask the agent to challenge whether each infrastructure choice follows from a real constraint.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="../index.html">Back to AI Engineering Roadmap</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="https://qdrant.tech/documentation/">Qdrant documentation</a></li>
+        <li><a href="https://github.com/pgvector/pgvector">pgvector on GitHub</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI production best practices, Qdrant documentation, pgvector, and the roadmap's optional AI infrastructure phase.</footer>
+  </main>
+  <script>
+    const labels = [
+      ["managed", "selfhost", "kubernetes"],
+      ["managed", "gateway", "rewrite"],
+      ["managed", "selfhost", "none"]
+    ];
+    const feedback = {
+      managed: "Correct. Managed APIs are a strong default when product learning is the constraint.",
+      gateway: "Correct. A gateway can centralize routing, budgets, policy, and observability.",
+      selfhost: "Correct. Data control or specialized inference can justify the operational cost."
+    };
+    document.querySelectorAll("[data-answer]").forEach((card, cardIndex) => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, buttonIndex) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = labels[cardIndex][buttonIndex];
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = feedback[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Pick the smallest infrastructure that satisfies the real constraint.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

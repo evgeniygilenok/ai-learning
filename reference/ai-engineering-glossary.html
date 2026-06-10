@@ -175,6 +175,16 @@
       </article>
       <article>
         <span class="tag">Quality</span>
+        <h2>Eval Gate</h2>
+        <p>A release rule that decides whether an AI change can ship based on eval scores, must-pass cases, safety checks, and review thresholds.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>LLM-As-Judge</h2>
+        <p>An evaluation pattern where a model scores semantic behavior such as groundedness, usefulness, completeness, or policy adherence.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
         <h2>Groundedness</h2>
         <p>The degree to which an answer is supported by supplied evidence. A grounded answer should not add claims beyond its sources.</p>
       </article>
@@ -194,6 +204,31 @@
         <p>A product constraint for how much an AI run, user, tenant, or workflow may spend. It turns model usage into an engineering tradeoff.</p>
       </article>
       <article>
+        <span class="tag">Quality</span>
+        <h2>Model Routing</h2>
+        <p>The policy for choosing which model or path handles a request. Good routing considers task type, risk, latency, cost, and fallback behavior.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Prompt Caching</h2>
+        <p>Reuse of stable prompt or context work where supported by the runtime. It is useful only when freshness, privacy, and correctness rules are clear.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Graceful Degradation</h2>
+        <p>A fallback behavior that keeps the product useful when an AI dependency is slow, unavailable, or over budget.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>AI Gateway</h2>
+        <p>A central layer for provider routing, rate limits, usage budgets, policy enforcement, and observability across AI calls.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Self-Hosted Inference</h2>
+        <p>Running model inference inside infrastructure you operate. It can help with data control or specialized models, but adds operational cost.</p>
+      </article>
+      <article>
         <span class="tag risk">Risk</span>
         <h2>Hallucination</h2>
         <p>A plausible but unsupported output. Good systems reduce this with grounding, citations, uncertainty behavior, and evals.</p>
@@ -202,6 +237,26 @@
         <span class="tag risk">Risk</span>
         <h2>Prompt Injection</h2>
         <p>An attempt to make the model ignore intended instructions or misuse tools. It can come directly from a user or indirectly through retrieved content.</p>
+      </article>
+      <article>
+        <span class="tag risk">Risk</span>
+        <h2>RAG Poisoning</h2>
+        <p>A retrieval security failure where manipulated or untrusted source content is retrieved and treated as evidence.</p>
+      </article>
+      <article>
+        <span class="tag risk">Risk</span>
+        <h2>Insecure Output Handling</h2>
+        <p>Rendering, executing, sending, or storing model output without appropriate validation, escaping, approval, or policy checks.</p>
+      </article>
+      <article>
+        <span class="tag risk">Risk</span>
+        <h2>Threat Model</h2>
+        <p>A structured map of assets, attackers, boundaries, likely failures, mitigations, and signals that would reveal regressions.</p>
+      </article>
+      <article>
+        <span class="tag risk">Risk</span>
+        <h2>Redaction</h2>
+        <p>Removing or masking sensitive data before it is stored, logged, used in evals, or shown in support and analytics tools.</p>
       </article>
       <article>
         <span class="tag risk">Risk</span>
@@ -222,6 +277,31 @@
         <span class="tag">Workflow</span>
         <h2>Human-In-The-Loop</h2>
         <p>A workflow pattern where a person reviews or approves important decisions before execution. It is essential for risky tools and external side effects.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Memory</h2>
+        <p>Persisted state the system can use later. Strong memory design defines purpose, source, visibility, retention, and deletion behavior.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Tenant Isolation</h2>
+        <p>A multi-tenant architecture property that prevents one tenant's data from entering another tenant's prompts, retrieval results, tools, memory, traces, or caches.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Data Retention</h2>
+        <p>The policy for how long prompts, outputs, traces, memories, eval data, and tool results are stored before deletion or archival.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Background Job</h2>
+        <p>Durable asynchronous work outside the request path, such as ingestion, embedding, evals, cleanup, retries, or long-running agent steps.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Idempotency Key</h2>
+        <p>A stable key that lets a retried job or tool call avoid duplicate side effects. It is essential for safe retries.</p>
       </article>
     </section>
 

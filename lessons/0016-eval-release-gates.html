@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0016: Eval Release Gates</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .gate { border-top:5px solid var(--teal); min-height:150px; }
+    .gate:nth-child(2) { border-top-color:var(--blue); }
+    .gate:nth-child(3) { border-top-color:var(--amber); }
+    .gate:nth-child(4) { border-top-color:var(--rose); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--green); background:#e7f7ed; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0016 - 30 minutes</p>
+      <h1>An eval harness becomes useful when it can block a risky release.</h1>
+      <p class="lede">A good release gate turns "the prompt feels better" into a concrete pass, fail, or needs-review decision.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>An eval is not just a notebook you run after something breaks. For production-shaped AI work, evals should run before prompt, retrieval, model, or tool-policy changes are accepted.</p>
+      <p>The gate does not need to be perfect. It needs to protect important behavior, expose regressions, and leave a trail explaining why a change shipped.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card gate">
+        <h3>Golden Cases</h3>
+        <p class="muted">Representative scenarios with expected behavior, source expectations, and known failure modes.</p>
+      </article>
+      <article class="card gate">
+        <h3>Scorers</h3>
+        <p class="muted">Code checks, schema checks, retrieval checks, human labels, or judge models that produce scores.</p>
+      </article>
+      <article class="card gate">
+        <h3>Thresholds</h3>
+        <p class="muted">Minimum pass rates or regression limits that define whether a change can ship.</p>
+      </article>
+      <article class="card gate">
+        <h3>Review Lane</h3>
+        <p class="muted">A manual path for ambiguous failures, new cases, or intentional behavior changes.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Release Gate Shape</h2>
+        <pre><code>type EvalGate = {
+  suite: "triage-v1" | "rag-v1" | "workflow-v1";
+  changedArtifact: "prompt" | "retriever" | "model" | "tool_policy";
+  requiredPassRate: number;
+  maxCriticalFailures: number;
+  mustPassCaseIds: string[];
+  reviewer?: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>What Should Block?</h2>
+        <ul>
+          <li>Schema validity regresses.</li>
+          <li>Critical safety cases fail.</li>
+          <li>Expected source citations disappear.</li>
+          <li>Unauthorized tool calls are allowed.</li>
+          <li>Latency or cost exceeds the product budget.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Ship Or Block?</h2>
+      <div class="grid">
+        <article class="card" data-answer="block">
+          <h3>The new prompt improves tone but fails two high-risk tool approval cases.</h3>
+          <div class="choices">
+            <button type="button">Ship</button>
+            <button type="button">Block</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="ship">
+          <h3>Pass rate is unchanged, latency drops 18%, and no must-pass cases fail.</h3>
+          <div class="choices">
+            <button type="button">Ship</button>
+            <button type="button">Block</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="block">
+          <h3>RAG answer quality seems better, but expected citations disappear in refund cases.</h3>
+          <div class="choices">
+            <button type="button">Ship</button>
+            <button type="button">Block</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Portfolio Signal</h2>
+      <p>Show one eval report where a change failed. A caught regression is stronger proof of engineering maturity than a demo where everything mysteriously works.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Define a release gate for your Product Triage Assistant.</p>
+      <ul>
+        <li>Choose ten golden cases.</li>
+        <li>Mark three cases as must-pass.</li>
+        <li>Define one schema check, one quality check, and one safety check.</li>
+        <li>Write the rule that decides ship, block, or needs review.</li>
+      </ul>
+      <p class="small">Ask the agent to critique whether the gate protects real product risk or just easy-to-score behavior.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0017-llm-as-judge-tradeoffs.html">Lesson 0017: LLM-As-Judge Tradeoffs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust eval docs</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI evals docs, Braintrust eval docs, and the roadmap's eval harness goal.</footer>
+  </main>
+  <script>
+    const feedback = {
+      ship: "Correct. The gate passed the protected cases and improved an operating metric.",
+      block: "Correct. A release gate should protect safety, citations, and must-pass behavior even when prose improves."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = index === 0 ? "ship" : "block";
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = feedback[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Ask whether a protected product contract regressed.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

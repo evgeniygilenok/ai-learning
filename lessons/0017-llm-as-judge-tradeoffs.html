@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0017: LLM-As-Judge Tradeoffs</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .judge { border-top:5px solid var(--violet); min-height:150px; }
+    .judge:nth-child(2) { border-top-color:var(--green); }
+    .judge:nth-child(3) { border-top-color:var(--amber); }
+    .judge:nth-child(4) { border-top-color:var(--rose); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0017 - 30 minutes</p>
+      <h1>Use LLM judges for judgment, not for everything.</h1>
+      <p class="lede">A judge model is useful when quality is semantic, but it should sit beside deterministic checks and human review.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Some AI behavior cannot be scored with a simple string match. A judge model can grade groundedness, helpfulness, completeness, or policy adherence.</p>
+      <p>But judges are still models. They can be inconsistent, biased by wording, overconfident, or too forgiving. Treat them as measured instruments, not truth itself.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card judge">
+        <h3>Best Use</h3>
+        <p class="muted">Semantic checks: is the answer grounded, does it address the question, does it avoid unsupported claims?</p>
+      </article>
+      <article class="card judge">
+        <h3>Pair With Code</h3>
+        <p class="muted">Use deterministic checks for schema validity, missing citations, blocked tools, and exact policy constraints.</p>
+      </article>
+      <article class="card judge">
+        <h3>Calibrate</h3>
+        <p class="muted">Compare judge scores against human labels and keep examples of false positives and false negatives.</p>
+      </article>
+      <article class="card judge">
+        <h3>Explain Scores</h3>
+        <p class="muted">Ask for a short rationale so failures become actionable instead of mysterious red numbers.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Judge Rubric Shape</h2>
+        <pre><code>{
+  "criterion": "groundedness",
+  "score": "pass | fail",
+  "rubric": [
+    "Every factual claim is supported by cited evidence.",
+    "The answer refuses when evidence is insufficient.",
+    "The answer does not invent policy details."
+  ],
+  "rationale": "One short paragraph."
+}</code></pre>
+      </article>
+      <article class="band">
+        <h2>Guardrails For Judges</h2>
+        <ul>
+          <li>Give the judge the question, answer, and source evidence.</li>
+          <li>Use narrow rubrics, not vague "is this good?" prompts.</li>
+          <li>Separate independent criteria into separate scores.</li>
+          <li>Sample human review for important decisions.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Judge Or Code?</h2>
+      <div class="grid">
+        <article class="card" data-answer="code">
+          <h3>Check whether the output includes a valid <code>riskLevel</code> enum.</h3>
+          <div class="choices">
+            <button type="button">Judge model</button>
+            <button type="button">Code check</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="judge">
+          <h3>Check whether the answer adds policy claims not supported by citations.</h3>
+          <div class="choices">
+            <button type="button">Judge model</button>
+            <button type="button">Code check</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="code">
+          <h3>Check whether a side-effecting tool call was attempted without approval.</h3>
+          <div class="choices">
+            <button type="button">Judge model</button>
+            <button type="button">Code check</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Add one judge-based scorer and two deterministic scorers to your eval harness.</p>
+      <ul>
+        <li>Judge scorer: groundedness, usefulness, or policy adherence.</li>
+        <li>Code scorer: schema validity or required citation presence.</li>
+        <li>Code scorer: blocked tool calls, token budget, or latency budget.</li>
+        <li>Write three examples where the judge might be wrong.</li>
+      </ul>
+      <p class="small">Ask the agent to tighten your judge rubric until it has observable criteria.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0018-queues-and-background-jobs.html">Lesson 0018: Queues And Background Jobs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust eval docs</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI evals docs, Braintrust eval docs, and the roadmap's LLM-as-judge tradeoff topic.</footer>
+  </main>
+  <script>
+    const feedback = {
+      judge: "Correct. Semantic support and unsupported claims often need a rubric-based evaluator.",
+      code: "Correct. Deterministic product contracts should be checked with deterministic code."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = index === 0 ? "judge" : "code";
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = feedback[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Use code for exact contracts and judges for semantic quality.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

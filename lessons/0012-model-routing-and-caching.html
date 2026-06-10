@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0012: Model Routing And Caching</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .route { border-top:5px solid var(--blue); min-height:150px; }
+    .route:nth-child(2) { border-top-color:var(--green); }
+    .route:nth-child(3) { border-top-color:var(--amber); }
+    .route:nth-child(4) { border-top-color:var(--rose); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0012 - 30 minutes</p>
+      <h1>Route expensive intelligence only where it earns its keep.</h1>
+      <p class="lede">Model routing and caching turn latency and cost from vague complaints into explicit product controls.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Not every request needs the same model, context, or generation path. A production AI app can classify work, choose the cheapest sufficient path, and escalate only when quality or risk requires it.</p>
+      <p>Caching is the partner move: reuse stable work such as retrieval results, policy summaries, deterministic tool responses, and repeated prompt context when it is safe to do so.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card route">
+        <h3>Fast Path</h3>
+        <p class="muted">Use a smaller model or deterministic rule for low-risk classification, routing, and simple extraction.</p>
+      </article>
+      <article class="card route">
+        <h3>Standard Path</h3>
+        <p class="muted">Use the default model and retrieval setup for normal product triage or knowledge answers.</p>
+      </article>
+      <article class="card route">
+        <h3>Escalation Path</h3>
+        <p class="muted">Use a stronger model, stricter validation, or human review for high-risk or ambiguous work.</p>
+      </article>
+      <article class="card route">
+        <h3>Fallback Path</h3>
+        <p class="muted">Use cached results, degraded answers, or background jobs when providers are slow or unavailable.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Routing Policy Shape</h2>
+        <pre><code>type RouteDecision = {
+  taskType: "classify" | "triage" | "rag_answer" | "workflow_plan";
+  risk: "low" | "medium" | "high";
+  latencyBudgetMs: number;
+  costBudget: "low" | "standard" | "premium";
+  model: "small" | "default" | "strong";
+  cacheMode: "read" | "write" | "bypass";
+  requiresReview: boolean;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>What Can Be Cached?</h2>
+        <ul>
+          <li>Embedding results for unchanged chunks.</li>
+          <li>Read-only tool responses with a clear freshness window.</li>
+          <li>Retrieval result IDs for repeated queries.</li>
+          <li>Stable system prompt or policy context where supported.</li>
+          <li>Never cache sensitive output without a retention policy.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Pick The Path</h2>
+      <div class="grid">
+        <article class="card" data-answer="fast">
+          <h3>Classify a feature request as bug, enhancement, or question for UI routing.</h3>
+          <div class="choices">
+            <button type="button">Fast path</button>
+            <button type="button">Escalation path</button>
+            <button type="button">Fallback path</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="escalate">
+          <h3>Draft a payment incident response that may be sent to enterprise customers.</h3>
+          <div class="choices">
+            <button type="button">Fast path</button>
+            <button type="button">Escalation path</button>
+            <button type="button">Fallback path</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="fallback">
+          <h3>The model provider is timing out while the user only needs a saved policy summary.</h3>
+          <div class="choices">
+            <button type="button">Fast path</button>
+            <button type="button">Escalation path</button>
+            <button type="button">Fallback path</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Design a routing table for the Product Triage Assistant.</p>
+      <ul>
+        <li>Define three task types and the default model path for each.</li>
+        <li>Add one rule that escalates based on risk.</li>
+        <li>Add one cacheable artifact and its freshness window.</li>
+        <li>Add one fallback behavior for provider failure.</li>
+      </ul>
+      <p class="small">Ask the agent to review whether your routing policy could reduce cost without hiding quality problems.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0013-multi-tenant-ai-architecture.html">Lesson 0013: Multi-Tenant AI Architecture</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/text">OpenAI text generation docs</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI production best practices and OpenAI text generation docs.</footer>
+  </main>
+  <script>
+    const labels = ["fast", "escalate", "fallback"];
+    const copy = {
+      fast: "Correct. Low-risk classification should not spend premium latency and cost.",
+      escalate: "Correct. High-impact external communication deserves stronger controls and review.",
+      fallback: "Correct. A graceful fallback can preserve usefulness when a live model path fails."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = labels[index];
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = copy[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Match model effort to risk, freshness, latency, and cost.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

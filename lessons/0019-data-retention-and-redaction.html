@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0019: Data Retention And Redaction</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .data { border-top:5px solid var(--rose); min-height:150px; }
+    .data:nth-child(2) { border-top-color:var(--teal); }
+    .data:nth-child(3) { border-top-color:var(--blue); }
+    .data:nth-child(4) { border-top-color:var(--amber); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0019 - 30 minutes</p>
+      <h1>AI observability should not become accidental data hoarding.</h1>
+      <p class="lede">Prompts, outputs, retrieved chunks, traces, memories, and eval examples all need retention and redaction rules.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>AI systems create rich debugging data. That data is valuable, but it can also contain private user text, customer documents, secrets, tool outputs, or regulated information.</p>
+      <p>The right design captures enough to debug and evaluate behavior while reducing the amount, sensitivity, and lifetime of stored data.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card data">
+        <h3>Minimize</h3>
+        <p class="muted">Store IDs, summaries, hashes, and structured outcomes when full raw text is not needed.</p>
+      </article>
+      <article class="card data">
+        <h3>Redact</h3>
+        <p class="muted">Remove secrets, credentials, payment data, or unnecessary personal information before logging.</p>
+      </article>
+      <article class="card data">
+        <h3>Expire</h3>
+        <p class="muted">Set retention windows for traces, memories, eval data, caches, and uploaded documents.</p>
+      </article>
+      <article class="card data">
+        <h3>Separate</h3>
+        <p class="muted">Keep sensitive payloads away from broad analytics, support tools, and cross-tenant dashboards.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Retention Policy Shape</h2>
+        <pre><code>type RetentionRule = {
+  artifact: "prompt" | "output" | "trace" | "memory" | "eval_case" | "cache";
+  storeRawText: boolean;
+  redaction: "none" | "secrets" | "pii" | "tenant_sensitive";
+  retentionDays: number;
+  accessRole: "user" | "team_admin" | "platform_admin";
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>AI Data To Classify</h2>
+        <ul>
+          <li>User prompts and uploaded files.</li>
+          <li>Retrieved chunks and citations.</li>
+          <li>Model outputs and structured fields.</li>
+          <li>Tool arguments and tool results.</li>
+          <li>Traces, eval failures, and memories.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Store Raw Or Redact?</h2>
+      <div class="grid">
+        <article class="card" data-answer="redact">
+          <h3>A trace contains an API key returned inside a tool error.</h3>
+          <div class="choices">
+            <button type="button">Store raw</button>
+            <button type="button">Redact or drop</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="store">
+          <h3>An eval case stores only chunk IDs, pass/fail score, and non-sensitive failure category.</h3>
+          <div class="choices">
+            <button type="button">Store raw</button>
+            <button type="button">Redact or drop</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="redact">
+          <h3>A support trace includes a customer's private contract text that is not needed for debugging.</h3>
+          <div class="choices">
+            <button type="button">Store raw</button>
+            <button type="button">Redact or drop</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Create a data retention table for your AI portfolio app.</p>
+      <ul>
+        <li>List six artifacts: prompts, outputs, traces, memories, evals, caches, files, or tool results.</li>
+        <li>Decide whether each stores raw text.</li>
+        <li>Assign a retention window and access role.</li>
+        <li>Mark one artifact that needs redaction before storage.</li>
+      </ul>
+      <p class="small">Ask the agent to review your table as if it were going into a fintech production design doc.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0020-ai-infrastructure-decisions.html">Lesson 0020: AI Infrastructure Decisions</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/safety-best-practices">OpenAI safety best practices</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI production best practices, OpenAI safety best practices, and the roadmap's data retention topic.</footer>
+  </main>
+  <script>
+    const feedback = {
+      store: "Correct. Structured, non-sensitive diagnostic metadata can often be retained safely with a policy.",
+      redact: "Correct. Sensitive raw text should be minimized, redacted, dropped, or tightly retained."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = index === 0 ? "store" : "redact";
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = feedback[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Store only what has a clear purpose, safe access boundary, and retention policy.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0018: Queues And Background Jobs</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); letter-spacing:0; line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .job { border-top:5px solid var(--teal); min-height:150px; }
+    .job:nth-child(2) { border-top-color:var(--blue); }
+    .job:nth-child(3) { border-top-color:var(--amber); }
+    .job:nth-child(4) { border-top-color:var(--green); }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--amber); background:#fff3d8; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0018 - 30 minutes</p>
+      <h1>Move slow AI work out of the request path.</h1>
+      <p class="lede">Queues and background jobs keep AI products responsive when ingestion, evals, retries, or long workflows take too long.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Some AI work belongs in the foreground: short streaming replies, quick structured extraction, and user-visible tool decisions.</p>
+      <p>Other work belongs in the background: document ingestion, embedding updates, eval suites, long agent runs, retries, and report generation. The product should show status instead of making the user wait blindly.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card job">
+        <h3>Ingestion Jobs</h3>
+        <p class="muted">Parse documents, chunk them, embed them, and update search indexes without blocking users.</p>
+      </article>
+      <article class="card job">
+        <h3>Eval Jobs</h3>
+        <p class="muted">Run golden cases after prompt, retrieval, model, or tool-policy changes.</p>
+      </article>
+      <article class="card job">
+        <h3>Workflow Jobs</h3>
+        <p class="muted">Continue multi-step agent work with checkpoints, approvals, retries, and resumable state.</p>
+      </article>
+      <article class="card job">
+        <h3>Maintenance Jobs</h3>
+        <p class="muted">Clean old traces, refresh caches, enforce retention, and rebuild stale indexes.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Job Record Shape</h2>
+        <pre><code>type AiJob = {
+  id: string;
+  tenantId: string;
+  type: "ingest" | "eval" | "agent_run" | "cleanup";
+  status: "queued" | "running" | "waiting_for_approval" | "failed" | "complete";
+  attempts: number;
+  idempotencyKey: string;
+  traceId?: string;
+  createdAt: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Queue Design Rules</h2>
+        <ul>
+          <li>Use idempotency keys so retries do not duplicate side effects.</li>
+          <li>Preserve tenant and authorization context with the job.</li>
+          <li>Expose user-visible status for long work.</li>
+          <li>Record traces for failures, retries, and approvals.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Foreground Or Background?</h2>
+      <div class="grid">
+        <article class="card" data-answer="background">
+          <h3>Re-embed 400 updated product documents after a docs import.</h3>
+          <div class="choices">
+            <button type="button">Foreground</button>
+            <button type="button">Background</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="foreground">
+          <h3>Stream a short answer while the user watches the chat window.</h3>
+          <div class="choices">
+            <button type="button">Foreground</button>
+            <button type="button">Background</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="background">
+          <h3>Run a full retrieval eval suite before merging a retriever change.</h3>
+          <div class="choices">
+            <button type="button">Foreground</button>
+            <button type="button">Background</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Reliability Habit</h2>
+      <p>Every queued AI job should answer three questions: can it retry safely, can a user understand its status, and can an engineer debug its failure?</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Design the background job model for your Enterprise Knowledge Assistant.</p>
+      <ul>
+        <li>Define one ingestion job and one eval job.</li>
+        <li>Add status values and retry rules for each.</li>
+        <li>Define what the user sees while the job runs.</li>
+        <li>List the trace fields needed to debug a failed job.</li>
+      </ul>
+      <p class="small">Ask the agent to review your jobs for idempotency, tenant isolation, and retry safety.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0019-data-retention-and-redaction.html">Lesson 0019: Data Retention And Redaction</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI production best practices and standard queue design patterns applied to AI work.</footer>
+  </main>
+  <script>
+    const feedback = {
+      foreground: "Correct. The user is actively waiting and streaming can make progress visible.",
+      background: "Correct. Long, retryable, or batch work belongs outside the request path."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const picked = index === 0 ? "foreground" : "background";
+          if (picked === expected) {
+            button.classList.add("correct");
+            answer.textContent = feedback[expected];
+          } else {
+            button.classList.add("wrong");
+            answer.textContent = "Not quite. Ask whether the user needs immediate interaction or durable progress tracking.";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

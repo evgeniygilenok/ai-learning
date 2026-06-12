@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0030: Final Portfolio And Interview Drill</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .proof { border-top:5px solid var(--teal); min-height:145px; }
+    .proof:nth-child(2) { border-top-color:var(--blue); }
+    .proof:nth-child(3) { border-top-color:var(--amber); }
+    .proof:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0030 - 45 minutes</p>
+      <h1>Finish the roadmap by turning work into interview proof.</h1>
+      <p class="lede">The final skill is packaging your system so a senior interviewer can see product judgment, engineering judgment, and AI-specific reliability.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Your portfolio should make one claim: "I can ship AI features that are useful, measurable, observable, and bounded." Every screenshot, README section, eval report, and system diagram should support that claim.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card proof"><h3>Demo Proof</h3><p class="muted">A short flow showing structured output, streaming, citations, and controlled tool use.</p></article>
+      <article class="card proof"><h3>Quality Proof</h3><p class="muted">Eval results, release gates, failure cases, and before/after retrieval changes.</p></article>
+      <article class="card proof"><h3>Ops Proof</h3><p class="muted">Traces, latency budgets, cost controls, retention rules, and fallback behavior.</p></article>
+      <article class="card proof"><h3>Security Proof</h3><p class="muted">Threat model, tenant isolation, tool approvals, redaction, and prompt-injection mitigations.</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Final README Shape</h2>
+        <pre><code>1. Product problem
+2. Architecture diagram
+3. AI contracts
+4. Demo flows
+5. Evals and traces
+6. Security model
+7. Tradeoffs and next steps</code></pre>
+      </article>
+      <article class="band">
+        <h2>Interview Drill</h2>
+        <ul>
+          <li>Explain RAG versus fine-tuning.</li>
+          <li>Defend eval metrics and release gates.</li>
+          <li>Walk through a failed trace.</li>
+          <li>Threat model prompt injection and tool abuse.</li>
+          <li>Choose between managed API, gateway, and self-hosting.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Strong Signal Or Weak Signal?</h2>
+      <div class="grid">
+        <article class="card" data-answer="strong"><h3>A trace shows wrong retrieval caused a bad answer, then an eval caught the fix.</h3><div class="choices"><button>Strong</button><button>Weak</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="weak"><h3>The README lists five AI libraries without explaining tradeoffs.</h3><div class="choices"><button>Strong</button><button>Weak</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="strong"><h3>The demo pauses for approval before creating a ticket from model output.</h3><div class="choices"><button>Strong</button><button>Weak</button></div><p class="answer"></p></article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Produce the final portfolio package.</p>
+      <ul>
+        <li>Write a one-page architecture brief.</li>
+        <li>Capture three screenshots or short clips from the product.</li>
+        <li>Include one eval report and one trace walkthrough.</li>
+        <li>Write five interview questions and answer them out loud.</li>
+      </ul>
+      <p class="small">Ask the agent to run a senior AI engineering mock interview against your final package.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="../index.html">Back to AI Engineering Roadmap</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: Plan v2 portfolio shape, OpenAI production best practices, OpenAI evals docs, and OWASP LLM Top 10.</footer>
+  </main>
+  <script>
+    const copy = { strong: "Correct. This proves judgment, reliability, and product boundaries.", weak: "Correct. Tool lists are weak unless tied to tradeoffs and behavior." };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer, buttons = card.querySelectorAll("button"), answer = card.querySelector(".answer");
+      buttons.forEach((button, index) => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const picked = index === 0 ? "strong" : "weak";
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Strong proof shows decisions, measurements, and failure handling.";
+      }));
+    });
+  </script>
+</body>
+</html>

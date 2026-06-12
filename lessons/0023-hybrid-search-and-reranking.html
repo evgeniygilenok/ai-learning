@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0023: Hybrid Search And Reranking</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .stage { border-top:5px solid var(--teal); min-height:145px; }
+    .stage:nth-child(2) { border-top-color:var(--blue); }
+    .stage:nth-child(3) { border-top-color:var(--amber); }
+    .stage:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0023 - 35 minutes</p>
+      <h1>Hybrid search broadens recall. Reranking sharpens precision.</h1>
+      <p class="lede">A strong RAG retriever often combines semantic search, keyword search, metadata filters, and a final reranking step.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Vector search is great for meaning. Keyword search is great for exact names, IDs, error codes, and domain terms. Hybrid retrieval combines both, then reranking chooses the best evidence for the context packet.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card stage"><h3>Vector Candidates</h3><p class="muted">Find semantically similar chunks even when wording differs.</p></article>
+      <article class="card stage"><h3>Keyword Candidates</h3><p class="muted">Capture exact product names, ticket IDs, policy labels, and technical terms.</p></article>
+      <article class="card stage"><h3>Merge And Filter</h3><p class="muted">Deduplicate, apply ACL filters, and preserve source diversity.</p></article>
+      <article class="card stage"><h3>Rerank</h3><p class="muted">Score candidates against the query and keep only the strongest evidence.</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Retriever Shape</h2>
+        <pre><code>type RetrievalPlan = {
+  vectorTopK: number;
+  keywordTopK: number;
+  filters: RetrievalFilter;
+  rerankTopK: number;
+  contextBudgetTokens: number;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>When Hybrid Helps</h2>
+        <ul>
+          <li>Queries include acronyms, IDs, or exact product names.</li>
+          <li>Semantic search returns plausible but wrong neighbors.</li>
+          <li>Users mix natural language with domain terms.</li>
+          <li>The context packet is noisy and needs a sharper final pass.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Which Search Move?</h2>
+      <div class="grid">
+        <article class="card" data-answer="keyword"><h3>User asks for "PAY-431 rollback checklist".</h3><div class="choices"><button>Keyword boost</button><button>Semantic only</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="rerank"><h3>Top 20 candidates include several related policies, but only three answer the question.</h3><div class="choices"><button>Rerank</button><button>Skip ranking</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="semantic"><h3>User asks "what do we do when onboarding has not started but a customer wants money back?"</h3><div class="choices"><button>Semantic search</button><button>Exact ID search only</button></div><p class="answer"></p></article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Upgrade your retrieval design from vector-only to hybrid search.</p>
+      <ul>
+        <li>Pick three query types that need keyword matching.</li>
+        <li>Define candidate counts for vector and keyword search.</li>
+        <li>Add dedupe, ACL filtering, and reranking steps.</li>
+        <li>Write two eval cases where hybrid should beat vector-only.</li>
+      </ul>
+      <p class="small">Ask the agent to review whether your hybrid design improves recall without flooding the context packet.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0024-agent-retry-and-recovery.html">Lesson 0024: Agent Retry And Recovery</a></li>
+        <li><a href="https://qdrant.tech/documentation/">Qdrant documentation</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: Qdrant documentation and production RAG retrieval patterns.</footer>
+  </main>
+  <script>
+    const copy = { keyword: "Correct. Exact IDs and labels benefit from keyword matching.", rerank: "Correct. Reranking sharpens a broad candidate set.", semantic: "Correct. The wording is indirect, so semantic search helps." };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer, buttons = card.querySelectorAll("button"), answer = card.querySelector(".answer");
+      buttons.forEach((button, index) => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const picked = button.textContent.startsWith("Keyword") ? "keyword" : button.textContent.startsWith("Rerank") ? "rerank" : button.textContent.startsWith("Semantic") ? "semantic" : "other";
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Match the retrieval move to the query shape and candidate noise.";
+      }));
+    });
+  </script>
+</body>
+</html>

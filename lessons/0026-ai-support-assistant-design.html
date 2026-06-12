@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0026: AI Support Assistant Design</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .slice { border-top:5px solid var(--teal); min-height:145px; }
+    .slice:nth-child(2) { border-top-color:var(--blue); }
+    .slice:nth-child(3) { border-top-color:var(--amber); }
+    .slice:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0026 - 35 minutes</p>
+      <h1>Design an AI support assistant around trust, escalation, and source control.</h1>
+      <p class="lede">Support is a perfect system-design practice case because wrong answers can frustrate users or create policy risk.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>An AI support assistant should answer from approved knowledge, cite policy, detect when it lacks evidence, and escalate to humans when the issue is high-risk or account-specific.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card slice"><h3>Inputs</h3><p class="muted">User message, account tier, locale, entitlement, product area, and conversation history.</p></article>
+      <article class="card slice"><h3>Context</h3><p class="muted">Approved help docs, product status, account-safe facts, and policy snippets with citations.</p></article>
+      <article class="card slice"><h3>Actions</h3><p class="muted">Draft reply, ask clarifying question, create ticket, escalate, or suggest safe self-service steps.</p></article>
+      <article class="card slice"><h3>Quality</h3><p class="muted">Groundedness, deflection quality, escalation accuracy, CSAT signals, latency, and containment risk.</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Design Skeleton</h2>
+        <pre><code>message -> classify intent/risk
+  -> retrieve approved docs
+  -> answer with citations
+  -> if account-specific or risky:
+       create human-review ticket
+  -> trace, score, and learn from feedback</code></pre>
+      </article>
+      <article class="band">
+        <h2>Non-Negotiables</h2>
+        <ul>
+          <li>Do not invent policy.</li>
+          <li>Do not expose cross-account data.</li>
+          <li>Escalate billing, legal, security, and outage ambiguity.</li>
+          <li>Keep user-facing uncertainty explicit.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Answer Or Escalate?</h2>
+      <div class="grid">
+        <article class="card" data-answer="answer"><h3>User asks where to find invoice downloads; docs contain exact steps.</h3><div class="choices"><button>Answer</button><button>Escalate</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="escalate"><h3>User asks for a refund exception outside published policy.</h3><div class="choices"><button>Answer</button><button>Escalate</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="escalate"><h3>User reports possible account compromise.</h3><div class="choices"><button>Answer</button><button>Escalate</button></div><p class="answer"></p></article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Whiteboard an AI support assistant.</p>
+      <ul>
+        <li>Draw the input, retrieval, answer, escalation, and feedback flow.</li>
+        <li>Define three escalation rules.</li>
+        <li>Choose three eval cases and two metrics.</li>
+        <li>List one privacy and one hallucination mitigation.</li>
+      </ul>
+      <p class="small">Ask the agent to interview you on this design for ten minutes.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0027-enterprise-rag-design.html">Lesson 0027: Enterprise RAG Design</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI production best practices and the roadmap's AI support assistant practice design.</footer>
+  </main>
+  <script>
+    const copy = { answer: "Correct. Low-risk, cited self-service guidance can be answered.", escalate: "Correct. Policy exceptions and security issues need human or specialized workflow review." };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer, buttons = card.querySelectorAll("button"), answer = card.querySelector(".answer");
+      buttons.forEach((button, index) => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const picked = index === 0 ? "answer" : "escalate";
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Consider risk, evidence, and account-specific consequences.";
+      }));
+    });
+  </script>
+</body>
+</html>

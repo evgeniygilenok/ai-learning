@@ -130,6 +130,11 @@
       </article>
       <article>
         <span class="tag">Search</span>
+        <h2>Ingestion Pipeline</h2>
+        <p>The process that extracts, normalizes, chunks, enriches, embeds, indexes, refreshes, and deletes source content for retrieval.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
         <h2>Chunk</h2>
         <p>A meaningful unit of source content prepared for retrieval. Good chunks are precise enough to search and complete enough to support an answer.</p>
       </article>
@@ -150,6 +155,11 @@
       </article>
       <article>
         <span class="tag">Search</span>
+        <h2>ACL Filter</h2>
+        <p>An access-control filter applied before generation so only chunks the current user may see can enter context, citations, traces, or caches.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
         <h2>RAG</h2>
         <p>Retrieval-augmented generation: retrieve relevant external information, put it into context, then ask the model to answer grounded in that context.</p>
       </article>
@@ -157,6 +167,11 @@
         <span class="tag">Search</span>
         <h2>Reranking</h2>
         <p>A second pass that reorders retrieved chunks for relevance. It is often used after a broad vector or hybrid search pass.</p>
+      </article>
+      <article>
+        <span class="tag">Search</span>
+        <h2>Source Diversity</h2>
+        <p>A retrieval design goal that avoids filling the context packet with near-duplicate chunks from one source when multiple sources are useful.</p>
       </article>
       <article>
         <span class="tag">Quality</span>
@@ -182,6 +197,16 @@
         <span class="tag">Quality</span>
         <h2>LLM-As-Judge</h2>
         <p>An evaluation pattern where a model scores semantic behavior such as groundedness, usefulness, completeness, or policy adherence.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Agent Eval</h2>
+        <p>An evaluation of a workflow agent that scores the final artifact plus the trace path, state transitions, tool choices, approvals, and budgets.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Path Validity</h2>
+        <p>Whether an agent followed allowed state transitions, stopped at approval gates, avoided loops, and recovered safely.</p>
       </article>
       <article>
         <span class="tag">Quality</span>
@@ -302,6 +327,21 @@
         <span class="tag">Workflow</span>
         <h2>Idempotency Key</h2>
         <p>A stable key that lets a retried job or tool call avoid duplicate side effects. It is essential for safe retries.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Recovery Policy</h2>
+        <p>Rules for how an agent handles validation failures, transient failures, permission failures, partial success, retries, and stop conditions.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Autonomy Ladder</h2>
+        <p>A product model for gradually increasing assistant agency from suggestions to drafts, approvals, execution, audit logs, and undo paths.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Portfolio Proof</h2>
+        <p>Concrete evidence that a portfolio system handles AI quality, observability, cost, security, and product failure modes.</p>
       </article>
     </section>
 

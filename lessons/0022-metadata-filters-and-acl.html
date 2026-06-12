@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0022: Metadata Filters And ACL</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .rule { border-top:5px solid var(--rose); min-height:145px; }
+    .rule:nth-child(2) { border-top-color:var(--blue); }
+    .rule:nth-child(3) { border-top-color:var(--amber); }
+    .rule:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0022 - 30 minutes</p>
+      <h1>Metadata filters are the guardrails around semantic search.</h1>
+      <p class="lede">Vector similarity finds likely meaning. Metadata and ACL filters decide which evidence is allowed, fresh, and relevant to the user.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Search relevance is not enough. A result must also satisfy tenant, role, source, region, freshness, product area, and document-state constraints before it enters the model context.</p>
+      <p>Access-control filtering should happen before generation, not as an instruction asking the model to ignore forbidden chunks.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card rule"><h3>Tenant Filter</h3><p class="muted">Every search is scoped to the current tenant or explicitly shared corpus.</p></article>
+      <article class="card rule"><h3>ACL Filter</h3><p class="muted">Chunk permissions are checked against the user's role, groups, and entitlement.</p></article>
+      <article class="card rule"><h3>Freshness Filter</h3><p class="muted">Expired, deleted, draft, or stale content is excluded or downranked.</p></article>
+      <article class="card rule"><h3>Domain Filter</h3><p class="muted">Product area, document type, region, and source system narrow the search space.</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Filter Shape</h2>
+        <pre><code>type RetrievalFilter = {
+  tenantId: string;
+  allowedGroups: string[];
+  region?: "us" | "ca" | "eu";
+  sourceTypes: string[];
+  includeDrafts: false;
+  updatedAfter?: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Design Rule</h2>
+        <p>Combine semantic ranking with metadata constraints. If a chunk fails the filter, it should not be shown to the model, cited, cached, or logged as user-visible evidence.</p>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Safe Filter?</h2>
+      <div class="grid">
+        <article class="card" data-answer="safe"><h3>Search filters by tenant ID and allowed groups before returning text.</h3><div class="choices"><button>Safe</button><button>Unsafe</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="unsafe"><h3>Search returns all chunks, then asks the model to hide forbidden ones.</h3><div class="choices"><button>Safe</button><button>Unsafe</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="unsafe"><h3>Cache key includes query text but not tenant or ACL context.</h3><div class="choices"><button>Safe</button><button>Unsafe</button></div><p class="answer"></p></article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Write the retrieval filter contract for your Enterprise Knowledge Assistant.</p>
+      <ul>
+        <li>Define required metadata fields on every chunk.</li>
+        <li>Write the filter object for a normal user and an admin.</li>
+        <li>Define what happens to stale or deleted content.</li>
+        <li>Add one eval case for cross-tenant leakage.</li>
+      </ul>
+      <p class="small">Ask the agent to review your filter as a data isolation reviewer.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0023-hybrid-search-and-reranking.html">Lesson 0023: Hybrid Search And Reranking</a></li>
+        <li><a href="https://qdrant.tech/documentation/">Qdrant documentation</a></li>
+        <li><a href="https://github.com/pgvector/pgvector">pgvector on GitHub</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: Qdrant documentation, pgvector, and OWASP LLM Top 10 guidance on sensitive information disclosure.</footer>
+  </main>
+  <script>
+    const copy = { safe: "Correct. Filtering happens before text enters context.", unsafe: "Correct. This can leak data through context, cache, or model output." };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer, buttons = card.querySelectorAll("button"), answer = card.querySelector(".answer");
+      buttons.forEach((button, index) => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const picked = index === 0 ? "safe" : "unsafe";
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Authorization belongs before retrieval results become context.";
+      }));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0028: Coding Copilot Design</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:920px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .part { border-top:5px solid var(--teal); min-height:145px; }
+    .part:nth-child(2) { border-top-color:var(--blue); }
+    .part:nth-child(3) { border-top-color:var(--amber); }
+    .part:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0028 - 35 minutes</p>
+      <h1>A coding copilot is a context engine with a careful action boundary.</h1>
+      <p class="lede">The challenge is not generating code. It is choosing context, proposing changes, testing safely, and earning developer trust.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>A coding copilot needs repository context, task understanding, change planning, edit generation, test selection, and human review. Autonomy should increase only after evidence and safety gates are strong.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card part"><h3>Context Builder</h3><p class="muted">Find relevant files, symbols, tests, docs, and recent changes without flooding the model.</p></article>
+      <article class="card part"><h3>Planner</h3><p class="muted">Explain intended files, risks, and tests before editing.</p></article>
+      <article class="card part"><h3>Executor</h3><p class="muted">Apply scoped patches, run checks, capture failures, and preserve user changes.</p></article>
+      <article class="card part"><h3>Reviewer</h3><p class="muted">Summarize diffs, risks, test results, and places needing human judgment.</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Control Flow</h2>
+        <pre><code>ticket -> clarify
+  -> retrieve repo context
+  -> plan
+  -> propose patch
+  -> run tests
+  -> review summary
+  -> human approves PR</code></pre>
+      </article>
+      <article class="band">
+        <h2>Safety Rules</h2>
+        <ul>
+          <li>Never overwrite unrelated user changes.</li>
+          <li>Prefer small, reviewable patches.</li>
+          <li>Run targeted tests before broad tests.</li>
+          <li>Ask before destructive Git operations.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Copilot Boundary</h2>
+      <div class="grid">
+        <article class="card" data-answer="allow"><h3>Read files and propose a patch plan.</h3><div class="choices"><button>Allow</button><button>Ask first</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="ask"><h3>Run a destructive Git reset to clean the repo.</h3><div class="choices"><button>Allow</button><button>Ask first</button></div><p class="answer"></p></article>
+        <article class="card" data-answer="ask"><h3>Open a PR that triggers external CI and notifications.</h3><div class="choices"><button>Allow</button><button>Ask first</button></div><p class="answer"></p></article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Whiteboard a coding copilot for senior interview practice.</p>
+      <ul>
+        <li>Define the context-selection strategy.</li>
+        <li>Define edit, test, and review states.</li>
+        <li>List three tool permissions and two approval gates.</li>
+        <li>Choose evals for patch quality and test selection.</li>
+      </ul>
+      <p class="small">Ask the agent to critique your design for unsafe autonomy and missing developer trust signals.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0029-personal-assistant-agent-design.html">Lesson 0029: Personal Assistant Agent Design</a></li>
+        <li><a href="https://docs.langchain.com/oss/javascript/langgraph/overview">LangGraph TypeScript docs</a></li>
+        <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: LangGraph TypeScript docs and the roadmap's coding copilot practice design.</footer>
+  </main>
+  <script>
+    const copy = { allow: "Correct. Read-only planning is usually safe with logging.", ask: "Correct. Destructive or externally visible actions need approval." };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer, buttons = card.querySelectorAll("button"), answer = card.querySelector(".answer");
+      buttons.forEach((button, index) => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const picked = index === 0 ? "allow" : "ask";
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Consider blast radius and external side effects.";
+      }));
+    });
+  </script>
+</body>
+</html>

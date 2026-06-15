@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0040: Adoption Feedback Loop</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .loop { border-top:5px solid var(--teal); min-height:150px; }
+    .loop:nth-child(2) { border-top-color:var(--blue); }
+    .loop:nth-child(3) { border-top-color:var(--amber); }
+    .loop:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0040 - 35 minutes</p>
+      <h1>Use feedback to prove product judgment.</h1>
+      <p class="lede">A portfolio gets stronger when real people try it. The skill is turning feedback into scoped fixes, eval cases, and better interview stories.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>External feedback is not a popularity test. It is a way to discover where the AI product contract is unclear, brittle, slow, unsafe, or unconvincing.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card loop"><h3>Recruit</h3><p class="muted">Ask 3-5 engineers, product people, or domain-adjacent users to try one specific workflow.</p></article>
+      <article class="card loop"><h3>Observe</h3><p class="muted">Watch setup friction, confusing states, trust breakdowns, wrong answers, and missing explanation.</p></article>
+      <article class="card loop"><h3>Convert</h3><p class="muted">Turn feedback into issues, eval cases, docs, or product changes.</p></article>
+      <article class="card loop"><h3>Close</h3><p class="muted">Fix the top three issues and record what changed in the demo, README, or quality report.</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Feedback Prompt</h2>
+        <pre><code>Please try the knowledge assistant flow:
+1. Ask a policy question.
+2. Inspect the citations.
+3. Try a question it should refuse.
+4. Tell me where trust broke.
+5. Tell me what would make this easier to review.</code></pre>
+      </article>
+      <article class="band">
+        <h2>Feedback Record</h2>
+        <pre><code>source: senior backend engineer
+workflow: RAG answer with citations
+issue: citations were present but not easy to inspect
+contract affected: quality/safety
+fix: add source preview and trace link
+new eval: citation must reference expected section</code></pre>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: What Should This Become?</h2>
+      <div class="grid">
+        <article class="card" data-answer="eval">
+          <h3>"It answered confidently when the docs did not contain the policy."</h3>
+          <div class="choices"><button type="button">Eval case</button><button type="button">Resume bullet</button><button type="button">Ignore</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="docs">
+          <h3>"I could not tell how to run the demo without your help."</h3>
+          <div class="choices"><button type="button">Eval case</button><button type="button">Docs fix</button><button type="button">Ignore</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="story">
+          <h3>"The approval gate made me trust the agent more, even though it slowed the flow."</h3>
+          <div class="choices"><button type="button">Interview story</button><button type="button">Delete approval</button><button type="button">Ignore</button></div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Create <code>docs/adoption-feedback.md</code>.</p>
+      <ul>
+        <li>Ask 3-5 people to try one workflow.</li>
+        <li>Record what they tried, where they got stuck, and where trust broke.</li>
+        <li>Classify each note as UX, quality, security, setup, performance, or explanation.</li>
+        <li>Fix the top 3 issues.</li>
+        <li>Add at least one new eval case from feedback.</li>
+      </ul>
+      <p class="small">Ask the agent to turn raw feedback into a prioritized issue list.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0039-deployable-ai-portfolio.html">Lesson 0039: Deployable AI Portfolio</a></li>
+        <li><a href="0041-ai-job-search-loop.html">Lesson 0041: AI Job Search Loop</a></li>
+        <li><a href="0015-portfolio-system-design-story.html">Lesson 0015: Portfolio System Design Story</a></li>
+        <li><a href="../reference/ai-engineering-job-readiness.html">AI Engineering Job Readiness Reference</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: roadmap v4 deployment and adoption sprint, portfolio packaging lessons, and eval feedback-loop practice.</footer>
+  </main>
+  <script>
+    const copy = {
+      eval: "Correct. A confident unsupported answer should become an answerability eval.",
+      docs: "Correct. Setup friction is a docs and reproducibility problem.",
+      story: "Correct. This is a product tradeoff story: trust and safety versus speed."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach(button => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const text = button.textContent.toLowerCase();
+        const picked = text.includes("eval") ? "eval" : text.includes("docs") ? "docs" : text.includes("story") ? "story" : "ignore";
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Feedback should become evidence, a fix, or a sharper interview story.";
+      }));
+    });
+  </script>
+</body>
+</html>

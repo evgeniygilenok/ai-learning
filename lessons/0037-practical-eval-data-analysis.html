@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0037: Practical Eval Data Analysis</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .stage { border-top:5px solid var(--teal); min-height:150px; }
+    .stage:nth-child(2) { border-top-color:var(--blue); }
+    .stage:nth-child(3) { border-top-color:var(--amber); }
+    .stage:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0037 - 40 minutes</p>
+      <h1>Read eval data like an engineer, not like a scoreboard.</h1>
+      <p class="lede">The practical Python/data gap is small but important: you need to group failures, compare runs, and turn raw cases into a decision.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>An eval result is useful only when it changes an engineering decision. Your job is to find failure clusters, not celebrate a single aggregate score.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card stage"><h3>1. Normalize</h3><p class="muted">Every case should have an id, input, expected behavior, observed behavior, pass/fail, tags, latency, cost, and trace link.</p></article>
+      <article class="card stage"><h3>2. Group</h3><p class="muted">Cluster failures by root cause: retrieval miss, bad context, schema failure, unsafe tool request, judge ambiguity, or answer style.</p></article>
+      <article class="card stage"><h3>3. Compare</h3><p class="muted">Compare baseline versus candidate by quality, latency, cost, and new regressions.</p></article>
+      <article class="card stage"><h3>4. Decide</h3><p class="muted">Ship, block, review, or run a smaller experiment based on risk and evidence.</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>JSONL Shape</h2>
+        <pre><code>{"id":"rag-018","tags":["acl","answerability"],"input":"Can contractors view payroll policy?","expected_sources":["policy-access-03"],"observed_sources":["payroll-general-01"],"passed":false,"failure":"retrieval_acl","latency_ms":1840,"cost_usd":0.012,"trace_id":"tr_abc123"}</code></pre>
+      </article>
+      <article class="band">
+        <h2>Report Shape</h2>
+        <pre><code>Run: reranker-v2
+Pass rate: 24/30
+Regressions: 2
+Top failure cluster: retrieval_acl
+Decision: block release
+Next fix: enforce ACL filter before rerank</code></pre>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: What Is The Root Cause?</h2>
+      <div class="grid">
+        <article class="card" data-answer="retrieval">
+          <h3>The answer is fluent, but the expected source id never appears in retrieved chunks.</h3>
+          <div class="choices"><button type="button">Retrieval</button><button type="button">Prompt</button><button type="button">Schema</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="schema">
+          <h3>The answer is correct, but the model returned a string where the app requires an enum.</h3>
+          <div class="choices"><button type="button">Retrieval</button><button type="button">Prompt</button><button type="button">Schema</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="prompt">
+          <h3>The right chunks are present, but the answer ignores the "say not enough evidence" rule.</h3>
+          <div class="choices"><button type="button">Retrieval</button><button type="button">Prompt</button><button type="button">Schema</button></div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Create a tiny eval analysis script for the portfolio.</p>
+      <ul>
+        <li>Read a JSONL file of at least 20 eval cases.</li>
+        <li>Group failures by <code>failure</code> and <code>tags</code>.</li>
+        <li>Compare a baseline run and a candidate run.</li>
+        <li>Generate <code>docs/eval-analysis-report.md</code>.</li>
+        <li>Include one release decision: ship, block, or review.</li>
+      </ul>
+      <p class="small">Ask the agent to help design the smallest useful JSONL schema before writing code.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0008-retrieval-evals.html">Lesson 0008: Retrieval Evals</a></li>
+        <li><a href="0016-eval-release-gates.html">Lesson 0016: Eval Release Gates</a></li>
+        <li><a href="0025-agent-evaluation.html">Lesson 0025: Agent Evaluation</a></li>
+        <li><a href="0038-provider-comparison-and-tool-ecosystem.html">Lesson 0038: Provider Comparison And Tool Ecosystem</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust eval docs</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI evals docs, Braintrust evaluation docs, and roadmap v4 skill-gap remediation.</footer>
+  </main>
+  <script>
+    const copy = {
+      retrieval: "Correct. If the expected evidence never enters context, prompt tuning is downstream of the real problem.",
+      schema: "Correct. This is a product contract failure even if the natural-language answer looks fine.",
+      prompt: "Correct. The evidence was present, so investigate instructions, answer rules, or model routing."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach(button => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const picked = button.textContent.toLowerCase();
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Start from where the contract first broke in the trace.";
+      }));
+    });
+  </script>
+</body>
+</html>

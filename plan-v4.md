@@ -19,7 +19,7 @@ The core principle: build one cumulative AI product system that proves you can s
 - No role targeting across AI Product Engineer, Applied AI Engineer, Forward-Deployed AI Engineer, AI Platform Engineer, and ML Engineer.
 - Not enough practical Python / data handling for evals, ingestion, and analysis.
 - Not enough user feedback or domain validation.
-- Optional topics like multimodal, fine-tuning, MCP, and provider comparison are not placed.
+- Optional topics like multimodal, fine-tuning, MCP, and provider comparison were not placed in the lesson path.
 
 ## Market Calibration
 
@@ -84,7 +84,7 @@ Start job-market activity before the plan is finished:
 
 | Stage | Time | Lessons | Focus | Job Proof |
 | --- | --- | --- | --- | --- |
-| 0 | 1-2 days | 0001 | Orientation and role targeting | Target-role brief |
+| 0 | 1-2 days | 0001, 0036 | Orientation and role targeting | Target-role brief |
 | 1 | 1-2 weeks | 0002-0005 | LLM product foundations | Product triage assistant |
 | 2 | 2-3 weeks | 0006-0009 | RAG, retrieval evals, tracing | Cited knowledge assistant |
 | 3 | 1-2 weeks | 0010-0012 | Controlled workflow agents | Dry-run coding workflow |
@@ -92,8 +92,8 @@ Start job-market activity before the plan is finished:
 | 5 | 2-3 weeks | 0021-0025 | Advanced RAG and agent reliability | Measured enterprise assistant |
 | 6 | 1-2 weeks | 0026-0030 | System design and interview packaging | Portfolio proof package |
 | 7 | 2-4 weeks | 0031-0035 | Agent runtime specialization | Resumable tool-using runtime |
-| 8 | 1-2 weeks | New sprint | Deployment and adoption | Live/reproducible demo plus feedback |
-| 9 | Ongoing | New track | Job search and interview loop | Applications, referrals, interviews |
+| 8 | 1-2 weeks | 0039-0040 | Deployment and adoption | Live/reproducible demo plus feedback |
+| 9 | Ongoing | 0041 | Job search and interview loop | Applications, referrals, interviews |
 
 ## Portfolio North Star
 
@@ -120,6 +120,7 @@ The repository should prove four things:
 Lessons:
 
 - 0001: AI Engineering Map
+- 0036: Target Role Skill Matrix
 
 Build:
 
@@ -446,6 +447,11 @@ Job proof:
 
 This is new in v4. It exists because employers trust shipped proof more than local-only proof.
 
+Lessons:
+
+- 0039: Deployable AI Portfolio
+- 0040: Adoption Feedback Loop
+
 Build:
 
 - Deploy the app or provide a frictionless local run path with Docker.
@@ -472,6 +478,10 @@ Job proof:
 ## Stage 9: Job Search And Interview Loop
 
 This runs in parallel after Stage 2.
+
+Lessons:
+
+- 0041: AI Job Search Loop
 
 Weekly actions:
 
@@ -524,6 +534,10 @@ These are not full detours. They are "learn enough to support the portfolio" tra
 Why:
 
 - Many AI eval, data, and notebook tools are Python-first.
+
+Lesson:
+
+- 0037: Practical Eval Data Analysis
 
 Learn enough to:
 
@@ -592,6 +606,10 @@ Done when:
 Why:
 
 - AI engineers need to avoid being locked into one vendor's mental model, while still shipping with one default stack.
+
+Lesson:
+
+- 0038: Provider Comparison And Tool Ecosystem
 
 Learn enough to:
 

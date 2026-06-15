@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0038: Provider Comparison And Tool Ecosystem</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .axis { border-top:5px solid var(--teal); min-height:152px; }
+    .axis:nth-child(2) { border-top-color:var(--blue); }
+    .axis:nth-child(3) { border-top-color:var(--amber); }
+    .axis:nth-child(4) { border-top-color:var(--green); }
+    .axis:nth-child(5) { border-top-color:var(--rose); }
+    .axis:nth-child(6) { border-top-color:var(--violet); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0038 - 45 minutes</p>
+      <h1>Compare providers on one task, not on vibes.</h1>
+      <p class="lede">Provider literacy means you can ship with one default stack while still understanding how model, tool, and connector choices change product behavior.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Do not learn every provider as a separate curriculum. Run the same small task through a few providers and compare the contract that matters: quality, latency, cost, structured output reliability, tool behavior, safety controls, and developer ergonomics.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card axis"><h3>Quality</h3><p class="muted">Did the answer meet the task-specific rubric, not just sound smart?</p></article>
+      <article class="card axis"><h3>Contract reliability</h3><p class="muted">Did structured outputs, schemas, tool calls, and refusal behavior stay stable?</p></article>
+      <article class="card axis"><h3>Latency and cost</h3><p class="muted">Can the provider meet the product budget under realistic request volume?</p></article>
+      <article class="card axis"><h3>Tool ecosystem</h3><p class="muted">How do function tools, hosted tools, MCP servers, and connectors change control ownership?</p></article>
+      <article class="card axis"><h3>Observability</h3><p class="muted">Can you trace the model call, tool call, retrieval, error, and approval path?</p></article>
+      <article class="card axis"><h3>Exit cost</h3><p class="muted">How painful would it be to switch providers for this use case?</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Comparison Record</h2>
+        <pre><code>provider: OpenAI
+task: product triage structured brief
+quality: 4/5
+schema_success: 19/20
+p95_latency_ms: 2400
+cost_per_case_usd: 0.014
+tool_behavior: stable dry-run calls
+risks: vendor-specific schema features
+decision: default for portfolio</code></pre>
+      </article>
+      <article class="band">
+        <h2>MCP Boundary</h2>
+        <p>MCP standardizes how AI apps connect to external data sources and tools. That is useful, but it does not remove your application security work.</p>
+        <ul>
+          <li>Filter tools before exposure.</li>
+          <li>Require approval for sensitive operations.</li>
+          <li>Trace tool discovery and execution.</li>
+          <li>Treat connector outputs and tool metadata as untrusted context.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Switch Or Stay?</h2>
+      <div class="grid">
+        <article class="card" data-answer="stay">
+          <h3>A new model is slightly cheaper but breaks 4 of 20 structured outputs.</h3>
+          <div class="choices"><button type="button">Switch</button><button type="button">Stay</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="switch">
+          <h3>A provider cuts p95 latency in half with equal eval scores and stable schemas.</h3>
+          <div class="choices"><button type="button">Switch</button><button type="button">Stay</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="stay">
+          <h3>An MCP server exposes ten write tools when the feature only needs read-only search.</h3>
+          <div class="choices"><button type="button">Switch</button><button type="button">Stay</button></div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Create <code>docs/provider-comparison.md</code>.</p>
+      <ul>
+        <li>Pick one task from your portfolio.</li>
+        <li>Run it through OpenAI, Anthropic, Gemini, and one local or open model if practical.</li>
+        <li>Score quality, latency, cost, schema reliability, tool behavior, observability, and exit cost.</li>
+        <li>Write one recommendation and one switching trigger.</li>
+        <li>If you test MCP or connector-style tools, document tool filtering and approval policy.</li>
+      </ul>
+      <p class="small">Ask the agent to challenge your recommendation using eval evidence, not provider preferences.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0012-model-routing-and-caching.html">Lesson 0012: Model Routing And Caching</a></li>
+        <li><a href="0035-tool-execution-runtime.html">Lesson 0035: Tool Execution Runtime</a></li>
+        <li><a href="0039-deployable-ai-portfolio.html">Lesson 0039: Deployable AI Portfolio</a></li>
+        <li><a href="https://modelcontextprotocol.io/docs/getting-started/intro">Model Context Protocol docs</a></li>
+        <li><a href="https://openai.github.io/openai-agents-python/mcp/">OpenAI Agents SDK MCP docs</a></li>
+        <li><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview">Anthropic prompt engineering docs</a></li>
+        <li><a href="https://ai.google.dev/gemini-api/docs">Gemini API docs</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI Agents SDK MCP docs, Model Context Protocol docs, Anthropic docs, Gemini API docs, and roadmap v4 provider-literacy guidance.</footer>
+  </main>
+  <script>
+    const copy = {
+      switch: "Correct. Equal quality plus materially better latency can justify a switch if migration risk is low.",
+      stay: "Correct. Cheaper or broader tooling is not enough if it breaks contracts or widens risk."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const picked = index === 0 ? "switch" : "stay";
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Decide from the product contract and eval evidence.";
+      }));
+    });
+  </script>
+</body>
+</html>

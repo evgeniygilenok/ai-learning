@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0039: Deployable AI Portfolio</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .gate { border-top:5px solid var(--teal); min-height:150px; }
+    .gate:nth-child(2) { border-top-color:var(--blue); }
+    .gate:nth-child(3) { border-top-color:var(--amber); }
+    .gate:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0039 - 45 minutes</p>
+      <h1>Make your AI portfolio runnable, not just impressive.</h1>
+      <p class="lede">A reviewer trusts a project faster when setup, secrets, seed data, health checks, and eval smoke tests are boringly clear.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Deployment proof does not have to mean a fully public production SaaS. It means the project is reproducible, observable, and safe to try without private context or fragile setup magic.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card gate"><h3>Run path</h3><p class="muted">One clean path: local dev, Docker Compose, or hosted demo. Do not make reviewers reverse-engineer setup.</p></article>
+      <article class="card gate"><h3>Demo data</h3><p class="muted">Seed docs, fake users, fake tenants, fake tickets, and saved traces make the demo inspectable.</p></article>
+      <article class="card gate"><h3>Config safety</h3><p class="muted">Document env vars, separate local/staging/prod, and keep secrets out of code and logs.</p></article>
+      <article class="card gate"><h3>Operational proof</h3><p class="muted">Expose health, recent runs, eval smoke tests, latency, cost estimates, and failure states.</p></article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>README Run Contract</h2>
+        <pre><code>1. Clone
+2. Install
+3. Copy .env.example
+4. Seed demo data
+5. Run app
+6. Run tests
+7. Run eval smoke test
+8. Inspect traces/report</code></pre>
+      </article>
+      <article class="band">
+        <h2>Minimum CI Gate</h2>
+        <ul>
+          <li>Typecheck.</li>
+          <li>Unit tests.</li>
+          <li>Schema validation tests.</li>
+          <li>Tool policy tests.</li>
+          <li>Small eval smoke test.</li>
+          <li>Secret scanning or documented equivalent.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Good Portfolio Ops?</h2>
+      <div class="grid">
+        <article class="card" data-answer="good">
+          <h3>The repo has seed data and a saved trace, so the reviewer can inspect behavior without private docs.</h3>
+          <div class="choices"><button type="button">Good</button><button type="button">Weak</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="weak">
+          <h3>The demo requires a personal API key, three manual DB steps, and undocumented fake users.</h3>
+          <div class="choices"><button type="button">Good</button><button type="button">Weak</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="good">
+          <h3>CI blocks a change that breaks structured output validation.</h3>
+          <div class="choices"><button type="button">Good</button><button type="button">Weak</button></div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Add a deployment/reproducibility pass to the portfolio.</p>
+      <ul>
+        <li>Create <code>.env.example</code> with safe placeholder values.</li>
+        <li>Add seed data and a demo mode.</li>
+        <li>Add a documented run path using local commands or Docker.</li>
+        <li>Add a health endpoint or debug panel.</li>
+        <li>Add CI for tests and a small eval smoke test.</li>
+        <li>Write <code>docs/deployment-notes.md</code> with tradeoffs and known limits.</li>
+      </ul>
+      <p class="small">Ask the agent to try the README as a skeptical reviewer and list every unclear setup step.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0018-queues-and-background-jobs.html">Lesson 0018: Queues And Background Jobs</a></li>
+        <li><a href="0020-ai-infrastructure-decisions.html">Lesson 0020: AI Infrastructure Decisions</a></li>
+        <li><a href="0040-adoption-feedback-loop.html">Lesson 0040: Adoption Feedback Loop</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
+        <li><a href="../reference/ai-engineering-job-readiness.html">AI Engineering Job Readiness Reference</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI production best practices, roadmap v4 deployment sprint, and the AI infrastructure lessons.</footer>
+  </main>
+  <script>
+    const copy = {
+      good: "Correct. Good portfolio ops make behavior reproducible and inspectable.",
+      weak: "Correct. Hidden setup work makes even strong engineering look fragile."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("correct", "wrong"));
+        const picked = index === 0 ? "good" : "weak";
+        button.classList.add(picked === expected ? "correct" : "wrong");
+        answer.textContent = picked === expected ? copy[expected] : "Not quite. Think like a reviewer with 15 minutes and no patience for hidden state.";
+      }));
+    });
+  </script>
+</body>
+</html>

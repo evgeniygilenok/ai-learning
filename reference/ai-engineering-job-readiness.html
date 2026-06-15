@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Engineering Job Readiness Reference</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1080px; margin:0 auto; padding:38px 22px 64px; }
+    header { padding-bottom:24px; border-bottom:2px solid var(--line); margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:900px; font-size:clamp(2.15rem, 5vw, 4.2rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.08rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; }
+    h3 { margin:0 0 8px; font-size:1.03rem; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
+    table { width:100%; min-width:760px; border-collapse:collapse; }
+    th, td { padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:var(--muted); background:#f1f5f9; font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; }
+    tr:last-child td { border-bottom:0; }
+    .muted { color:var(--muted); font-size:.94rem; }
+    ul { margin:0 0 12px; padding-left:20px; }
+    li { margin:6px 0; }
+    code { background:#e8edf4; border:1px solid #d7dee7; border-radius:6px; padding:1px 5px; font-size:.92em; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Reference</p>
+      <h1>AI engineering job readiness checklist.</h1>
+      <p class="lede">Use this as the compressed reference for turning the roadmap into credible hiring signal.</p>
+    </header>
+
+    <section class="band">
+      <h2>Positioning</h2>
+      <p>Senior TypeScript/product engineer moving into applied AI systems: RAG, evals, agents, observability, security, and production workflows.</p>
+    </section>
+
+    <section>
+      <h2>Evidence Matrix</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Requirement</th><th>Evidence</th></tr></thead>
+          <tbody>
+            <tr><td>LLM product integration</td><td>Product triage assistant with structured outputs, streaming states, and validation.</td></tr>
+            <tr><td>RAG</td><td>Knowledge assistant with chunks, metadata, citations, answerability, and retrieval evals.</td></tr>
+            <tr><td>Evaluation</td><td>Golden datasets, CI smoke gate, before/after reports, and failure clusters.</td></tr>
+            <tr><td>Observability</td><td>Traces for retrieval, model calls, validation, tool calls, latency, cost, and failures.</td></tr>
+            <tr><td>Agents</td><td>Controlled workflow with state, approvals, retries, recovery, and trace-based evals.</td></tr>
+            <tr><td>Tool safety</td><td>Validated, authorized, approval-gated, idempotent, and audited tool execution.</td></tr>
+            <tr><td>Security</td><td>Threat model, redaction, ACL-aware retrieval, tenant boundaries, and prompt-injection mitigations.</td></tr>
+            <tr><td>Production readiness</td><td>Clean run path, seed data, CI, env config, health checks, and deployment notes.</td></tr>
+            <tr><td>Product judgment</td><td>User feedback, adoption notes, scoped fixes, and evals derived from feedback.</td></tr>
+            <tr><td>Senior communication</td><td>Architecture story, tradeoff memos, demo script, and interview answer bank.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h3>Weekly Learning Loop</h3>
+        <ul>
+          <li>One lesson or reference pass.</li>
+          <li>One portfolio increment.</li>
+          <li>One eval, trace, or security improvement.</li>
+          <li>One documentation or interview-story update.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Weekly Job Loop</h3>
+        <ul>
+          <li>Save 5 roles.</li>
+          <li>Contact 3 people.</li>
+          <li>Run 1 interview drill.</li>
+          <li>Apply selectively after Stage 4, consistently after Stage 6.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Proof Package</h3>
+        <ul>
+          <li>3-minute demo.</li>
+          <li>10-minute architecture walkthrough.</li>
+          <li>Eval report.</li>
+          <li>Trace walkthrough.</li>
+          <li>Threat model.</li>
+          <li>Deployment notes.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interview Drills</h2>
+      <ul>
+        <li>Debug a bad RAG answer from trace to root cause.</li>
+        <li>Design an eval for a new workflow.</li>
+        <li>Choose between RAG, fine-tuning, tools, or a workflow.</li>
+        <li>Threat-model an agent with write access.</li>
+        <li>Explain a cost/latency tradeoff.</li>
+        <li>Walk through a production incident involving model behavior drift.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Related Lessons</h2>
+      <ul>
+        <li><a href="../lessons/0036-target-role-skill-matrix.html">Lesson 0036: Target Role Skill Matrix</a></li>
+        <li><a href="../lessons/0037-practical-eval-data-analysis.html">Lesson 0037: Practical Eval Data Analysis</a></li>
+        <li><a href="../lessons/0038-provider-comparison-and-tool-ecosystem.html">Lesson 0038: Provider Comparison And Tool Ecosystem</a></li>
+        <li><a href="../lessons/0039-deployable-ai-portfolio.html">Lesson 0039: Deployable AI Portfolio</a></li>
+        <li><a href="../lessons/0040-adoption-feedback-loop.html">Lesson 0040: Adoption Feedback Loop</a></li>
+        <li><a href="../lessons/0041-ai-job-search-loop.html">Lesson 0041: AI Job Search Loop</a></li>
+        <li><a href="../index.html">Back to AI Engineering Roadmap</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: roadmap v4, OpenAI production and eval guidance, OWASP LLM Top 10, and the roadmap lesson catalog.</footer>
+  </main>
+</body>
+</html>

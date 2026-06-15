@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0034: Agent Evaluation Harness</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .metric { border-top:5px solid var(--teal); min-height:158px; }
+    .metric:nth-child(2) { border-top-color:var(--blue); }
+    .metric:nth-child(3) { border-top-color:var(--amber); }
+    .metric:nth-child(4) { border-top-color:var(--green); }
+    .metric:nth-child(5) { border-top-color:var(--rose); }
+    .metric:nth-child(6) { border-top-color:var(--violet); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--blue); background:#e8f0ff; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0034 - 40 minutes</p>
+      <h1>Evaluate the trace, not just the final answer.</h1>
+      <p class="lede">Agent evals need to check workflow behavior: state transitions, tool choices, approvals, memory writes, budgets, and final output quality.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>A chatbot eval can often score the answer. An agent eval must also score the path. A plausible final response can hide bad orchestration, unsafe tools, skipped approval, bad memory writes, or runaway cost.</p>
+      <p>Your eval harness should convert traces into assertions. Start with deterministic checks, then use model-based graders only where semantic judgment is actually needed.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card metric">
+        <h3>Outcome Quality</h3>
+        <p class="muted">Did the final plan, answer, patch summary, or checklist satisfy the user need?</p>
+      </article>
+      <article class="card metric">
+        <h3>Path Validity</h3>
+        <p class="muted">Did the run follow allowed states, avoid loops, and stop at the right time?</p>
+      </article>
+      <article class="card metric">
+        <h3>Tool Safety</h3>
+        <p class="muted">Were tools allowed, scoped, authorized, idempotent, and approved when needed?</p>
+      </article>
+      <article class="card metric">
+        <h3>Memory Quality</h3>
+        <p class="muted">Were memory writes useful, sourced, visible to the right actor, and safe to retain?</p>
+      </article>
+      <article class="card metric">
+        <h3>Recovery Behavior</h3>
+        <p class="muted">Did validation failures, timeouts, denials, and rejected approvals recover or stop cleanly?</p>
+      </article>
+      <article class="card metric">
+        <h3>Budgets</h3>
+        <p class="muted">Did the run stay within step, token, latency, retry, and cost limits?</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Eval Case Shape</h2>
+        <pre><code>type AgentEvalCase = {
+  id: string;
+  task: string;
+  initialState: Partial&lt;AgentRunState&gt;;
+  expectedStates: string[];
+  requiredApprovals: string[];
+  forbiddenTools: string[];
+  allowedMemoryWrites: string[];
+  maxSteps: number;
+  finalRubric: string[];
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Assertion Mix</h2>
+        <ul>
+          <li>Code assertions for exact state, schema, tool, and budget checks.</li>
+          <li>Trace assertions for ordering and approval behavior.</li>
+          <li>Human labels for high-value cases and ambiguous failures.</li>
+          <li>LLM-as-judge for semantic completeness and groundedness.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Choose The Assertion</h2>
+      <div class="grid">
+        <article class="card" data-answer="code">
+          <h3>The agent must never call <code>send_customer_email</code> before approval.</h3>
+          <div class="choices">
+            <button type="button">Code assertion</button>
+            <button type="button">LLM judge</button>
+            <button type="button">Manual only</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="judge">
+          <h3>The final answer must explain the tradeoff clearly to a senior engineering interviewer.</h3>
+          <div class="choices">
+            <button type="button">Code assertion</button>
+            <button type="button">LLM judge</button>
+            <button type="button">Schema validation</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="trace">
+          <h3>The run should go from clarify to plan to review, with no execute state before approval.</h3>
+          <div class="choices">
+            <button type="button">Trace assertion</button>
+            <button type="button">LLM judge</button>
+            <button type="button">Manual only</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Release Habit</h2>
+      <p>Every new tool, memory type, orchestration branch, or approval policy should add at least one eval case. Agent behavior changes through runtime wiring, not only prompt edits.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Write six eval cases for the coding workflow agent:</p>
+      <ul>
+        <li>Two normal success paths.</li>
+        <li>One missing-information path that must clarify.</li>
+        <li>One risky-tool path that must pause for approval.</li>
+        <li>One tool-timeout path that must retry safely.</li>
+        <li>One memory-write path that must reject sensitive data.</li>
+      </ul>
+      <p class="small">Ask the agent to turn the cases into deterministic trace assertions before adding any judge model.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0035-tool-execution-runtime.html">Lesson 0035: Tool Execution Runtime</a></li>
+        <li><a href="0025-agent-evaluation.html">Lesson 0025: Agent Evaluation</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/agent-evals">OpenAI: Evaluate agent workflows</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="../reference/agent-runtime-reference.html">Agent Runtime Reference</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI agent workflow evaluation docs, OpenAI evals docs, and the roadmap agent-evaluation lesson.</footer>
+  </main>
+  <script>
+    const copy = {
+      code: "Correct. Forbidden tool use is an exact runtime contract that code should check.",
+      judge: "Correct. Clarity and usefulness usually need semantic scoring after exact checks pass.",
+      trace: "Correct. State order and approval timing are trace-level workflow assertions."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const text = button.textContent.toLowerCase();
+          const picked = text.includes("trace") ? "trace" : text.includes("judge") ? "judge" : "code";
+          button.classList.add(picked === expected ? "correct" : "wrong");
+          answer.textContent = picked === expected ? copy[expected] : "Not quite. Use the cheapest reliable assertion: exact code first, trace checks second, judges for semantic quality.";
+        });
+      });
+    });
+  </script>
+</body>
+</html>

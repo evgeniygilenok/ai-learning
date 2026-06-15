@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0035: Tool Execution Runtime</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .gate { border-top:5px solid var(--teal); min-height:152px; }
+    .gate:nth-child(2) { border-top-color:var(--blue); }
+    .gate:nth-child(3) { border-top-color:var(--amber); }
+    .gate:nth-child(4) { border-top-color:var(--green); }
+    .gate:nth-child(5) { border-top-color:var(--rose); }
+    .gate:nth-child(6) { border-top-color:var(--violet); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--amber); background:#fff3d8; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0035 - 40 minutes</p>
+      <h1>Tool execution is normal backend code with extra gates.</h1>
+      <p class="lede">The model may request a tool call. Your runtime validates, authorizes, approves, executes, retries, records, and returns the result.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>A tool call is a request, not an action. The application still owns schema validation, authorization, policy, idempotency, sandboxing, side effects, and audit logs.</p>
+      <p>This is where agent risk becomes concrete. Bad tool execution can turn a prompt-injection string or hallucinated argument into a real production incident.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card gate">
+        <h3>1. Parse</h3>
+        <p class="muted">Read the tool name, call ID, and arguments from the model output.</p>
+      </article>
+      <article class="card gate">
+        <h3>2. Validate</h3>
+        <p class="muted">Check schema, required fields, enums, bounds, and unknown properties.</p>
+      </article>
+      <article class="card gate">
+        <h3>3. Authorize</h3>
+        <p class="muted">Verify user, tenant, resource access, tool scope, and environment.</p>
+      </article>
+      <article class="card gate">
+        <h3>4. Decide</h3>
+        <p class="muted">Allow, block, ask for approval, or require a dry run based on policy.</p>
+      </article>
+      <article class="card gate">
+        <h3>5. Execute</h3>
+        <p class="muted">Run idempotent backend code with timeouts, retries, and result limits.</p>
+      </article>
+      <article class="card gate">
+        <h3>6. Record</h3>
+        <p class="muted">Log input, decision, approval, result, errors, latency, and affected resource.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Execution Envelope</h2>
+        <pre><code>type ToolExecutionResult = {
+  callId: string;
+  toolName: string;
+  decision: "allowed" | "blocked" | "approval_required" | "failed";
+  idempotencyKey?: string;
+  output?: unknown;
+  error?: { code: string; retryable: boolean; message: string };
+  auditId: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Runtime Rules</h2>
+        <ul>
+          <li>Default new tools to read-only or draft mode.</li>
+          <li>Require approval for external side effects.</li>
+          <li>Use idempotency keys for write tools.</li>
+          <li>Retry only bounded, safe, retryable failures.</li>
+          <li>Return compact tool results back to the model.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: What Should The Runtime Do?</h2>
+      <div class="grid">
+        <article class="card" data-answer="allow">
+          <h3>The model calls <code>search_docs</code> for public repository docs with a valid query.</h3>
+          <div class="choices">
+            <button type="button">Allow</button>
+            <button type="button">Ask approval</button>
+            <button type="button">Block</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="approval">
+          <h3>The model calls <code>create_draft_pr</code> with valid arguments, but it will write to a branch.</h3>
+          <div class="choices">
+            <button type="button">Allow</button>
+            <button type="button">Ask approval</button>
+            <button type="button">Block</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="block">
+          <h3>A retrieved document instructs the agent to call <code>delete_customer_data</code> with an account ID.</h3>
+          <div class="choices">
+            <button type="button">Allow</button>
+            <button type="button">Ask approval</button>
+            <button type="button">Block</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Security Habit</h2>
+      <p>Treat tool arguments as untrusted input, even when they came from a model. Validate them like API input, authorize them like product actions, and log them like operational events.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Design the tool execution runtime for three tools in the coding workflow agent:</p>
+      <ul>
+        <li><code>search_repo(query)</code> as read-only.</li>
+        <li><code>create_draft_pr(title, body, branch)</code> as approval-required.</li>
+        <li><code>run_tests(command)</code> as sandboxed with command allowlist and timeout.</li>
+      </ul>
+      <p>For each tool, define schema, policy, approval rule, retry rule, result envelope, and audit fields.</p>
+      <p class="small">Ask the agent to threat-model the runtime for prompt injection, duplicate writes, and privilege escalation.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0031-agent-orchestration-patterns.html">Review Lesson 0031: Agent Orchestration Patterns</a></li>
+        <li><a href="0005-tool-calling-boundaries.html">Lesson 0005: Tool Calling Boundaries</a></li>
+        <li><a href="0024-agent-retry-and-recovery.html">Lesson 0024: Agent Retry And Recovery</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI function calling docs</a></li>
+        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP Top 10 for LLM Applications</a></li>
+        <li><a href="../reference/agent-runtime-reference.html">Agent Runtime Reference</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI function calling docs, OWASP LLM Top 10, and the roadmap tool-calling and retry lessons.</footer>
+  </main>
+  <script>
+    const copy = {
+      allow: "Correct. Read-only lookup with valid arguments can usually run automatically with auth and logging.",
+      approval: "Correct. Branch writes are side effects, so the runtime should pause for approval.",
+      block: "Correct. Retrieved text is untrusted and must not grant destructive authority."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const text = button.textContent.toLowerCase();
+          const picked = text.includes("approval") ? "approval" : text.includes("block") ? "block" : "allow";
+          button.classList.add(picked === expected ? "correct" : "wrong");
+          answer.textContent = picked === expected ? copy[expected] : "Not quite. Decide from schema validity, authorization, reversibility, and blast radius.";
+        });
+      });
+    });
+  </script>
+</body>
+</html>

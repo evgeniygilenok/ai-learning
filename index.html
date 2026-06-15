@@ -142,6 +142,11 @@
     .lesson:nth-child(28) { border-top-color: var(--green); }
     .lesson:nth-child(29) { border-top-color: var(--rose); }
     .lesson:nth-child(30) { border-top-color: var(--violet); }
+    .lesson:nth-child(31) { border-top-color: var(--teal); }
+    .lesson:nth-child(32) { border-top-color: var(--blue); }
+    .lesson:nth-child(33) { border-top-color: var(--amber); }
+    .lesson:nth-child(34) { border-top-color: var(--green); }
+    .lesson:nth-child(35) { border-top-color: var(--rose); }
 
     .number {
       display: inline-block;
@@ -367,16 +372,54 @@
           <h3>Final Portfolio And Interview Drill</h3>
           <p class="summary">Package the portfolio into demo proof, quality proof, ops proof, and security proof.</p>
         </a>
+
+        <a class="lesson" href="lessons/0031-agent-orchestration-patterns.html">
+          <span class="number">Lesson 0031</span>
+          <h3>Agent Orchestration Patterns</h3>
+          <p class="summary">Choose explicit workflows, manager tools, handoffs, or background runs based on control ownership.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0032-agent-state-management.html">
+          <span class="number">Lesson 0032</span>
+          <h3>Agent State Management</h3>
+          <p class="summary">Design a resumable run ledger for current state, facts, approvals, budgets, and trace pointers.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0033-agent-memory-design.html">
+          <span class="number">Lesson 0033</span>
+          <h3>Agent Memory Design</h3>
+          <p class="summary">Decide what should survive beyond a run using scope, source, visibility, retention, and retrieval rules.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0034-agent-evaluation-harness.html">
+          <span class="number">Lesson 0034</span>
+          <h3>Agent Evaluation Harness</h3>
+          <p class="summary">Evaluate state transitions, tools, approvals, memory writes, recovery behavior, budgets, and final output.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0035-tool-execution-runtime.html">
+          <span class="number">Lesson 0035</span>
+          <h3>Tool Execution Runtime</h3>
+          <p class="summary">Turn model tool requests into validated, authorized, approved, idempotent, and audited backend actions.</p>
+        </a>
       </div>
     </section>
 
     <section>
       <h2>Reference</h2>
-      <a class="reference" href="reference/ai-engineering-glossary.html">
-        <span class="number">Glossary</span>
-        <h3>AI Engineering Glossary</h3>
-        <p class="summary">A quick reference for the core terms used across the roadmap.</p>
-      </a>
+      <div class="grid">
+        <a class="reference" href="reference/ai-engineering-glossary.html">
+          <span class="number">Glossary</span>
+          <h3>AI Engineering Glossary</h3>
+          <p class="summary">A quick reference for the core terms used across the roadmap.</p>
+        </a>
+
+        <a class="reference" href="reference/agent-runtime-reference.html">
+          <span class="number">Agent Runtime</span>
+          <h3>Agent Runtime Reference</h3>
+          <p class="summary">A compact field guide for orchestration, state, memory, evaluation, and tool execution.</p>
+        </a>
+      </div>
     </section>
 
     <footer>

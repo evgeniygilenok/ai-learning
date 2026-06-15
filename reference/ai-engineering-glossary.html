@@ -129,6 +129,11 @@
         <p>The model requests an external action through a declared function schema. Your application still owns execution, permissions, retries, and audit logs.</p>
       </article>
       <article>
+        <span class="tag">Contract</span>
+        <h2>Tool Execution</h2>
+        <p>The backend runtime that validates, authorizes, approves, executes, retries, records, and returns results for model-requested tool calls.</p>
+      </article>
+      <article>
         <span class="tag">Search</span>
         <h2>Ingestion Pipeline</h2>
         <p>The process that extracts, normalizes, chunks, enriches, embeds, indexes, refreshes, and deletes source content for retrieval.</p>
@@ -202,6 +207,11 @@
         <span class="tag">Quality</span>
         <h2>Agent Eval</h2>
         <p>An evaluation of a workflow agent that scores the final artifact plus the trace path, state transitions, tool choices, approvals, and budgets.</p>
+      </article>
+      <article>
+        <span class="tag">Quality</span>
+        <h2>Evaluation Harness</h2>
+        <p>The repeatable test runner, dataset, graders, and assertions used to compare agent behavior across prompts, tools, models, memory, and runtime changes.</p>
       </article>
       <article>
         <span class="tag">Quality</span>
@@ -295,8 +305,18 @@
       </article>
       <article>
         <span class="tag">Workflow</span>
+        <h2>Orchestration</h2>
+        <p>The control strategy for an agent workflow: who owns the next step, which tools are available, when handoffs happen, and who writes the final answer.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
         <h2>Workflow State</h2>
         <p>A named step in a controlled agent process, such as intake, clarify, plan, review, or execute. State makes autonomy inspectable.</p>
+      </article>
+      <article>
+        <span class="tag">Workflow</span>
+        <h2>Run State</h2>
+        <p>The resumable snapshot of a current agent run: task facts, current state, pending approvals, budgets, retries, and trace pointers.</p>
       </article>
       <article>
         <span class="tag">Workflow</span>
@@ -350,6 +370,7 @@
       <a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI function calling</a>,
       <a href="https://developers.openai.com/api/docs/guides/embeddings">OpenAI embeddings</a>,
       <a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals</a>,
+      <a href="https://developers.openai.com/api/docs/guides/agents/orchestration">OpenAI Agents SDK orchestration</a>,
       <a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a>,
       <a href="https://www.braintrust.dev/docs/evaluate">Braintrust evals</a>,
       and <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a>.

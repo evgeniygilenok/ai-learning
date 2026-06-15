@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0031: Agent Orchestration Patterns</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .pattern { border-top:5px solid var(--teal); min-height:168px; }
+    .pattern:nth-child(2) { border-top-color:var(--blue); }
+    .pattern:nth-child(3) { border-top-color:var(--amber); }
+    .pattern:nth-child(4) { border-top-color:var(--violet); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--teal); background:#e6f4f1; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0031 - 35 minutes</p>
+      <h1>Orchestration decides who controls the next step.</h1>
+      <p class="lede">Before choosing frameworks, decide the control pattern: one workflow, a manager with bounded helpers, a handoff to a specialist, or a background job.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Agent orchestration is not "let the model figure it out." It is the application-level decision about which component owns the run, which tools are available, when control can move, and who writes the final user-facing answer.</p>
+      <p>For production AI engineering, start with the narrowest orchestration that solves the job. Add specialists, handoffs, and queues only when the workflow needs different instructions, permissions, latency behavior, or ownership.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card pattern">
+        <h3>Explicit Workflow</h3>
+        <p class="muted">Use when the steps are known: intake, clarify, plan, dry run, review, execute. Product code owns transitions.</p>
+      </article>
+      <article class="card pattern">
+        <h3>Manager With Tools</h3>
+        <p class="muted">Use when one agent should keep ownership while calling specialist capabilities, such as summarize, search, or classify.</p>
+      </article>
+      <article class="card pattern">
+        <h3>Handoff</h3>
+        <p class="muted">Use when a specialist should take over the next response because it has distinct policy, tone, tools, or domain authority.</p>
+      </article>
+      <article class="card pattern">
+        <h3>Background Run</h3>
+        <p class="muted">Use when the workflow is long, retry-heavy, or not worth keeping inside a request/response path.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Decision Contract</h2>
+        <pre><code>type OrchestrationDecision = {
+  pattern: "workflow" | "manager_tools" | "handoff" | "background";
+  owner: "app" | "manager_agent" | "specialist_agent" | "worker";
+  allowedTools: string[];
+  nextState: string;
+  finalAnswerOwner: string;
+  approvalRequired: boolean;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Design Questions</h2>
+        <ul>
+          <li>Who owns the final answer right now?</li>
+          <li>Which tools are available in this branch?</li>
+          <li>What state must move across the boundary?</li>
+          <li>Can the user inspect or approve the transition?</li>
+          <li>What stops the workflow from looping?</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Pick The Pattern</h2>
+      <div class="grid">
+        <article class="card" data-answer="workflow">
+          <h3>A coding assistant must read a ticket, ask one clarification, draft a plan, wait for approval, then produce a PR checklist.</h3>
+          <div class="choices">
+            <button type="button">Explicit workflow</button>
+            <button type="button">Handoff</button>
+            <button type="button">Background run</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="manager_tools">
+          <h3>A research assistant should answer users directly but can ask a summarizer and a citation checker for help.</h3>
+          <div class="choices">
+            <button type="button">Manager with tools</button>
+            <button type="button">Background run</button>
+            <button type="button">Handoff</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="handoff">
+          <h3>A general support agent detects a refund dispute that must follow separate billing policy and tooling.</h3>
+          <div class="choices">
+            <button type="button">Explicit workflow</button>
+            <button type="button">Handoff</button>
+            <button type="button">Manager with tools</button>
+          </div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Senior Interview Angle</h2>
+      <p>When asked to design an agent, start by naming the control owner. This makes autonomy, permissions, state, latency, and evaluation easier to reason about.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>For a Jira-style coding workflow agent, write an orchestration decision table with four rows:</p>
+      <ul>
+        <li>Normal small ticket.</li>
+        <li>Ambiguous ticket missing acceptance criteria.</li>
+        <li>Security-sensitive change touching authentication.</li>
+        <li>Long-running dependency analysis over a large repository.</li>
+      </ul>
+      <p class="small">Ask the agent to challenge whether each row has the narrowest orchestration pattern that can work.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0032-agent-state-management.html">Lesson 0032: Agent State Management</a></li>
+        <li><a href="0010-controlled-workflow-agents.html">Lesson 0010: Controlled Workflow Agents</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/agents/orchestration">OpenAI Agents SDK: Orchestration and handoffs</a></li>
+        <li><a href="https://docs.langchain.com/oss/javascript/langgraph/overview">LangGraph TypeScript overview</a></li>
+        <li><a href="../reference/agent-runtime-reference.html">Agent Runtime Reference</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: OpenAI Agents SDK orchestration docs and LangGraph TypeScript overview.</footer>
+  </main>
+  <script>
+    const copy = {
+      workflow: "Correct. The steps, approvals, and stop conditions are known, so an explicit workflow is the cleanest owner.",
+      manager_tools: "Correct. The manager keeps the final answer while bounded helpers improve specific parts.",
+      handoff: "Correct. Separate policy and tooling justify moving control to a specialist branch."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const text = button.textContent.toLowerCase();
+          const picked = text.includes("workflow") ? "workflow" : text.includes("manager") ? "manager_tools" : text.includes("handoff") ? "handoff" : "background";
+          button.classList.add(picked === expected ? "correct" : "wrong");
+          answer.textContent = picked === expected ? copy[expected] : "Not quite. Ask who should own control, tools, and the final user-facing response.";
+        });
+      });
+    });
+  </script>
+</body>
+</html>

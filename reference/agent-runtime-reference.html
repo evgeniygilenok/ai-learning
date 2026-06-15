@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Runtime Reference</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink:#17212b;
+      --muted:#5d6875;
+      --line:#d8dee6;
+      --paper:#f8fafc;
+      --panel:#ffffff;
+      --teal:#0f766e;
+      --blue:#2563eb;
+      --amber:#b45309;
+      --green:#15803d;
+      --rose:#be123c;
+      --violet:#6d28d9;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--ink);
+      background:var(--paper);
+      line-height:1.55;
+    }
+    main { max-width:1080px; margin:0 auto; padding:40px 24px 58px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0 0 10px; max-width:880px; font-size:clamp(2.1rem, 5vw, 3.7rem); line-height:1.05; letter-spacing:0; }
+    .lede { margin:0; max-width:780px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.35rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.04rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .card, .band { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .contract { border-top:5px solid var(--teal); min-height:190px; }
+    .contract:nth-child(2) { border-top-color:var(--blue); }
+    .contract:nth-child(3) { border-top-color:var(--amber); }
+    .contract:nth-child(4) { border-top-color:var(--green); }
+    .contract:nth-child(5) { border-top-color:var(--rose); }
+    .tag {
+      display:inline-block;
+      margin-bottom:10px;
+      border-radius:999px;
+      background:var(--teal);
+      color:#fff;
+      padding:2px 8px;
+      font-size:.75rem;
+      font-weight:800;
+    }
+    .contract:nth-child(2) .tag { background:var(--blue); }
+    .contract:nth-child(3) .tag { background:var(--amber); }
+    .contract:nth-child(4) .tag { background:var(--green); }
+    .contract:nth-child(5) .tag { background:var(--rose); }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.86rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    ul { margin:0; padding-left:20px; }
+    li { margin:6px 0; }
+    table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    th, td { text-align:left; vertical-align:top; border-bottom:1px solid var(--line); padding:12px; }
+    th { background:#eef3f8; font-size:.9rem; }
+    tr:last-child td { border-bottom:0; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { main { padding:26px 16px 48px; } .two { grid-template-columns:1fr; } table { font-size:.94rem; } }
+    @media print { body { background:#fff; } main { padding:24px; } .card, .band, table { break-inside:avoid; } a { color:#000; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Reference</p>
+      <h1>Agent Runtime Reference</h1>
+      <p class="lede">A compact field guide for the five runtime concerns behind useful agents: orchestration, state, memory, evaluation, and tool execution.</p>
+    </header>
+
+    <section class="grid" aria-label="Runtime contracts">
+      <article class="card contract">
+        <span class="tag">Orchestration</span>
+        <h3>Who controls the next step?</h3>
+        <p class="muted">Choose explicit workflow, manager-with-tools, handoff, or background run. The key decision is ownership of control and the final user-facing answer.</p>
+        <p><a href="../lessons/0031-agent-orchestration-patterns.html">Review Lesson 0031</a></p>
+      </article>
+      <article class="card contract">
+        <span class="tag">State</span>
+        <h3>What resumes this run?</h3>
+        <p class="muted">Track current state, facts, pending decisions, budgets, retries, approvals, and trace pointers. State is the run ledger, not long-term memory.</p>
+        <p><a href="../lessons/0032-agent-state-management.html">Review Lesson 0032</a></p>
+      </article>
+      <article class="card contract">
+        <span class="tag">Memory</span>
+        <h3>What should survive later?</h3>
+        <p class="muted">Persist only useful, scoped, sourced, visible, and expiring memories. Reject secrets, stale guesses, and untrusted instructions.</p>
+        <p><a href="../lessons/0033-agent-memory-design.html">Review Lesson 0033</a></p>
+      </article>
+      <article class="card contract">
+        <span class="tag">Evaluation</span>
+        <h3>How do we know it worked?</h3>
+        <p class="muted">Score final output and trace path: state sequence, tools, approvals, memory writes, recovery, budget, and safety policy.</p>
+        <p><a href="../lessons/0034-agent-evaluation-harness.html">Review Lesson 0034</a></p>
+      </article>
+      <article class="card contract">
+        <span class="tag">Tools</span>
+        <h3>What side effects are allowed?</h3>
+        <p class="muted">Treat tool calls as untrusted requests. Validate, authorize, decide, execute, retry, record, and return compact results.</p>
+        <p><a href="../lessons/0035-tool-execution-runtime.html">Review Lesson 0035</a></p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Runtime Loop</h2>
+        <pre><code>load state
+choose orchestration branch
+build model context from state + allowed memory
+run model
+validate output or tool call
+execute allowed tools through policy gates
+persist state patch and trace
+pause for approval, continue, or stop
+run evals over representative traces</code></pre>
+      </article>
+      <article class="band">
+        <h2>Default Safety Posture</h2>
+        <ul>
+          <li>Read-only before write-capable.</li>
+          <li>Draft before publish.</li>
+          <li>Approval before external side effect.</li>
+          <li>State before action.</li>
+          <li>Trace before eval automation.</li>
+          <li>Exact assertions before judge models.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>Design Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Concern</th>
+            <th>Owns</th>
+            <th>Must Include</th>
+            <th>Failure Signal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Orchestration</td>
+            <td>Control flow and ownership</td>
+            <td>Pattern, owner, allowed tools, next state, stop conditions</td>
+            <td>The agent loops, hands off vaguely, or nobody owns the final answer.</td>
+          </tr>
+          <tr>
+            <td>State</td>
+            <td>Current run snapshot</td>
+            <td>Run ID, current state, facts, approvals, budgets, trace IDs</td>
+            <td>A paused or failed run cannot resume without replaying the whole conversation.</td>
+          </tr>
+          <tr>
+            <td>Memory</td>
+            <td>Future-facing retained knowledge</td>
+            <td>Scope, kind, source, visibility, confidence, expiration</td>
+            <td>The system saves secrets, stale guesses, or irrelevant transcript fragments.</td>
+          </tr>
+          <tr>
+            <td>Evaluation</td>
+            <td>Repeatable quality checks</td>
+            <td>Dataset, trace assertions, forbidden tools, required approvals, rubric</td>
+            <td>A prompt or tool change feels better but cannot be compared to prior behavior.</td>
+          </tr>
+          <tr>
+            <td>Tool Execution</td>
+            <td>External data and side effects</td>
+            <td>Schema, auth, policy, approval, idempotency, retries, audit</td>
+            <td>A model request turns directly into an unsafe or duplicate action.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>TypeScript Skeleton</h2>
+        <pre><code>type AgentRuntime = {
+  orchestration: OrchestrationDecision;
+  state: AgentRunState;
+  retrievedMemory: AgentMemory[];
+  toolPolicy: ToolPolicy;
+  trace: RuntimeTrace;
+  evalCase?: AgentEvalCase;
+};
+
+type RuntimeDecision =
+  | { kind: "continue"; statePatch: Partial&lt;AgentRunState&gt; }
+  | { kind: "approval_required"; approvals: ToolApproval[] }
+  | { kind: "blocked"; reason: string }
+  | { kind: "done"; finalOutput: unknown };</code></pre>
+      </article>
+      <article class="band">
+        <h2>Portfolio Checklist</h2>
+        <ul>
+          <li>Show a diagram of states and allowed transitions.</li>
+          <li>Show at least one approval interruption and resume.</li>
+          <li>Show one memory saved and one memory rejected.</li>
+          <li>Show a trace with tool calls and policy decisions.</li>
+          <li>Show eval cases that fail when a risky tool skips approval.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>Primary Sources</h2>
+      <ul>
+        <li><a href="https://developers.openai.com/api/docs/guides/agents/orchestration">OpenAI Agents SDK: Orchestration and handoffs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/agents/results">OpenAI Agents SDK: Results and state</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/agent-evals">OpenAI: Evaluate agent workflows</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI: Function calling</a></li>
+        <li><a href="https://docs.langchain.com/oss/javascript/langgraph/overview">LangGraph TypeScript overview</a></li>
+        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP Top 10 for LLM Applications</a></li>
+      </ul>
+    </section>
+
+    <footer>Use this as the quick review sheet before designing or critiquing an agent workflow.</footer>
+  </main>
+</body>
+</html>

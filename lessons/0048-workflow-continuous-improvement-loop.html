@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0048: Workflow Continuous Improvement Loop</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .loop { border-top:5px solid var(--teal); min-height:150px; }
+    .loop:nth-child(2) { border-top-color:var(--blue); }
+    .loop:nth-child(3) { border-top-color:var(--amber); }
+    .loop:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--teal); background:#e6f4f1; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0048 - 40 minutes</p>
+      <h1>Improve the workflow from evidence, not memory.</h1>
+      <p class="lede">Write-ahead logs, evals, and retrospectives turn agent failures into changes you can test instead of folklore you eventually forget.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>A workflow gets better only when failures are captured close to when they happen, grouped into patterns, and converted into measured changes.</p>
+      <p>Do not let "the agent should improve itself" replace engineering. The system improves when you decide what to change, why, and how success will be measured.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card loop">
+        <h3>Write-Ahead Log</h3>
+        <p class="muted">Record decisions, failures, surprises, and useful interventions while context is fresh.</p>
+      </article>
+      <article class="card loop">
+        <h3>Workflow Evals</h3>
+        <p class="muted">Measure whether the whole system solves your task, not whether a model is impressive in isolation.</p>
+      </article>
+      <article class="card loop">
+        <h3>Retrospective</h3>
+        <p class="muted">Turn logs and traces into patterns, hypotheses, and one change worth trying next.</p>
+      </article>
+      <article class="card loop">
+        <h3>Refactor Decision</h3>
+        <p class="muted">Choose whether to tune one block or redesign the workflow graph.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>WAL Entry</h2>
+        <pre><code>type WorkflowLogEntry = {
+  time: string;
+  task: string;
+  block: string;
+  observation: string;
+  decision: string;
+  evidence: string;
+  followUp: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Improve One Thing</h2>
+        <p>A retrospective should end with one measurable change: a new gate, a clearer template, a stricter tool policy, a better eval case, or a removed branch.</p>
+        <p class="muted">Too many simultaneous changes make the next result impossible to interpret.</p>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Tune Or Redesign?</h2>
+      <div class="grid">
+        <article class="card" data-answer="tune">
+          <h3>One block often returns invalid JSON, but the overall workflow shape still works.</h3>
+          <div class="choices"><button type="button">Tune one block</button><button type="button">Redesign whole workflow</button><button type="button">Ignore</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="redesign">
+          <h3>Different blocks keep asking for the same missing requirement and then drifting.</h3>
+          <div class="choices"><button type="button">Tune one prompt</button><button type="button">Redesign workflow</button><button type="button">Add tokens</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="eval">
+          <h3>A fix feels better, but there is no case proving the old failure stays fixed.</h3>
+          <div class="choices"><button type="button">Add eval case</button><button type="button">Declare solved</button><button type="button">Remove logs</button></div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Research Habit</h2>
+      <p>Agentified research should return a decision artifact: options, evidence, tradeoffs, recommendation, and what would change in the workflow.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Run one mini-retrospective on your workflow agent:</p>
+      <ul>
+        <li>Collect three recent trace or WAL observations.</li>
+        <li>Group them into one failure pattern.</li>
+        <li>Decide whether the fix is local or structural.</li>
+        <li>Add one eval case or quality gate.</li>
+        <li>Write how you will know whether the change helped.</li>
+      </ul>
+      <p class="small">Ask the agent to argue against your chosen fix before you implement it.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0049-team-agent-workflow-rollout.html">Lesson 0049: Team Agent Workflow Rollout</a></li>
+        <li><a href="0009-tracing-ai-runs.html">Lesson 0009: Tracing AI Runs</a></li>
+        <li><a href="0034-agent-evaluation-harness.html">Lesson 0034: Agent Evaluation Harness</a></li>
+        <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: attached agentic workflow masterclass outline, roadmap tracing and eval lessons, and the agent-runtime specialization.</footer>
+  </main>
+  <script>
+    const copy = {
+      tune: "Correct. A localized failure in one block usually starts with a local contract or validation fix.",
+      redesign: "Correct. Repeated cross-block symptoms suggest the workflow is missing an earlier requirement gate.",
+      eval: "Correct. A fix needs a case that catches the old failure before it returns."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const text = button.textContent.toLowerCase();
+          const picked = text.includes("tune") ? "tune" : text.includes("redesign") ? "redesign" : text.includes("eval") ? "eval" : "other";
+          button.classList.add(picked === expected ? "correct" : "wrong");
+          answer.textContent = picked === expected ? copy[expected] : "Not quite. Use the evidence pattern to decide local tune, structural redesign, or missing eval coverage.";
+        });
+      });
+    });
+  </script>
+</body>
+</html>

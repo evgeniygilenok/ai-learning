@@ -95,6 +95,7 @@
     }
 
     .lesson,
+    .course,
     .reference {
       display: block;
       min-height: 190px;
@@ -107,6 +108,7 @@
     }
 
     .lesson:hover,
+    .course:hover,
     .reference:hover {
       transform: translateY(-2px);
       border-color: #b8c4d2;
@@ -133,6 +135,11 @@
     .summary {
       color: var(--muted);
       font-size: .95rem;
+    }
+
+    .course {
+      min-height: 0;
+      border-top-color: var(--amber);
     }
 
     .reference {
@@ -409,6 +416,65 @@
           <span class="number">Lesson 0041</span>
           <h3>AI Job Search Loop</h3>
           <p class="summary">Run the weekly market, outreach, application, and interview loop alongside portfolio work.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0042-workflow-blocks-and-quality-gates.html">
+          <span class="number">Lesson 0042</span>
+          <h3>Workflow Blocks And Quality Gates</h3>
+          <p class="summary">Split agent work into blocks with explicit inputs, outputs, transitions, gates, and stop conditions.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0043-harness-skills-hooks-and-subagents.html">
+          <span class="number">Lesson 0043</span>
+          <h3>Harness Skills, Hooks, And Subagents</h3>
+          <p class="summary">Turn repeated agent practice into reusable harness assets with scoped context and verifiable outputs.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0044-scriptable-agent-blocks.html">
+          <span class="number">Lesson 0044</span>
+          <h3>Scriptable Agent Blocks</h3>
+          <p class="summary">Make one-shot runs, generated scripts, CLI tools, and MCP calls safe to compose through schemas and validators.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0045-agent-implementation-strategies.html">
+          <span class="number">Lesson 0045</span>
+          <h3>Agent Implementation Strategies</h3>
+          <p class="summary">Choose direct, goal-loop, verification-loop, or team execution based on ambiguity, risk, and review cost.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0046-agentic-planning-definition-of-done.html">
+          <span class="number">Lesson 0046</span>
+          <h3>Agentic Planning And Definition Of Done</h3>
+          <p class="summary">Turn vague tasks into executable plans with checkable done criteria, research spikes, and checkpoints.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0047-ai-assisted-code-review-system.html">
+          <span class="number">Lesson 0047</span>
+          <h3>AI-Assisted Code Review System</h3>
+          <p class="summary">Review AI-assisted changes against intent, evidence, edge cases, and post-merge operational signals.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0048-workflow-continuous-improvement-loop.html">
+          <span class="number">Lesson 0048</span>
+          <h3>Workflow Continuous Improvement Loop</h3>
+          <p class="summary">Use WAL notes, traces, evals, and retrospectives to turn failures into measured workflow changes.</p>
+        </a>
+
+        <a class="lesson" href="lessons/0049-team-agent-workflow-rollout.html">
+          <span class="number">Lesson 0049</span>
+          <h3>Team Agent Workflow Rollout</h3>
+          <p class="summary">Make an agent workflow reproducible for a team with setup, ownership, permissions, cost, and adoption checks.</p>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Courses</h2>
+      <div class="grid">
+        <a class="course" href="courses/agentic-workflow-engineering.html">
+          <span class="number">Specialization</span>
+          <h3>Agentic Workflow Engineering Practice</h3>
+          <p class="summary">A deeper 8-module course for turning agent work into repeatable workflows with blocks, gates, tools, reviews, traces, and improvement loops.</p>
         </a>
       </div>
     </section>

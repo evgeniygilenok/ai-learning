@@ -443,6 +443,74 @@ Job proof:
 - `docs/tool-execution-safety.md`.
 - Replayable traces.
 
+## Optional Specialization Course: Agentic Workflow Engineering Practice
+
+This course is based on the agentic workflow masterclass outline and should be treated as a deeper practice track, not as extra prerequisite material for every AI engineering role.
+
+Best timing:
+
+- Take it after Stage 3 if you want to build stronger workflow habits early.
+- Take it after Stage 7 if you want the full course to land against the agent runtime portfolio project.
+- Skip or sample it if your immediate job target is more RAG/product AI than agent infrastructure.
+
+Course page:
+
+- `courses/agentic-workflow-engineering.html`
+
+Lessons:
+
+- 0042: Workflow Blocks And Quality Gates
+- 0043: Harness Skills, Hooks, And Subagents
+- 0044: Scriptable Agent Blocks
+- 0045: Agent Implementation Strategies
+- 0046: Agentic Planning And Definition Of Done
+- 0047: AI-Assisted Code Review System
+- 0048: Workflow Continuous Improvement Loop
+- 0049: Team Agent Workflow Rollout
+
+Core idea:
+
+- Agentic workflow is an engineered system, not a prompt style.
+- Quality comes from blocks, explicit state, validation, review, traces, and improvement loops.
+- Reusable skills, commands, templates, and checklists are how agent practice becomes repeatable across projects.
+
+Modules:
+
+- Workflow concept: blocks, workflow graphs, quality gates, human-in-the-loop checkpoints, and execution platform choices.
+- Tools inside the harness: skills, commands, hooks, subagents, team patterns, and native workflow capabilities.
+- Tools outside the harness: one-shots, structured JSON, code generation, MCP, CLI tools, and project context.
+- Implementation phase: direct implementation, goal loops, verification loops, templates, slopwatch, and final checklists.
+- Planning on steroids: planning readiness, Definition of Done, requirement discovery, consensus planning, and research spikes.
+- Review and after: self-review, automated quality tools, doom-loop diagnosis, team review, and post-merge observability.
+- Continuous improvement: write-ahead logs, workflow evals, retrospectives, structural refactors, and agentified research.
+- Next operating layer: token economics, team rollout, documentation boundaries, weakly structured documents, and human responsibility.
+
+Practice studios:
+
+- Convert a one-shot prompt into a chain of workflow blocks.
+- Build a reusable harness skill or command with validated structured output.
+- Compare direct implementation with a verification-loop implementation.
+- Turn a raw task into an executable plan with checkpoints.
+- Run self-review, automated review, and post-merge observation planning.
+- Use WAL notes and evals to drive one measured workflow improvement.
+- Complete a full cycle from task intake to implementation, review, observability, and retrospective.
+
+Done when:
+
+- The portfolio workflow has a documented graph of states, blocks, transitions, gates, and failure modes.
+- Risky tool actions are dry-run or approval-gated.
+- Structured outputs are validated before downstream use.
+- At least 10 runs have traces or WAL notes that can be reviewed.
+- One retrospective produces a measurable workflow change.
+
+Job proof:
+
+- `docs/agentic-workflow-course-notes.md`.
+- `docs/workflow-graph.md`.
+- `docs/workflow-review-checklist.md`.
+- `docs/workflow-retrospective.md`.
+- Demo recording of one task moving through plan, implementation, verification, review, and improvement.
+
 ## Stage 8: Deployment And Adoption Sprint
 
 This is new in v4. It exists because employers trust shipped proof more than local-only proof.

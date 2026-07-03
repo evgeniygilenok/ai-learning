@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0049: Team Agent Workflow Rollout</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .rollout { border-top:5px solid var(--teal); min-height:150px; }
+    .rollout:nth-child(2) { border-top-color:var(--blue); }
+    .rollout:nth-child(3) { border-top-color:var(--amber); }
+    .rollout:nth-child(4) { border-top-color:var(--green); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--amber); background:#fff3d8; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0049 - 40 minutes</p>
+      <h1>A workflow is not team-ready until it is reproducible.</h1>
+      <p class="lede">The final layer is operational: cost, local assumptions, documentation boundaries, weakly structured documents, and the human decisions automation must not hide.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>An agent workflow that only works for its author is a personal habit, not a team system. Team rollout requires explicit setup, versioning, permissions, cost expectations, and ownership.</p>
+      <p>The human role does not disappear. It moves toward intent, tradeoffs, accountability, and deciding when the workflow should stop.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card rollout">
+        <h3>Token Economics</h3>
+        <p class="muted">Know which blocks spend context and why. Track latency and cost as design signals, not trivia.</p>
+      </article>
+      <article class="card rollout">
+        <h3>Team Reproducibility</h3>
+        <p class="muted">Document setup, required tools, secrets, versioning, local assumptions, and failure recovery.</p>
+      </article>
+      <article class="card rollout">
+        <h3>Documentation Boundaries</h3>
+        <p class="muted">Separate docs for humans from docs used as agent context. Each has different quality rules.</p>
+      </article>
+      <article class="card rollout">
+        <h3>Human Responsibility</h3>
+        <p class="muted">Keep humans accountable for intent, architecture tradeoffs, approvals, and organizational risk.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Rollout Memo</h2>
+        <pre><code>type WorkflowRolloutMemo = {
+  purpose: string;
+  owner: string;
+  setup: string[];
+  permissions: string[];
+  costModel: string;
+  knownFailureModes: string[];
+  humanCheckpoints: string[];
+  adoptionMetric: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Document Intake</h2>
+        <p>For weakly structured documents, first decide the retrieval and context strategy. Do not throw a whole messy corpus into the agent and call it memory.</p>
+        <p class="muted">Good document workflows preserve source, structure, permissions, freshness, and answerability.</p>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Team-Ready Or Personal Habit?</h2>
+      <div class="grid">
+        <article class="card" data-answer="habit">
+          <h3>"Run my local command after setting the same env vars I always use."</h3>
+          <div class="choices"><button type="button">Team-ready</button><button type="button">Personal habit</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="ready">
+          <h3>"The workflow has setup docs, permissions, sample inputs, expected outputs, and known failure modes."</h3>
+          <div class="choices"><button type="button">Team-ready</button><button type="button">Personal habit</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="human">
+          <h3>"The agent can choose whether a risky architecture tradeoff is acceptable for the business."</h3>
+          <div class="choices"><button type="button">Good automation</button><button type="button">Needs human owner</button></div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Completion Gate</h2>
+      <p>Before sharing a workflow, make another person run it from the docs. Their friction is part of the system, not a side note.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Write a one-page rollout memo for your agentic workflow:</p>
+      <ul>
+        <li>Purpose and non-goals.</li>
+        <li>Who owns the workflow and who can approve risky actions.</li>
+        <li>Setup, secrets, tools, and sample inputs.</li>
+        <li>Cost and latency expectations.</li>
+        <li>Known failure modes and support path.</li>
+        <li>Adoption metric: time saved, review defects caught, eval pass rate, or setup success.</li>
+      </ul>
+      <p class="small">Ask the agent to act as a new teammate and point out every step that assumes hidden knowledge.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0039-deployable-ai-portfolio.html">Lesson 0039: Deployable AI Portfolio</a></li>
+        <li><a href="0040-adoption-feedback-loop.html">Lesson 0040: Adoption Feedback Loop</a></li>
+        <li><a href="../reference/agent-runtime-reference.html">Agent Runtime Reference</a></li>
+        <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: attached agentic workflow masterclass outline, roadmap deployment and adoption lessons, and the AI engineering mission.</footer>
+  </main>
+  <script>
+    const copy = {
+      habit: "Correct. Hidden local assumptions make this a personal workflow, not a team-ready system.",
+      ready: "Correct. Reproducibility means another engineer can run, inspect, and recover it.",
+      human: "Correct. The workflow can surface evidence, but a human owner must accept business and architecture risk."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const text = button.textContent.toLowerCase();
+          const picked = text.includes("team-ready") ? "ready" : text.includes("human") ? "human" : index === 1 ? (expected === "human" ? "human" : "habit") : "ready";
+          button.classList.add(picked === expected ? "correct" : "wrong");
+          answer.textContent = picked === expected ? copy[expected] : "Not quite. Team rollout depends on reproducibility, explicit ownership, and human accountability.";
+        });
+      });
+    });
+  </script>
+</body>
+</html>

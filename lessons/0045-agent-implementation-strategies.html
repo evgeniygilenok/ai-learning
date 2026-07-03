@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0045: Agent Implementation Strategies</title>
+  <style>
+    :root { --ink:#14202b; --muted:#5d6875; --line:#d7dee7; --paper:#f7f9fc; --panel:#fff; --blue:#2563eb; --teal:#0f766e; --amber:#b45309; --green:#15803d; --rose:#be123c; --violet:#6d28d9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 10px; color:var(--teal); font-size:.8rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:0; max-width:930px; font-size:clamp(2.05rem, 5vw, 4rem); line-height:1.04; letter-spacing:0; }
+    .lede { margin:16px 0 0; max-width:790px; color:var(--muted); font-size:1.06rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 2rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    .strategy { border-top:5px solid var(--teal); min-height:158px; }
+    .strategy:nth-child(2) { border-top-color:var(--blue); }
+    .strategy:nth-child(3) { border-top-color:var(--amber); }
+    .strategy:nth-child(4) { border-top-color:var(--violet); }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.9rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    button { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); padding:10px 12px; min-height:42px; font:inherit; cursor:pointer; text-align:left; }
+    button:hover { border-color:var(--blue); background:#e8f0ff; }
+    button.correct { border-color:var(--green); background:#e7f7ed; }
+    button.wrong { border-color:var(--rose); background:#ffe8ee; }
+    .choices { display:grid; gap:8px; margin-top:10px; }
+    .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    .callout { border-left:5px solid var(--green); background:#e7f7ed; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Lesson 0045 - 40 minutes</p>
+      <h1>Choose the implementation loop before you ask the agent to code.</h1>
+      <p class="lede">The right strategy depends on ambiguity, risk, reversibility, test coverage, and how much coordination the task needs.</p>
+    </header>
+
+    <section class="band">
+      <h2>The One Idea</h2>
+      <p>Implementation strategy is a control decision. A direct agent pass is fine for tiny, low-risk work. Complex work needs loops: plan, implement, verify, review, and possibly split across specialists.</p>
+      <p>The mistake is treating every task as the same shape because the interface is the same chat box.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card strategy">
+        <h3>Direct</h3>
+        <p class="muted">Use for small, reversible changes with clear acceptance criteria and good tests.</p>
+      </article>
+      <article class="card strategy">
+        <h3>Goal Loop</h3>
+        <p class="muted">Use when the agent should keep iterating toward a goal but must report checkpoints.</p>
+      </article>
+      <article class="card strategy">
+        <h3>Verification Loop</h3>
+        <p class="muted">Use when correctness depends on repeated test, lint, eval, trace, or reviewer feedback.</p>
+      </article>
+      <article class="card strategy">
+        <h3>Team Pattern</h3>
+        <p class="muted">Use when planning, implementation, review, or research are separable enough to run as bounded roles.</p>
+      </article>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Strategy Decision</h2>
+        <pre><code>type ImplementationStrategy = {
+  mode: "direct" | "goal_loop" | "verification_loop" | "team";
+  uncertainty: "low" | "medium" | "high";
+  risk: "low" | "medium" | "high";
+  gates: string[];
+  checkpointEvery: string;
+  rollbackPlan: string;
+};</code></pre>
+      </article>
+      <article class="band">
+        <h2>Slopwatch</h2>
+        <p>AI-shaped code often shows up as unnecessary abstraction, generic comments, defensive plumbing without a requirement, and names that sound plausible but hide missing design.</p>
+        <p class="muted">Make slop detection part of the verification loop, not just a feeling during review.</p>
+      </article>
+    </section>
+
+    <section class="band">
+      <h2>Interactive Drill: Pick The Strategy</h2>
+      <div class="grid">
+        <article class="card" data-answer="direct">
+          <h3>Rename one UI label and update one snapshot test.</h3>
+          <div class="choices"><button type="button">Direct</button><button type="button">Team</button><button type="button">Research spike</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="verify">
+          <h3>Change retrieval ranking and prove citation quality did not regress.</h3>
+          <div class="choices"><button type="button">Direct</button><button type="button">Verification loop</button><button type="button">No tests</button></div>
+          <p class="answer"></p>
+        </article>
+        <article class="card" data-answer="team">
+          <h3>Design, implement, and review a new tool runtime with auth, idempotency, and audit logs.</h3>
+          <div class="choices"><button type="button">Direct</button><button type="button">Team pattern</button><button type="button">Skip review</button></div>
+          <p class="answer"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Template Rule</h2>
+      <p>Use templates to carry standards into repeated work: risk section, test plan, changed files, rollout notes, slopwatch check, and final handoff checklist.</p>
+    </section>
+
+    <section class="band">
+      <h2>Build Assignment</h2>
+      <p>Pick one feature in the portfolio agent runtime. Run a strategy comparison:</p>
+      <ul>
+        <li>Write the direct implementation prompt you would use.</li>
+        <li>Write the verification-loop version with gates and checkpoints.</li>
+        <li>Name the extra cost of the loop.</li>
+        <li>Name the risk it reduces.</li>
+        <li>Decide which strategy you would actually use and why.</li>
+      </ul>
+      <p class="small">Ask the agent to do a slopwatch review of the chosen implementation plan before any code is written.</p>
+    </section>
+
+    <section>
+      <h2>Read Next</h2>
+      <ul>
+        <li><a href="0046-agentic-planning-definition-of-done.html">Lesson 0046: Agentic Planning And Definition Of Done</a></li>
+        <li><a href="0016-eval-release-gates.html">Lesson 0016: Eval Release Gates</a></li>
+        <li><a href="0024-agent-retry-and-recovery.html">Lesson 0024: Agent Retry And Recovery</a></li>
+        <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
+      </ul>
+    </section>
+
+    <footer>Sources: attached agentic workflow masterclass outline, roadmap eval and retry lessons, and the portfolio system design path.</footer>
+  </main>
+  <script>
+    const copy = {
+      direct: "Correct. Small, clear, reversible work can use the shortest responsible loop.",
+      verify: "Correct. Retrieval quality needs measurement, so use a verification loop.",
+      team: "Correct. Multiple concerns and high blast radius justify separate bounded roles."
+    };
+    document.querySelectorAll("[data-answer]").forEach(card => {
+      const expected = card.dataset.answer;
+      const answer = card.querySelector(".answer");
+      const buttons = card.querySelectorAll("button");
+      buttons.forEach(button => {
+        button.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("correct", "wrong"));
+          const text = button.textContent.toLowerCase();
+          const picked = text.includes("verification") ? "verify" : text.includes("team") ? "team" : text.includes("direct") ? "direct" : "other";
+          button.classList.add(picked === expected ? "correct" : "wrong");
+          answer.textContent = picked === expected ? copy[expected] : "Not quite. Match the loop to ambiguity, risk, and the checks needed to trust the result.";
+        });
+      });
+    });
+  </script>
+</body>
+</html>

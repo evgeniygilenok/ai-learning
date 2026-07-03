@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course: Agentic Workflow Engineering Practice</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink:#14202b;
+      --muted:#5d6875;
+      --line:#d7dee7;
+      --paper:#f7f9fc;
+      --panel:#ffffff;
+      --teal:#0f766e;
+      --blue:#2563eb;
+      --amber:#b45309;
+      --green:#15803d;
+      --rose:#be123c;
+      --violet:#6d28d9;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--ink);
+      background:var(--paper);
+      line-height:1.55;
+    }
+
+    main {
+      max-width:1120px;
+      margin:0 auto;
+      padding:38px 22px 64px;
+    }
+
+    header {
+      padding-bottom:24px;
+      border-bottom:2px solid var(--line);
+      margin-bottom:26px;
+    }
+
+    .back {
+      display:inline-flex;
+      margin-bottom:18px;
+      color:var(--blue);
+      font-weight:700;
+      text-decoration-thickness:2px;
+    }
+
+    .eyebrow {
+      margin:0 0 10px;
+      color:var(--teal);
+      font-size:.8rem;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    h1 {
+      margin:0;
+      max-width:940px;
+      font-size:clamp(2.1rem, 5vw, 4.25rem);
+      line-height:1.03;
+      letter-spacing:0;
+    }
+
+    .lede {
+      margin:16px 0 0;
+      max-width:800px;
+      color:var(--muted);
+      font-size:1.08rem;
+    }
+
+    section { margin:26px 0; }
+
+    h2 {
+      margin:0 0 12px;
+      font-size:clamp(1.35rem, 3vw, 2rem);
+      line-height:1.15;
+      letter-spacing:0;
+    }
+
+    h3 {
+      margin:0 0 8px;
+      font-size:1.03rem;
+      letter-spacing:0;
+    }
+
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    ul { margin:10px 0 0; padding-left:20px; }
+
+    .band,
+    .card {
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:18px;
+    }
+
+    .callout {
+      border-left:5px solid var(--teal);
+      background:#e6f4f1;
+      border-radius:8px;
+      padding:16px;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+      gap:12px;
+    }
+
+    .two {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:14px;
+    }
+
+    .module {
+      border-top:5px solid var(--teal);
+      min-height:245px;
+    }
+
+    .module:nth-child(6n + 2) { border-top-color:var(--blue); }
+    .module:nth-child(6n + 3) { border-top-color:var(--amber); }
+    .module:nth-child(6n + 4) { border-top-color:var(--green); }
+    .module:nth-child(6n + 5) { border-top-color:var(--rose); }
+    .module:nth-child(6n) { border-top-color:var(--violet); }
+
+    .studio {
+      border-top:5px solid var(--amber);
+      min-height:182px;
+    }
+
+    .lesson-link {
+      display:block;
+      color:inherit;
+      text-decoration:none;
+      border-top:5px solid var(--teal);
+      min-height:158px;
+      transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+
+    .lesson-link:hover {
+      transform:translateY(-2px);
+      border-color:#b8c4d2;
+      box-shadow:0 12px 30px rgba(20, 32, 43, .08);
+    }
+
+    .lesson-link:nth-child(6n + 2) { border-top-color:var(--blue); }
+    .lesson-link:nth-child(6n + 3) { border-top-color:var(--amber); }
+    .lesson-link:nth-child(6n + 4) { border-top-color:var(--green); }
+    .lesson-link:nth-child(6n + 5) { border-top-color:var(--rose); }
+    .lesson-link:nth-child(6n) { border-top-color:var(--violet); }
+
+    .tag {
+      display:inline-block;
+      margin-bottom:12px;
+      color:var(--muted);
+      font-size:.78rem;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .muted,
+    .small {
+      color:var(--muted);
+      font-size:.94rem;
+    }
+
+    .route {
+      display:grid;
+      grid-template-columns:130px minmax(0,1fr);
+      gap:10px;
+      align-items:start;
+      margin:0 0 10px;
+      padding-bottom:10px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .route:last-child {
+      margin-bottom:0;
+      padding-bottom:0;
+      border-bottom:0;
+    }
+
+    .label {
+      color:var(--muted);
+      font-size:.78rem;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:8px;
+      overflow:hidden;
+    }
+
+    th,
+    td {
+      padding:12px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+
+    th {
+      background:#eef4fb;
+      color:var(--muted);
+      font-size:.78rem;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    tr:last-child td { border-bottom:0; }
+
+    .checklist {
+      columns:2;
+      column-gap:28px;
+    }
+
+    footer {
+      margin-top:30px;
+      padding-top:18px;
+      border-top:2px solid var(--line);
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (max-width:760px) {
+      main { padding:26px 16px 48px; }
+      .two,
+      .route { grid-template-columns:1fr; }
+      .module,
+      .studio { min-height:0; }
+      .checklist { columns:1; }
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr { display:block; }
+      thead { display:none; }
+      tr { border-bottom:1px solid var(--line); }
+      tr:last-child { border-bottom:0; }
+      td { border-bottom:0; padding:10px 12px; }
+      td::before {
+        display:block;
+        margin-bottom:2px;
+        color:var(--muted);
+        font-size:.76rem;
+        font-weight:800;
+        letter-spacing:.08em;
+        text-transform:uppercase;
+        content:attr(data-label);
+      }
+    }
+
+    @media print {
+      body { background:#fff; }
+      main { padding:24px; }
+      .back { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <a class="back" href="../index.html">Back to roadmap</a>
+      <p class="eyebrow">Specialization Course - 8 modules, 7 studios</p>
+      <h1>Agentic Workflow Engineering Practice</h1>
+      <p class="lede">A deeper course for turning agent work from "better prompting" into an engineered system of blocks, gates, tools, reviews, traces, and improvement loops.</p>
+    </header>
+
+    <section class="callout">
+      <h2>Where It Fits</h2>
+      <p>This course is best taken after the core roadmap covers controlled workflow agents and agent runtime design. It expands Stage 3 and Stage 7 into a full engineering practice: design the workflow, encode it in a harness, verify the result, review it, then improve the system from real evidence.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <span class="tag">Outcome</span>
+        <h3>Design workflows as systems</h3>
+        <p class="muted">Decompose agent work into blocks with explicit inputs, outputs, transitions, stop conditions, and quality gates.</p>
+      </article>
+      <article class="card">
+        <span class="tag">Outcome</span>
+        <h3>Codify reusable practice</h3>
+        <p class="muted">Turn prompts, skills, templates, hooks, commands, and subagents into repeatable engineering assets.</p>
+      </article>
+      <article class="card">
+        <span class="tag">Outcome</span>
+        <h3>Verify beyond vibes</h3>
+        <p class="muted">Use deterministic checks first, semantic review where needed, and evals to detect workflow regressions.</p>
+      </article>
+      <article class="card">
+        <span class="tag">Outcome</span>
+        <h3>Operate the loop</h3>
+        <p class="muted">Use WAL notes, retrospectives, metrics, and research spikes to improve the workflow without overfitting it.</p>
+      </article>
+    </section>
+
+    <section>
+      <h2>Lesson Path</h2>
+      <div class="grid">
+        <a class="card lesson-link" href="../lessons/0042-workflow-blocks-and-quality-gates.html">
+          <span class="tag">Lesson 0042</span>
+          <h3>Workflow Blocks And Quality Gates</h3>
+          <p class="muted">Split agent work into blocks with explicit contracts, quality gates, and human checkpoints.</p>
+        </a>
+        <a class="card lesson-link" href="../lessons/0043-harness-skills-hooks-and-subagents.html">
+          <span class="tag">Lesson 0043</span>
+          <h3>Harness Skills, Hooks, And Subagents</h3>
+          <p class="muted">Package repeated workflow behavior into skills, commands, hooks, and bounded specialists.</p>
+        </a>
+        <a class="card lesson-link" href="../lessons/0044-scriptable-agent-blocks.html">
+          <span class="tag">Lesson 0044</span>
+          <h3>Scriptable Agent Blocks</h3>
+          <p class="muted">Make one-shot runs and external tools composable with structured output and fail-closed validation.</p>
+        </a>
+        <a class="card lesson-link" href="../lessons/0045-agent-implementation-strategies.html">
+          <span class="tag">Lesson 0045</span>
+          <h3>Agent Implementation Strategies</h3>
+          <p class="muted">Choose the right implementation loop before asking the agent to code.</p>
+        </a>
+        <a class="card lesson-link" href="../lessons/0046-agentic-planning-definition-of-done.html">
+          <span class="tag">Lesson 0046</span>
+          <h3>Agentic Planning And Definition Of Done</h3>
+          <p class="muted">Turn vague requests into executable plans with checkable done criteria.</p>
+        </a>
+        <a class="card lesson-link" href="../lessons/0047-ai-assisted-code-review-system.html">
+          <span class="tag">Lesson 0047</span>
+          <h3>AI-Assisted Code Review System</h3>
+          <p class="muted">Review AI-assisted changes against intent, evidence, and operational risk.</p>
+        </a>
+        <a class="card lesson-link" href="../lessons/0048-workflow-continuous-improvement-loop.html">
+          <span class="tag">Lesson 0048</span>
+          <h3>Workflow Continuous Improvement Loop</h3>
+          <p class="muted">Use logs, traces, evals, and retrospectives to make one measured improvement at a time.</p>
+        </a>
+        <a class="card lesson-link" href="../lessons/0049-team-agent-workflow-rollout.html">
+          <span class="tag">Lesson 0049</span>
+          <h3>Team Agent Workflow Rollout</h3>
+          <p class="muted">Make the workflow reproducible, owned, cost-aware, and usable by someone besides you.</p>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Course Map</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Focus</th>
+            <th>Deliverable</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Module">1. Workflow Concept</td>
+            <td data-label="Focus">Blocks, workflow graphs, quality gates, human-in-the-loop checkpoints, and local or remote execution.</td>
+            <td data-label="Deliverable">A one-page workflow map for a real coding or product task.</td>
+          </tr>
+          <tr>
+            <td data-label="Module">2. Inside The Harness</td>
+            <td data-label="Focus">Skills, commands, hooks, subagents, team patterns, and native workflow capabilities in coding agents.</td>
+            <td data-label="Deliverable">A reusable skill or command with explicit input, output, and completion criteria.</td>
+          </tr>
+          <tr>
+            <td data-label="Module">3. Outside The Harness</td>
+            <td data-label="Focus">One-shot CLI runs, structured JSON outputs, code generation, MCP, external tools, and project context.</td>
+            <td data-label="Deliverable">A scriptable one-shot workflow block with validated structured output.</td>
+          </tr>
+          <tr>
+            <td data-label="Module">4. Implementation Phase</td>
+            <td data-label="Focus">Implementation strategies, templates, verification layers, slopwatch checks, and final handoff checklists.</td>
+            <td data-label="Deliverable">A verified implementation template for a repeated project task.</td>
+          </tr>
+          <tr>
+            <td data-label="Module">5. Planning On Steroids</td>
+            <td data-label="Focus">Planning readiness, Definition of Done, requirement discovery, consensus planning, and research spikes.</td>
+            <td data-label="Deliverable">An executable plan with checkpoints and acceptance criteria.</td>
+          </tr>
+          <tr>
+            <td data-label="Module">6. Review And After</td>
+            <td data-label="Focus">Self-review, automated code quality, doom-loop diagnosis, team review, and post-merge observability.</td>
+            <td data-label="Deliverable">A review packet for one AI-assisted change.</td>
+          </tr>
+          <tr>
+            <td data-label="Module">7. Continuous Improvement</td>
+            <td data-label="Focus">Write-ahead logs, workflow evals, retrospectives, structural refactors, and agentified research.</td>
+            <td data-label="Deliverable">A retrospective that converts failure evidence into one measured workflow change.</td>
+          </tr>
+          <tr>
+            <td data-label="Module">8. What Next</td>
+            <td data-label="Focus">Token economics, team rollout, documentation boundaries, weakly structured documents, and human responsibility.</td>
+            <td data-label="Deliverable">A team adoption brief for sharing the workflow responsibly.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Modules</h2>
+      <div class="grid">
+        <article class="card module">
+          <span class="tag">Module 1</span>
+          <h3>Concept Of Agentic Workflow</h3>
+          <p class="muted">Treat a workflow as a graph of blocks, not a pile of prompts. Learn where deterministic code, model calls, validators, and human checkpoints belong.</p>
+          <p><strong>Practice:</strong> map one real task into states, transitions, gates, and failure points.</p>
+        </article>
+        <article class="card module">
+          <span class="tag">Module 2</span>
+          <h3>Tools Inside The Harness</h3>
+          <p class="muted">Design skills, commands, hooks, subagents, and team patterns as codified process. Keep orchestration predictable as capability grows.</p>
+          <p><strong>Practice:</strong> build one reusable skill or command for a recurring engineering task.</p>
+        </article>
+        <article class="card module">
+          <span class="tag">Module 3</span>
+          <h3>Tools Outside The Harness</h3>
+          <p class="muted">Use one-shots, JSON contracts, code generation, MCP, CLI tools, and project context without letting tool failures poison the workflow.</p>
+          <p><strong>Practice:</strong> produce a scriptable block that fails closed on malformed output.</p>
+        </article>
+        <article class="card module">
+          <span class="tag">Module 4</span>
+          <h3>Implementation Phase</h3>
+          <p class="muted">Compare direct implementation, goal-driven loops, verification loops, and team-style execution. Use templates to carry standards into repeated work.</p>
+          <p><strong>Practice:</strong> run the same change through two strategies and compare quality, latency, and review cost.</p>
+        </article>
+        <article class="card module">
+          <span class="tag">Module 5</span>
+          <h3>Planning On Steroids</h3>
+          <p class="muted">Turn vague tasks into executable plans with Definition of Done, missing-requirement discovery, consensus checkpoints, and bounded research spikes.</p>
+          <p><strong>Practice:</strong> write a plan that another agent could execute without guessing the intent.</p>
+        </article>
+        <article class="card module">
+          <span class="tag">Module 6</span>
+          <h3>Review And Everything After</h3>
+          <p class="muted">Review AI-assisted changes by intent, invariants, edge cases, and operational behavior. Detect endless fix loops before they waste the day.</p>
+          <p><strong>Practice:</strong> create a self-review and post-merge observation checklist for one change.</p>
+        </article>
+        <article class="card module">
+          <span class="tag">Module 7</span>
+          <h3>Continuous Improvement Loop</h3>
+          <p class="muted">Use write-ahead logs, evals, and retrospectives to improve the workflow itself. Decide when to tune a block and when to redesign the graph.</p>
+          <p><strong>Practice:</strong> convert a logged failure into a measured improvement proposal.</p>
+        </article>
+        <article class="card module">
+          <span class="tag">Module 8</span>
+          <h3>Next Operating Layer</h3>
+          <p class="muted">Budget token cost, share workflows with a team, draw boundaries around AI documentation, and keep human judgment in the places it belongs.</p>
+          <p><strong>Practice:</strong> write a rollout memo for a workflow other engineers can adopt.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Practice Studios</h2>
+      <div class="grid">
+        <article class="card studio">
+          <span class="tag">Studio 1</span>
+          <h3>First Workflow</h3>
+          <p class="muted">Convert a one-shot prompt into a chain of blocks with one quality gate and one human approval checkpoint.</p>
+        </article>
+        <article class="card studio">
+          <span class="tag">Studio 2</span>
+          <h3>Harness Tools</h3>
+          <p class="muted">Create a skill, add a trigger or command, pass scoped context to a helper, and return structured output.</p>
+        </article>
+        <article class="card studio">
+          <span class="tag">Studio 3</span>
+          <h3>Implementation Strategies</h3>
+          <p class="muted">Solve one task directly, then through a verification loop, and compare the diff, tests, and review burden.</p>
+        </article>
+        <article class="card studio">
+          <span class="tag">Studio 4</span>
+          <h3>Planning Pipeline</h3>
+          <p class="muted">Diagnose a raw task, define done, run a bounded research spike, and finish with an executable plan.</p>
+        </article>
+        <article class="card studio">
+          <span class="tag">Studio 5</span>
+          <h3>Review System</h3>
+          <p class="muted">Run self-review, automated quality checks, doom-loop diagnosis, and post-merge observation planning.</p>
+        </article>
+        <article class="card studio">
+          <span class="tag">Studio 6</span>
+          <h3>Improvement Loop</h3>
+          <p class="muted">Keep a WAL, build a tiny eval set, run a retrospective, and choose one workflow change to measure.</p>
+        </article>
+        <article class="card studio">
+          <span class="tag">Studio 7</span>
+          <h3>Full Cycle</h3>
+          <p class="muted">Take one task from intake to plan, implementation, verification, review, observation, and workflow improvement.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="two">
+      <article class="band">
+        <h2>Roadmap Fit</h2>
+        <div class="route">
+          <div class="label">Prereq</div>
+          <div>Complete <a href="../lessons/0010-controlled-workflow-agents.html">Lesson 0010</a> and understand tool boundaries, structured outputs, tracing, and eval gates.</div>
+        </div>
+        <div class="route">
+          <div class="label">Core Pairing</div>
+          <div>Take this course alongside <a href="../lessons/0031-agent-orchestration-patterns.html">Lessons 0031-0035</a> and the <a href="../reference/agent-runtime-reference.html">Agent Runtime Reference</a>.</div>
+        </div>
+        <div class="route">
+          <div class="label">Portfolio</div>
+          <div>Apply each studio to the controlled workflow agent runtime in the flagship portfolio repository.</div>
+        </div>
+        <div class="route">
+          <div class="label">Job Proof</div>
+          <div>End with a workflow design doc, eval report, review checklist, adoption memo, and a recorded run from task intake through improvement.</div>
+        </div>
+      </article>
+
+      <article class="band">
+        <h2>Completion Gate</h2>
+        <ul class="checklist">
+          <li>Workflow graph has named states and transitions.</li>
+          <li>Every block has an input, output, owner, and failure mode.</li>
+          <li>Quality gates include deterministic checks where possible.</li>
+          <li>Risky actions require approval or dry-run behavior.</li>
+          <li>Structured outputs are validated before reuse.</li>
+          <li>Runs have traces, WAL notes, and replayable examples.</li>
+          <li>Review checks target intent, invariants, and edge cases.</li>
+          <li>One retrospective led to a measured workflow change.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>Read Alongside</h2>
+      <ul>
+        <li><a href="../lessons/0010-controlled-workflow-agents.html">Lesson 0010: Controlled Workflow Agents</a></li>
+        <li><a href="../lessons/0016-eval-release-gates.html">Lesson 0016: Eval Release Gates</a></li>
+        <li><a href="../lessons/0024-agent-retry-and-recovery.html">Lesson 0024: Agent Retry And Recovery</a></li>
+        <li><a href="../lessons/0025-agent-evaluation.html">Lesson 0025: Agent Evaluation</a></li>
+        <li><a href="../lessons/0031-agent-orchestration-patterns.html">Lesson 0031: Agent Orchestration Patterns</a></li>
+        <li><a href="../lessons/0035-tool-execution-runtime.html">Lesson 0035: Tool Execution Runtime</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>Course source: synthesized from the attached agentic workflow masterclass outline and aligned with the AI Engineering Roadmap mission.</p>
+    </footer>
+  </main>
+</body>
+</html>

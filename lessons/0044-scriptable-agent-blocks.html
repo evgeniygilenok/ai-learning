@@ -34,6 +34,8 @@
     button.wrong { border-color:var(--rose); background:#ffe8ee; }
     .choices { display:grid; gap:8px; margin-top:10px; }
     .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    details { margin-top:12px; }
+    summary { cursor:pointer; font-weight:700; color:var(--blue); }
     .callout { border-left:5px solid var(--amber); background:#fff3d8; border-radius:8px; padding:16px; }
     footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
@@ -50,7 +52,7 @@
 
     <section class="band">
       <h2>The One Idea</h2>
-      <p>A one-shot agent call can be a real workflow block if its output is predictable enough for the next step. That usually means a schema, a validator, and a failure path.</p>
+      <p>A one-shot agent call can be a real workflow block if its output is predictable enough for the next step. That usually means a schema, a validator, and a failure path. The tooling for this is standard now: <a href="https://cursor.com/docs/cli/headless">Cursor's headless CLI</a> runs an agent non-interactively, and <a href="https://cursor.com/docs/cli/reference/output-format">its json output format</a> emits a single machine-parseable object when the run completes. Inside the response itself, <a href="https://developers.openai.com/api/docs/guides/structured-outputs">structured outputs</a> constrain the model to your schema.</p>
       <p>Free-form text is fine for human reading. It is fragile as an interface between blocks.</p>
     </section>
 
@@ -69,7 +71,7 @@
       </article>
       <article class="card block">
         <h3>External Tools</h3>
-        <p class="muted">Wrap MCP, CLI, and API calls so authentication, rate limits, and malformed responses fail cleanly.</p>
+        <p class="muted">Wrap <a href="https://modelcontextprotocol.io/docs/getting-started/intro">MCP</a>, CLI, and API calls so authentication, rate limits, and malformed responses fail cleanly.</p>
       </article>
     </section>
 
@@ -94,22 +96,43 @@
     <section class="band">
       <h2>Interactive Drill: What Should The Block Do?</h2>
       <div class="grid">
-        <article class="card" data-answer="fail">
+        <article class="card">
           <h3>The next block expects JSON, but the model returned markdown plus a partial object.</h3>
-          <div class="choices"><button type="button">Continue</button><button type="button">Fail or repair once</button><button type="button">Ask for a bigger model</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. Validate the interface. Repair once only if the repair path is explicit and safe, then fail the block with a visible reason.">Fail, or repair once explicitly</button>
+            <button type="button" data-why="Not quite. Unbounded retries hide the failure, burn budget, and can loop forever. If a bounded repair does not fix it, the block should fail visibly.">Retry with temperature 0 until it parses</button>
+            <button type="button" data-why="Not quite. Salvaging partial fields silently corrupts downstream state. The next block would run on data that never passed the contract.">Extract whatever fields parsed and continue</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="codegen">
+        <article class="card">
           <h3>You need to extract 500 rows from a stable CSV format every week.</h3>
-          <div class="choices"><button type="button">Generate deterministic script</button><button type="button">Ask model every row</button><button type="button">Manual copy</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. Stable, repetitive extraction is a job for deterministic code. Have the model write and test the script once, then keep it in a design or review role.">Generate a deterministic script once</button>
+            <button type="button" data-why="Not quite. Per-row model calls add cost, latency, and a nonzero error rate to a task with a fixed format. Reserve the model for the parts that vary.">One-shot model call per row with JSON output</button>
+            <button type="button" data-why="Not quite. Fine-tuning is heavy machinery for a format a 30-line script parses exactly. It still would not give deterministic guarantees.">Fine-tune a small model on the format</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="wrap">
+        <article class="card">
           <h3>An MCP tool sometimes times out or returns too much data for context.</h3>
-          <div class="choices"><button type="button">Wrap with limits</button><button type="button">Paste all output</button><button type="button">Ignore timeout</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. External tools need wrappers that enforce timeouts, cap and summarize output, and turn failures into clean block-level errors.">Wrap it with timeouts and output limits</button>
+            <button type="button" data-why="Not quite. A bigger context window treats the symptom and raises cost. The tool can still time out, and unbounded output still crowds out signal.">Raise the agent's context window</button>
+            <button type="button" data-why="Not quite. The subagent inherits the same unwrapped tool, so the timeout and oversized output problems just move one level down.">Move the call into a subagent</button>
+          </div>
           <p class="answer"></p>
         </article>
       </div>
+    </section>
+
+    <section class="band">
+      <h2>Try It Cold</h2>
+      <p>A one-shot block classifies a support ticket. The model returned <code>status: "ok"</code> but an empty <code>artifacts</code> array and a <code>nextAction</code> of <code>"unclear"</code>. Write down what the validator should do, then reveal.</p>
+      <details>
+        <summary>Reveal a model answer</summary>
+        <p>The output is schema-valid but contract-invalid: <code>status: "ok"</code> promises a usable result, while <code>nextAction: "unclear"</code> contradicts it. The validator should enforce cross-field rules, not just types: if <code>nextAction</code> is unclear or artifacts are empty, the status must be <code>needs_input</code> or <code>error</code>. This run should fail the gate and route to the on-fail path (ask a clarifying question), because a green status with unusable content is exactly how state corruption sneaks past schema checks.</p>
+      </details>
     </section>
 
     <section class="callout">
@@ -119,14 +142,15 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Design one scriptable block for your portfolio workflow:</p>
+      <p>Build one scriptable block for real and commit it to your portfolio repo (for example <code>scripts/risk-summary.sh</code> plus <code>scripts/validate-block-output.mjs</code>):</p>
       <ul>
         <li>Choose a one-shot task such as "summarize changed files into risk categories."</li>
-        <li>Define a JSON schema for the output.</li>
-        <li>Write validation rules and one repair attempt.</li>
-        <li>Specify the fail-closed behavior.</li>
-        <li>Add one example of valid output and one invalid output.</li>
+        <li>Run it headlessly: <code>cursor-agent -p --output-format json "..."</code>, <code>codex exec</code>, or your harness's equivalent.</li>
+        <li>Define a JSON schema for the output and validate the run's result against it in the script.</li>
+        <li>Implement one repair attempt, then fail-closed behavior with a visible reason and non-zero exit code.</li>
+        <li>Save one valid and one invalid example output next to the script.</li>
       </ul>
+      <p>Run it at least twice and record the results, including any invalid output you caught, in <code>docs/agentic-workflow-course-notes.md</code>.</p>
       <p class="small">Ask the agent to generate test cases for malformed JSON, missing fields, unknown enum values, and excessive output size.</p>
     </section>
 
@@ -136,29 +160,22 @@
         <li><a href="0045-agent-implementation-strategies.html">Lesson 0045: Agent Implementation Strategies</a></li>
         <li><a href="0003-structured-outputs.html">Lesson 0003: Structured Outputs</a></li>
         <li><a href="0005-tool-calling-boundaries.html">Lesson 0005: Tool Calling Boundaries</a></li>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a></li>
         <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
       </ul>
     </section>
 
-    <footer>Sources: attached agentic workflow masterclass outline, roadmap lessons 0003 and 0005, and the agent-runtime specialization.</footer>
+    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, <a href="https://cursor.com/docs/cli/headless">Cursor headless CLI docs</a>, <a href="https://cursor.com/docs/cli/reference/output-format">Cursor CLI output format</a>, <a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI structured outputs</a>, and roadmap lessons 0003 and 0005. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review your script and validator.</footer>
   </main>
   <script>
-    const copy = {
-      fail: "Correct. Validate the interface. Repair once only if the repair path is explicit and safe.",
-      codegen: "Correct. Stable repetitive extraction is a good place to generate and verify deterministic code.",
-      wrap: "Correct. External tools need wrappers for limits, errors, and compact results."
-    };
-    document.querySelectorAll("[data-answer]").forEach(card => {
-      const expected = card.dataset.answer;
-      const answer = card.querySelector(".answer");
-      const buttons = card.querySelectorAll("button");
+    document.querySelectorAll(".choices").forEach(group => {
+      const answer = group.parentElement.querySelector(".answer");
+      const buttons = group.querySelectorAll("button");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("correct", "wrong"));
-          const text = button.textContent.toLowerCase();
-          const picked = text.includes("fail") || text.includes("repair") ? "fail" : text.includes("script") ? "codegen" : text.includes("wrap") ? "wrap" : "other";
-          button.classList.add(picked === expected ? "correct" : "wrong");
-          answer.textContent = picked === expected ? copy[expected] : "Not quite. Treat the block boundary like an API boundary.";
+          button.classList.add(button.hasAttribute("data-correct") ? "correct" : "wrong");
+          answer.textContent = button.dataset.why;
         });
       });
     });

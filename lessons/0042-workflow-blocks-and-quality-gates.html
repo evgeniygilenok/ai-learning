@@ -34,6 +34,8 @@
     button.wrong { border-color:var(--rose); background:#ffe8ee; }
     .choices { display:grid; gap:8px; margin-top:10px; }
     .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    details { margin-top:12px; }
+    summary { cursor:pointer; font-weight:700; color:var(--blue); }
     .callout { border-left:5px solid var(--teal); background:#e6f4f1; border-radius:8px; padding:16px; }
     footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
@@ -50,7 +52,7 @@
 
     <section class="band">
       <h2>The One Idea</h2>
-      <p>An agentic workflow is not a long prompt. It is a system of blocks. Some blocks call a model, some run deterministic code, some validate, and some ask a human to decide.</p>
+      <p>An agentic workflow is not a long prompt. It is a system of blocks. Some blocks call a model, some run deterministic code, some validate, and some ask a human to decide. Anthropic's <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a> describes exactly this shape: chained steps with programmatic "gate" checks between them, and a strong preference for the simplest composition that works.</p>
       <p>If a block cannot say what it accepts, what it returns, and how it is checked, it is still a vague instruction rather than an engineering unit.</p>
     </section>
 
@@ -90,29 +92,60 @@
       <article class="band">
         <h2>Design Rule</h2>
         <p>Design the workflow so a failure points to a specific block. "The agent did something weird" is not debuggable. "The plan block passed without acceptance criteria" is debuggable.</p>
-        <p class="muted">This is the same instinct as good backend design: isolate responsibility, validate boundaries, and make failures inspectable.</p>
+        <p class="muted">This is the same instinct as good backend design: isolate responsibility, validate boundaries, and make failures inspectable. It also mirrors <a href="https://developers.openai.com/api/docs/guides/agents">OpenAI's agent guidance</a>: orchestration, gates, and approvals live in application code, not inside the prompt.</p>
       </article>
     </section>
 
     <section class="band">
       <h2>Interactive Drill: What Is Missing?</h2>
       <div class="grid">
-        <article class="card" data-answer="gate">
+        <article class="card">
           <h3>"Ask the agent to write a plan, then continue if it looks good."</h3>
-          <div class="choices"><button type="button">Input</button><button type="button">Quality gate</button><button type="button">Owner</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. 'Looks good' is not a gate. Define what must be true for the plan to pass: acceptance criteria present, affected files named, rollback stated.">A checkable quality gate</button>
+            <button type="button" data-why="Not quite. A reviewer model inherits the same problem: it still has no criteria for 'good.' Define the check first; then you can decide who runs it.">A second model reviewing the plan</button>
+            <button type="button" data-why="Not quite. A retry limit bounds how often the block runs, but this block would still pass bad plans because nothing defines a failure.">A retry limit</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="transition">
+        <article class="card">
           <h3>"Run tests and collect output, but no rule says what happens on failure."</h3>
-          <div class="choices"><button type="button">Transition</button><button type="button">Input</button><button type="button">Tool name</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. A block needs an explicit next step for pass, fail, retry, and escalation. Without an on-fail transition, failure behavior is improvised.">An explicit on-fail transition</button>
+            <button type="button" data-why="Not quite. More tests raise coverage but the workflow still has no rule for what to do when any of them fail.">A bigger test suite</button>
+            <button type="button" data-why="Not quite. A watcher can observe the failure, but observation is not a decision. The workflow needs a rule: retry, ask, block, or escalate.">A subagent watching the test run</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="human">
+        <article class="card">
           <h3>"The agent can merge a security-sensitive auth change after tests pass."</h3>
-          <div class="choices"><button type="button">Human checkpoint</button><button type="button">More tokens</button><button type="button">Longer prompt</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. Tests are not enough for a risky, hard-to-reverse side effect. A person must own the merge decision, or the action needs dry-run behavior.">A human approval checkpoint</button>
+            <button type="button" data-why="Not quite. More tests reduce some risk but cannot carry accountability for a security-sensitive merge. Approval is a judgment gate, not a coverage gate.">More integration tests</button>
+            <button type="button" data-why="Not quite. An LLM judge on the diff is still automation approving automation. For auth changes the gate must be a human with authority to say no.">An LLM-as-judge gate on the diff</button>
+          </div>
           <p class="answer"></p>
         </article>
       </div>
+    </section>
+
+    <section class="band">
+      <h2>Try It Cold</h2>
+      <p>Write a block contract (name, owner, input, output, gate, onPass, onFail, maxRetries) for this block: <strong>"summarize a failing CI run for the on-call engineer."</strong> Write yours before revealing the model answer.</p>
+      <details>
+        <summary>Reveal a model answer</summary>
+        <pre><code>{
+  name: "summarize-ci-failure",
+  owner: "agent",
+  input: "CI run id + raw job logs (truncated to failing steps)",
+  output: "JSON: { failedStep, likelyCause, evidenceLines[], suggestedAction }",
+  gate: "schema valid AND evidenceLines quote real log lines AND likelyCause != ''",
+  onPass: "post-to-oncall-channel",
+  onFail: "retry once with full logs; then escalate raw logs to human",
+  maxRetries: 1
+}</code></pre>
+        <p class="small">Compare: did your gate check evidence against the input, or only check that output exists? Did your onFail path preserve the raw logs for the human?</p>
+      </details>
     </section>
 
     <section class="callout">
@@ -122,7 +155,7 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Pick one recurring task, such as "turn a vague ticket into a PR-ready plan." Write five block contracts:</p>
+      <p>Create <code>docs/workflow-graph.md</code> in your portfolio repo. Pick one recurring task, such as "turn a vague ticket into a PR-ready plan," and write five block contracts into it:</p>
       <ul>
         <li>Intake and classify the task.</li>
         <li>Detect missing requirements.</li>
@@ -130,7 +163,8 @@
         <li>Run a quality gate on the plan.</li>
         <li>Ask for approval or return to clarification.</li>
       </ul>
-      <p class="small">Ask the agent to challenge whether every block has exactly one job and a checkable output.</p>
+      <p>End the file with the workflow graph itself: named states, transitions (including every on-fail path), and where the human checkpoints sit. This file is course job proof; later lessons extend it.</p>
+      <p class="small">Then ask the agent to challenge whether every block has exactly one job and a checkable output, and to find any transition you forgot.</p>
     </section>
 
     <section>
@@ -139,29 +173,22 @@
         <li><a href="0043-harness-skills-hooks-and-subagents.html">Lesson 0043: Harness Skills, Hooks, And Subagents</a></li>
         <li><a href="0010-controlled-workflow-agents.html">Lesson 0010: Controlled Workflow Agents</a></li>
         <li><a href="0031-agent-orchestration-patterns.html">Lesson 0031: Agent Orchestration Patterns</a></li>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a></li>
         <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
       </ul>
     </section>
 
-    <footer>Sources: attached agentic workflow masterclass outline, roadmap lessons 0010 and 0031, and the AI engineering mission.</footer>
+    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic: Building effective agents</a>, <a href="https://developers.openai.com/api/docs/guides/agents">OpenAI agents guide</a>, and roadmap lessons 0010 and 0031. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review your <code>docs/workflow-graph.md</code>.</footer>
   </main>
   <script>
-    const copy = {
-      gate: "Correct. 'Looks good' is not a gate. Define what must be true for the plan to pass.",
-      transition: "Correct. A block needs an explicit next step for pass, fail, retry, and escalation.",
-      human: "Correct. Tests are not enough for a risky side effect. Add approval or dry-run behavior."
-    };
-    document.querySelectorAll("[data-answer]").forEach(card => {
-      const expected = card.dataset.answer;
-      const answer = card.querySelector(".answer");
-      const buttons = card.querySelectorAll("button");
+    document.querySelectorAll(".choices").forEach(group => {
+      const answer = group.parentElement.querySelector(".answer");
+      const buttons = group.querySelectorAll("button");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("correct", "wrong"));
-          const text = button.textContent.toLowerCase();
-          const picked = text.includes("gate") ? "gate" : text.includes("transition") ? "transition" : text.includes("human") ? "human" : "other";
-          button.classList.add(picked === expected ? "correct" : "wrong");
-          answer.textContent = picked === expected ? copy[expected] : "Not quite. Look for the missing contract: check, transition, owner, or approval.";
+          button.classList.add(button.hasAttribute("data-correct") ? "correct" : "wrong");
+          answer.textContent = button.dataset.why;
         });
       });
     });

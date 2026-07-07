@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic Workflow Reference</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink:#14202b;
+      --muted:#5d6875;
+      --line:#d7dee7;
+      --paper:#f7f9fc;
+      --panel:#ffffff;
+      --teal:#0f766e;
+      --blue:#2563eb;
+      --amber:#b45309;
+      --green:#15803d;
+      --rose:#be123c;
+      --violet:#6d28d9;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem, 5vw, 3.25rem); line-height:1.05; letter-spacing:0; }
+    .lede { margin:0; max-width:780px; color:var(--muted); font-size:1.05rem; }
+    section { margin:26px 0; }
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 1.9rem); line-height:1.15; letter-spacing:0; }
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
+    p { margin:0 0 12px; }
+    a { color:var(--blue); text-decoration-thickness:2px; }
+    ul { margin:8px 0 0; padding-left:20px; }
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; }
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .muted, .small { color:var(--muted); font-size:.94rem; }
+    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.88rem; line-height:1.5; }
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    th, td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#eef4fb; color:var(--muted); font-size:.78rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    tr:last-child td { border-bottom:0; }
+    .callout { border-left:5px solid var(--teal); background:#e6f4f1; border-radius:8px; padding:16px; }
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
+    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+    @media print { body { background:#fff; } main { padding:24px; } section, .card, .band { break-inside:avoid; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Agentic Workflow Reference</h1>
+      <p class="lede">The compressed essence of the Agentic Workflow Engineering Practice course (lessons 0042-0049): block contracts, gate types, strategy selection, review packets, WAL entries, and rollout memos.</p>
+    </header>
+
+    <section>
+      <h2>Core Contracts</h2>
+      <div class="two">
+        <article class="band">
+          <h3>Workflow Block</h3>
+          <pre><code>type WorkflowBlock = {
+  name: string;
+  owner: "app" | "agent" | "human" | "script";
+  input: string;
+  output: string;
+  gate: string;        // what must be true to pass
+  onPass: string;      // next state
+  onFail: string;      // retry | ask | block | escalate
+  maxRetries: number;
+};</code></pre>
+          <p class="small">A block does one job and proves it is done. If a failure cannot be traced to a specific block, the workflow graph is missing a boundary. (Lesson 0042)</p>
+        </article>
+        <article class="band">
+          <h3>Block Output (scriptable)</h3>
+          <pre><code>type BlockOutput = {
+  status: "ok" | "needs_input"
+        | "blocked" | "error";
+  summary: string;
+  artifacts: string[];
+  risks: string[];
+  nextAction: string;
+};</code></pre>
+          <p class="small">If a block feeds another block, its output must be machine-checkable: schema, validator, one explicit repair attempt, then fail closed. (Lesson 0044)</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Quality Gate Types</h2>
+      <table>
+        <thead><tr><th>Gate</th><th>Use when</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Deterministic check</td><td>Always first, when a rule can be coded</td><td>Schema validation, tests pass, lint clean, file exists, budget under limit</td></tr>
+          <tr><td>Semantic review (LLM-as-judge)</td><td>Quality is judgment-shaped and a rubric exists</td><td>Plan covers acceptance criteria; summary is grounded in the diff</td></tr>
+          <tr><td>Human checkpoint</td><td>Risk, irreversibility, or accountability requires a person</td><td>Merge auth changes, external side effects, spend above threshold</td></tr>
+          <tr><td>Dry run</td><td>The action is risky but its plan can be previewed</td><td>Show the ticket that would be created; show the SQL before running</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Prefer deterministic checks before judgment calls; put human checkpoints where human judgment is cheaper or safer than letting the workflow guess.</p>
+    </section>
+
+    <section>
+      <h2>Harness Asset Selector</h2>
+      <table>
+        <thead><tr><th>Asset</th><th>Trigger</th><th>Use for</th></tr></thead>
+        <tbody>
+          <tr><td>Skill</td><td>Agent-invoked or slash command</td><td>A repeatable process with prerequisites, steps, output format, and a definition of complete</td></tr>
+          <tr><td>Command</td><td>Explicit user invocation</td><td>A stable workflow with fixed input and output shape</td></tr>
+          <tr><td>Hook</td><td>Lifecycle event</td><td>A narrow, deterministic behavior at a known point: before edits, after tests, before handoff</td></tr>
+          <tr><td>Subagent</td><td>Delegation from an orchestrator</td><td>A bounded specialist with scoped context that returns a compact artifact</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Context discipline: hand each asset only the context its job needs, and require output the next block can validate. See <a href="https://code.claude.com/docs/en/skills">skills</a>, <a href="https://code.claude.com/docs/en/hooks-guide">hooks</a>, and <a href="https://code.claude.com/docs/en/sub-agents">subagents</a> docs. (Lesson 0043)</p>
+    </section>
+
+    <section>
+      <h2>Implementation Strategy Selector</h2>
+      <table>
+        <thead><tr><th>Strategy</th><th>Use when</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Direct</td><td>Small, reversible, clear acceptance criteria, good tests</td><td>Lowest; relies on existing safety nets</td></tr>
+          <tr><td>Goal loop</td><td>Agent iterates toward a goal but must report checkpoints</td><td>Medium; needs stop conditions and budgets</td></tr>
+          <tr><td>Verification loop</td><td>Correctness depends on repeated test, lint, eval, or trace feedback</td><td>Higher latency and tokens; buys measured quality</td></tr>
+          <tr><td>Team pattern</td><td>Planning, implementation, review, or research are separable roles</td><td>Highest coordination; buys isolation and blast-radius control</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Decision inputs: ambiguity, risk, reversibility, test coverage, coordination needs. Slop detection (unnecessary abstraction, generic comments, plausible-but-hollow names) belongs in the verification loop, not just in review instinct. (Lesson 0045)</p>
+    </section>
+
+    <section>
+      <h2>Executable Plan And Definition Of Done</h2>
+      <div class="two">
+        <article class="band">
+          <h3>Executable Plan</h3>
+          <pre><code>type ExecutablePlan = {
+  intent: string;
+  assumptions: string[];
+  decisionsNeeded: string[];
+  definitionOfDone: string[];
+  steps: string[];
+  checkpoints: string[];
+  verification: string[];
+  rollback: string;
+};</code></pre>
+        </article>
+        <article class="band">
+          <h3>Rules Of Thumb</h3>
+          <ul>
+            <li>A plan is executable only when done is checkable: behavior, tests, evals, docs, rollout, non-goals.</li>
+            <li>A requirement gap gets a clarifying question, not a guess.</li>
+            <li>One blocking unknown gets a bounded research spike: one question, a timebox, trusted sources, a decision-ready artifact.</li>
+            <li>Lock the plan as an artifact before implementation effort is spent.</li>
+          </ul>
+          <p class="small">(Lesson 0046)</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Review Layers For AI-Assisted Changes</h2>
+      <div class="two">
+        <article class="band">
+          <h3>Review Packet</h3>
+          <pre><code>type ReviewPacket = {
+  intent: string;
+  changedFiles: string[];
+  risks: string[];
+  testsRun: string[];
+  evalsRun: string[];
+  edgeCases: string[];
+  rolloutNotes: string;
+  reviewerQuestions: string[];
+};</code></pre>
+        </article>
+        <article class="band">
+          <h3>Layer Order</h3>
+          <ul>
+            <li>Self-review against intent and Definition of Done.</li>
+            <li>Automated first pass: lint, types, tests, security checks, eval smoke tests.</li>
+            <li>Human review spent on judgment: tradeoffs, invariants, operational risk.</li>
+            <li>Post-merge observation for risks that only production can reveal.</li>
+          </ul>
+          <p class="small">Doom-loop signal: every AI fix creates a new unrelated issue. Stop, return to the last good checkpoint, narrow the task, or rewrite the plan. (Lesson 0047)</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Improvement Loop</h2>
+      <div class="two">
+        <article class="band">
+          <h3>WAL Entry</h3>
+          <pre><code>type WorkflowLogEntry = {
+  time: string;
+  task: string;
+  block: string;
+  observation: string;
+  decision: string;
+  evidence: string;
+  followUp: string;
+};</code></pre>
+        </article>
+        <article class="band">
+          <h3>Tune Or Redesign</h3>
+          <ul>
+            <li>Localized failure in one block: tune that block's contract or validation.</li>
+            <li>Repeated cross-block symptoms: redesign the graph; an earlier gate is missing.</li>
+            <li>A fix without a case proving it: add the eval case before declaring victory.</li>
+            <li>One measurable change per retrospective; simultaneous changes make results uninterpretable.</li>
+          </ul>
+          <p class="small">(Lesson 0048)</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Team Rollout Memo</h2>
+      <div class="two">
+        <article class="band">
+          <h3>Rollout Memo</h3>
+          <pre><code>type WorkflowRolloutMemo = {
+  purpose: string;
+  owner: string;
+  setup: string[];
+  permissions: string[];
+  costModel: string;
+  knownFailureModes: string[];
+  humanCheckpoints: string[];
+  adoptionMetric: string;
+};</code></pre>
+        </article>
+        <article class="band">
+          <h3>Team-Ready Checklist</h3>
+          <ul>
+            <li>Another person can run it from the docs; their friction is part of the system.</li>
+            <li>Token and latency costs are known per block, as design signals.</li>
+            <li>Docs for humans and docs used as agent context are separated.</li>
+            <li>A human owner stays accountable for intent, tradeoffs, approvals, and stopping.</li>
+          </ul>
+          <p class="small">(Lesson 0049)</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout">
+      <h2>Course Artifacts</h2>
+      <p>Completing the course should leave these files in the portfolio repo: <code>docs/workflow-graph.md</code>, <code>docs/agentic-workflow-course-notes.md</code>, <code>docs/workflow-review-checklist.md</code>, <code>docs/workflow-retrospective.md</code>, <code>docs/workflow-rollout-memo.md</code>, one real harness skill, and one scriptable one-shot block with a validator.</p>
+    </section>
+
+    <footer>
+      Companion to the <a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a> and the <a href="agent-runtime-reference.html">Agent Runtime Reference</a>.
+      Key sources: <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a>,
+      <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering</a>,
+      <a href="https://www.anthropic.com/engineering/writing-tools-for-agents">Writing tools for agents</a>,
+      <a href="https://google.github.io/eng-practices/review/reviewer/standard.html">Google code review standard</a>,
+      and the <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>.
+    </footer>
+  </main>
+</body>
+</html>

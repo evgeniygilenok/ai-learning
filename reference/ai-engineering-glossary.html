@@ -363,6 +363,76 @@
         <h2>Portfolio Proof</h2>
         <p>Concrete evidence that a portfolio system handles AI quality, observability, cost, security, and product failure modes.</p>
       </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Workflow Block</h2>
+        <p>A bounded step in an agentic workflow with one responsibility, a declared input and output, a quality gate, and explicit pass/fail transitions.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Quality Gate</h2>
+        <p>A check that decides whether a block result is acceptable. Prefer deterministic checks (schema, tests, budgets) before semantic or human judgment.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Harness</h2>
+        <p>The coding-agent environment you work in (Cursor, Claude Code, Codex CLI) plus its extension points: skills, commands, hooks, and subagents.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Harness Skill</h2>
+        <p>A packaged, reusable process the agent can invoke: prerequisites, steps, required context, output format, and a definition of complete.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Hook</h2>
+        <p>A deterministic behavior attached to a lifecycle event, such as before edits or after tests. Hooks guarantee actions instead of hoping the model chooses them.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Subagent</h2>
+        <p>A bounded specialist run with scoped context and its own context window that returns a compact artifact to the orchestrating agent.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>One-Shot Block</h2>
+        <p>A single scripted agent call used as a workflow block. It becomes reliable only with a schema, a validator, one explicit repair attempt, and fail-closed behavior.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Definition Of Done</h2>
+        <p>Success converted into observable checks: behavior, tests, evals, docs, rollout, and non-goals. It is what makes a plan executable rather than aspirational.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Research Spike</h2>
+        <p>A bounded investigation that answers one blocking question within a timebox and returns a decision-ready artifact, not open-ended exploration.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Verification Loop</h2>
+        <p>An implementation strategy where the agent must pass repeated deterministic feedback, such as tests, lint, evals, or trace checks, before its work is accepted.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Doom Loop</h2>
+        <p>A failure pattern where each AI-suggested fix creates a new unrelated issue. The exit is stopping, returning to the last good checkpoint, and narrowing the task.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Slopwatch</h2>
+        <p>A deliberate check for AI-shaped code: unnecessary abstraction, generic comments, defensive plumbing without requirements, and plausible names hiding missing design.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Write-Ahead Log (WAL)</h2>
+        <p>Working notes recorded while running a workflow: decisions, failures, surprises, and interventions, captured close to when they happen so retrospectives use evidence, not memory.</p>
+      </article>
+      <article>
+        <span class="tag">Practice</span>
+        <h2>Token Economics</h2>
+        <p>Treating context, latency, and token spend per workflow block as design signals that shape which blocks exist and what context they receive.</p>
+      </article>
     </section>
 
     <footer>
@@ -373,7 +443,10 @@
       <a href="https://developers.openai.com/api/docs/guides/agents/orchestration">OpenAI Agents SDK orchestration</a>,
       <a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a>,
       <a href="https://www.braintrust.dev/docs/evaluate">Braintrust evals</a>,
-      and <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a>.
+      <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a>,
+      <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic: Building effective agents</a>,
+      and <a href="https://code.claude.com/docs/en/skills">Claude Code skills docs</a>.
+      Practice terms are expanded in the <a href="agentic-workflow-reference.html">Agentic Workflow Reference</a>.
     </footer>
   </main>
 </body>

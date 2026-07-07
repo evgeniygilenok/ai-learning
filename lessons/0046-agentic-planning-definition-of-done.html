@@ -34,6 +34,8 @@
     button.wrong { border-color:var(--rose); background:#ffe8ee; }
     .choices { display:grid; gap:8px; margin-top:10px; }
     .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    details { margin-top:12px; }
+    summary { cursor:pointer; font-weight:700; color:var(--blue); }
     .callout { border-left:5px solid var(--violet); background:#f1eaff; border-radius:8px; padding:16px; }
     footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
@@ -51,7 +53,7 @@
     <section class="band">
       <h2>The One Idea</h2>
       <p>Agents fill gaps. That is useful when the gap is harmless and dangerous when the gap is a requirement. Planning exists to decide which unknowns can be handled later and which must be resolved now.</p>
-      <p>A good Definition of Done turns "make it work" into checks the workflow can actually run or inspect.</p>
+      <p>A good Definition of Done turns "make it work" into checks the workflow can actually run or inspect. The term comes from Scrum, where it is a formal commitment describing the state work must meet to count as complete (<a href="https://scrumguides.org/scrum-guide.html">Scrum Guide</a>); for agent workflows the strongest done criteria are executable, which is the same discipline <a href="https://developers.openai.com/api/docs/guides/evals">OpenAI's eval guidance</a> applies to model behavior: define good before you build, then check it repeatedly.</p>
     </section>
 
     <section class="grid">
@@ -97,22 +99,50 @@
     <section class="band">
       <h2>Interactive Drill: What Does The Plan Need?</h2>
       <div class="grid">
-        <article class="card" data-answer="dod">
+        <article class="card">
           <h3>"Improve the agent's reliability."</h3>
-          <div class="choices"><button type="button">Definition of Done</button><button type="button">More implementation</button><button type="button">Less logging</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. Reliability must become measurable first: named failure cases, eval pass rate, retry behavior, or trace assertions. Until then, no other planning tool has a target.">A Definition of Done</button>
+            <button type="button" data-why="Not quite. A spike answers one blocking question. Here the problem is not a missing fact; it is that success itself is undefined, which is a DoD gap.">A research spike</button>
+            <button type="button" data-why="Not quite. A verification loop needs checks to verify against. Choose it after the DoD defines what those checks are, not instead of defining them.">A verification loop</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="spike">
+        <article class="card">
           <h3>"We cannot choose a storage design because we do not know resume requirements yet."</h3>
-          <div class="choices"><button type="button">Research spike</button><button type="button">Start coding</button><button type="button">Skip state</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. One named unknown blocks the architecture. A bounded spike, with a question, a timebox, and a decision-ready artifact, unblocks planning.">A research spike</button>
+            <button type="button" data-why="Not quite. A DoD describes what finished work looks like. You cannot write meaningful done criteria for a storage design you cannot yet choose.">A Definition of Done</button>
+            <button type="button" data-why="Not quite. Consensus locks a plan that already exists. Agreeing early just spreads the unknown to more people; the resume question still needs an answer first.">A consensus checkpoint</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="question">
+        <article class="card">
           <h3>"The ticket says to notify users, but nobody defined which users or channel."</h3>
-          <div class="choices"><button type="button">Clarifying question</button><button type="button">Guess email</button><button type="button">Write broad code</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. This is a requirements gap, not a harmless blank. The workflow should surface it to the ticket owner instead of letting the agent guess.">A clarifying question</button>
+            <button type="button" data-why="Risky. Recording an assumption is for gaps that are cheap to correct later. Notifying the wrong people is a user-visible side effect you cannot un-send.">An assumption noted in the plan</button>
+            <button type="button" data-why="Not quite. Building for every interpretation multiplies scope and still ships unrequested behavior. Ambiguity is resolved by asking, not by generalizing.">Build both channels behind a flag</button>
+          </div>
           <p class="answer"></p>
         </article>
       </div>
+    </section>
+
+    <section class="band">
+      <h2>Try It Cold</h2>
+      <p>Write five Definition of Done bullets for this vague request: <strong>"add feedback collection to the knowledge assistant."</strong> Make each one checkable, then reveal.</p>
+      <details>
+        <summary>Reveal a model answer</summary>
+        <ul>
+          <li>Every answer view renders a feedback control; submitting stores rating, comment, answer id, and trace id (verified by an integration test).</li>
+          <li>Feedback rows are queryable by question, source document, and retrieval strategy (verified by one working query in the docs).</li>
+          <li>Submitting feedback never blocks or breaks the answer flow; failures are logged and invisible to the user (verified by a fault-injection test).</li>
+          <li>No PII beyond the existing user id is stored; the retention policy doc covers the new table (verified by review against <code>docs/data-retention-redaction.md</code>).</li>
+          <li>Non-goal stated: no automated retraining or prompt changes from feedback in this iteration.</li>
+        </ul>
+        <p class="small">Compare: can each of your bullets be checked by a test, a query, a doc, or an inspection? "Users can give feedback easily" fails that bar.</p>
+      </details>
     </section>
 
     <section class="callout">
@@ -122,15 +152,15 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Take a vague feature request for your portfolio and create an executable plan:</p>
+      <p>Take a vague feature request for your portfolio and create an executable plan as a committed file, for example <code>docs/plans/&lt;feature&gt;-plan.md</code>:</p>
       <ul>
         <li>Write the intent in one sentence.</li>
         <li>List assumptions and missing requirements.</li>
-        <li>Write five Definition of Done bullets.</li>
-        <li>Add one research spike if needed.</li>
+        <li>Write five Definition of Done bullets, each checkable.</li>
+        <li>Add one research spike if needed, with its question and timebox.</li>
         <li>Add checkpoints where the agent must stop and report.</li>
       </ul>
-      <p class="small">Ask the agent to attack the plan: "Where would an implementation agent still need to guess?"</p>
+      <p>Then hand the plan to your agent and have it attack the plan: "Where would an implementation agent still need to guess?" Fold the answers back in, and note what the attack found in <code>docs/agentic-workflow-course-notes.md</code>.</p>
     </section>
 
     <section>
@@ -139,29 +169,22 @@
         <li><a href="0047-ai-assisted-code-review-system.html">Lesson 0047: AI-Assisted Code Review System</a></li>
         <li><a href="0015-portfolio-system-design-story.html">Lesson 0015: Portfolio System Design Story</a></li>
         <li><a href="0030-final-portfolio-and-interview-drill.html">Lesson 0030: Final Portfolio And Interview Drill</a></li>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a></li>
         <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
       </ul>
     </section>
 
-    <footer>Sources: attached agentic workflow masterclass outline, roadmap portfolio planning lessons, and the AI engineering mission.</footer>
+    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, the <a href="https://scrumguides.org/scrum-guide.html">Scrum Guide</a> on Definition of Done, <a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals guide</a>, and roadmap portfolio planning lessons. Stuck or curious? Ask your agent-teacher to explain, quiz you, or attack your plan.</footer>
   </main>
   <script>
-    const copy = {
-      dod: "Correct. Reliability must become measurable: failure cases, eval pass rate, retry behavior, or trace assertions.",
-      spike: "Correct. One blocking unknown deserves a bounded research spike before architecture work.",
-      question: "Correct. This is a requirements gap that the workflow should surface instead of guessing."
-    };
-    document.querySelectorAll("[data-answer]").forEach(card => {
-      const expected = card.dataset.answer;
-      const answer = card.querySelector(".answer");
-      const buttons = card.querySelectorAll("button");
+    document.querySelectorAll(".choices").forEach(group => {
+      const answer = group.parentElement.querySelector(".answer");
+      const buttons = group.querySelectorAll("button");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("correct", "wrong"));
-          const text = button.textContent.toLowerCase();
-          const picked = text.includes("definition") ? "dod" : text.includes("spike") ? "spike" : text.includes("question") ? "question" : "other";
-          button.classList.add(picked === expected ? "correct" : "wrong");
-          answer.textContent = picked === expected ? copy[expected] : "Not quite. Planning should remove risky guessing before implementation starts.";
+          button.classList.add(button.hasAttribute("data-correct") ? "correct" : "wrong");
+          answer.textContent = button.dataset.why;
         });
       });
     });

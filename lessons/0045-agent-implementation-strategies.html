@@ -34,6 +34,8 @@
     button.wrong { border-color:var(--rose); background:#ffe8ee; }
     .choices { display:grid; gap:8px; margin-top:10px; }
     .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    details { margin-top:12px; }
+    summary { cursor:pointer; font-weight:700; color:var(--blue); }
     .callout { border-left:5px solid var(--green); background:#e7f7ed; border-radius:8px; padding:16px; }
     footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
@@ -50,8 +52,8 @@
 
     <section class="band">
       <h2>The One Idea</h2>
-      <p>Implementation strategy is a control decision. A direct agent pass is fine for tiny, low-risk work. Complex work needs loops: plan, implement, verify, review, and possibly split across specialists.</p>
-      <p>The mistake is treating every task as the same shape because the interface is the same chat box.</p>
+      <p>Implementation strategy is a control decision. A direct agent pass is fine for tiny, low-risk work. Complex work needs loops: plan, implement, verify, review, and possibly split across specialists. These map onto the workflow patterns in <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic's Building effective agents</a>: the verification loop is their evaluator-optimizer pattern, and the team pattern is orchestrator-workers.</p>
+      <p>The mistake is treating every task as the same shape because the interface is the same chat box. Anthropic's first principle applies: use the simplest composition that meets the bar, and add loop machinery only when it buys measurable quality.</p>
     </section>
 
     <section class="grid">
@@ -95,22 +97,43 @@
     <section class="band">
       <h2>Interactive Drill: Pick The Strategy</h2>
       <div class="grid">
-        <article class="card" data-answer="direct">
+        <article class="card">
           <h3>Rename one UI label and update one snapshot test.</h3>
-          <div class="choices"><button type="button">Direct</button><button type="button">Team</button><button type="button">Research spike</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. Small, clear, reversible, and already covered by a test. The shortest responsible loop is a direct pass plus the existing safety net.">Direct</button>
+            <button type="button" data-why="Not quite. A verification loop buys measured quality at a cost in latency and tokens. Here the snapshot test already is the verification; the loop adds nothing.">Verification loop with an eval gate</button>
+            <button type="button" data-why="Not quite. Checkpoints exist to control ambiguity and risk. A one-line rename has neither, so checkpoint overhead is pure cost.">Goal loop with checkpoints</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="verify">
+        <article class="card">
           <h3>Change retrieval ranking and prove citation quality did not regress.</h3>
-          <div class="choices"><button type="button">Direct</button><button type="button">Verification loop</button><button type="button">No tests</button></div>
+          <div class="choices">
+            <button type="button" data-why="Not quite. However careful the prompt, 'prove no regression' is a measurement claim. Without a measuring loop you only have the agent's confidence.">Direct, with a carefully written prompt</button>
+            <button type="button" data-correct data-why="Correct. The requirement contains its own gate: run retrieval evals before and after, and accept the change only when citation metrics hold.">Verification loop</button>
+            <button type="button" data-why="Not quite. There is no unknown to research and no separable roles; the work is one change plus proof. Splitting roles adds coordination without adding evidence.">Team pattern with a research role</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="team">
+        <article class="card">
           <h3>Design, implement, and review a new tool runtime with auth, idempotency, and audit logs.</h3>
-          <div class="choices"><button type="button">Direct</button><button type="button">Team pattern</button><button type="button">Skip review</button></div>
+          <div class="choices">
+            <button type="button" data-why="Not quite. High blast radius, multiple concerns, and security-sensitive surfaces make a single unstructured pass a gamble that review alone cannot rescue.">Direct implementation, review at the end</button>
+            <button type="button" data-correct data-why="Correct. Design, implementation, and review are separable concerns with different context needs, and the blast radius justifies bounded roles with their own gates.">Team pattern</button>
+            <button type="button" data-why="Not quite. 'Until tests pass' is the wrong stop condition for a security surface: tests cannot cover authorization design mistakes the loop can bake in.">Goal loop until tests pass</button>
+          </div>
           <p class="answer"></p>
         </article>
       </div>
+    </section>
+
+    <section class="band">
+      <h2>Try It Cold</h2>
+      <p>Choose a strategy and name its gates for this task: <strong>"migrate workflow state storage from JSON files to SQLite without losing any in-flight runs."</strong> Write your choice down before revealing.</p>
+      <details>
+        <summary>Reveal a model answer</summary>
+        <p>Verification loop, with medium-to-high risk flags. Uncertainty is low (the target design is known) so a team pattern is more coordination than the task needs, but the migration is hard to reverse once old files are deleted, so direct is irresponsible. Gates: a round-trip test proving every existing run deserializes identically from SQLite; a dual-write or backup step before cutover; an eval or smoke test that resumes one real in-flight run from the new store. Rollback plan: keep the JSON files until the first week of runs completes cleanly. If you chose team pattern, that is defensible only if you also named what the second role verifies that the loop's gates do not.</p>
+      </details>
     </section>
 
     <section class="callout">
@@ -120,15 +143,16 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Pick one feature in the portfolio agent runtime. Run a strategy comparison:</p>
+      <p>Pick one small, real change in the portfolio agent runtime and run it twice, not on paper:</p>
       <ul>
-        <li>Write the direct implementation prompt you would use.</li>
-        <li>Write the verification-loop version with gates and checkpoints.</li>
-        <li>Name the extra cost of the loop.</li>
-        <li>Name the risk it reduces.</li>
-        <li>Decide which strategy you would actually use and why.</li>
+        <li>Run it once as a direct implementation.</li>
+        <li>Reset, then run it again as a verification loop with explicit gates and checkpoints.</li>
+        <li>Compare the two diffs, the tests run, the wall-clock and token cost, and the review burden.</li>
+        <li>Name the risk the loop actually reduced, with evidence from the runs.</li>
+        <li>Decide which strategy you would use for this task class going forward.</li>
       </ul>
-      <p class="small">Ask the agent to do a slopwatch review of the chosen implementation plan before any code is written.</p>
+      <p>Record the comparison table and your decision in <code>docs/agentic-workflow-course-notes.md</code>.</p>
+      <p class="small">Ask the agent to do a slopwatch review of both diffs and report which strategy produced more AI-shaped filler.</p>
     </section>
 
     <section>
@@ -137,29 +161,22 @@
         <li><a href="0046-agentic-planning-definition-of-done.html">Lesson 0046: Agentic Planning And Definition Of Done</a></li>
         <li><a href="0016-eval-release-gates.html">Lesson 0016: Eval Release Gates</a></li>
         <li><a href="0024-agent-retry-and-recovery.html">Lesson 0024: Agent Retry And Recovery</a></li>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a></li>
         <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
       </ul>
     </section>
 
-    <footer>Sources: attached agentic workflow masterclass outline, roadmap eval and retry lessons, and the portfolio system design path.</footer>
+    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic: Building effective agents</a>, and roadmap eval and retry lessons. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review your strategy comparison.</footer>
   </main>
   <script>
-    const copy = {
-      direct: "Correct. Small, clear, reversible work can use the shortest responsible loop.",
-      verify: "Correct. Retrieval quality needs measurement, so use a verification loop.",
-      team: "Correct. Multiple concerns and high blast radius justify separate bounded roles."
-    };
-    document.querySelectorAll("[data-answer]").forEach(card => {
-      const expected = card.dataset.answer;
-      const answer = card.querySelector(".answer");
-      const buttons = card.querySelectorAll("button");
+    document.querySelectorAll(".choices").forEach(group => {
+      const answer = group.parentElement.querySelector(".answer");
+      const buttons = group.querySelectorAll("button");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("correct", "wrong"));
-          const text = button.textContent.toLowerCase();
-          const picked = text.includes("verification") ? "verify" : text.includes("team") ? "team" : text.includes("direct") ? "direct" : "other";
-          button.classList.add(picked === expected ? "correct" : "wrong");
-          answer.textContent = picked === expected ? copy[expected] : "Not quite. Match the loop to ambiguity, risk, and the checks needed to trust the result.";
+          button.classList.add(button.hasAttribute("data-correct") ? "correct" : "wrong");
+          answer.textContent = button.dataset.why;
         });
       });
     });

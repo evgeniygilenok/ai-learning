@@ -34,6 +34,8 @@
     button.wrong { border-color:var(--rose); background:#ffe8ee; }
     .choices { display:grid; gap:8px; margin-top:10px; }
     .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    details { margin-top:12px; }
+    summary { cursor:pointer; font-weight:700; color:var(--blue); }
     .callout { border-left:5px solid var(--blue); background:#e8f0ff; border-radius:8px; padding:16px; }
     footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
@@ -50,7 +52,7 @@
 
     <section class="band">
       <h2>The One Idea</h2>
-      <p>A harness asset should encode an engineering process: when to run, what context it needs, what it must produce, and how the result is verified.</p>
+      <p>A harness asset should encode an engineering process: when to run, what context it needs, what it must produce, and how the result is verified. These are real, documented mechanisms, not metaphors: see the Claude Code docs for <a href="https://code.claude.com/docs/en/skills">skills</a>, <a href="https://code.claude.com/docs/en/hooks-guide">hooks</a>, and <a href="https://code.claude.com/docs/en/sub-agents">subagents</a>. Cursor has equivalents, and this workspace's own <code>.codex/skills/teach/SKILL.md</code> is a working example.</p>
       <p>The goal is not more automation. The goal is to make the right behavior cheaper to repeat than the wrong behavior.</p>
     </section>
 
@@ -89,29 +91,74 @@
       <article class="band">
         <h2>Context Discipline</h2>
         <p>Do not hand every helper the whole project. Give each asset only the context needed for its job, then require a result that the next block can validate.</p>
-        <p class="muted">This is how subagents stay useful instead of becoming parallel confusion machines.</p>
+        <p class="muted">This is how subagents stay useful instead of becoming parallel confusion machines. Anthropic frames the same idea as an attention budget: find the smallest set of high-signal tokens that maximizes the outcome (<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering</a>).</p>
       </article>
     </section>
 
     <section class="band">
       <h2>Interactive Drill: Pick The Harness Asset</h2>
       <div class="grid">
-        <article class="card" data-answer="skill">
+        <article class="card">
           <h3>You repeatedly need the agent to produce a PR review packet with risk, tests, and rollout notes.</h3>
-          <div class="choices"><button type="button">Skill</button><button type="button">Hook</button><button type="button">Subagent</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. This is a reusable process with prerequisites, steps, a stable output artifact, and a verification step. That is the skill shape.">Skill</button>
+            <button type="button" data-why="Not quite. Hooks fire on lifecycle events. This is an on-demand process you invoke when a PR is ready, and it has multi-step structure a hook cannot carry.">Hook</button>
+            <button type="button" data-why="Close, but delegation is not the point here. You could run this skill inside a subagent, but the reusable asset you need first is the documented process itself.">Subagent</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="hook">
+        <article class="card">
           <h3>Before any file edit, you want the agent to state which files it will touch and why.</h3>
-          <div class="choices"><button type="button">Command</button><button type="button">Hook</button><button type="button">Subagent</button></div>
+          <div class="choices">
+            <button type="button" data-why="Not quite. A command relies on you remembering to invoke it. The requirement is 'before any edit,' which needs an automatic trigger.">Command</button>
+            <button type="button" data-correct data-why="Correct. 'Before any file edit' is a lifecycle event (a pre-edit or pre-tool-use trigger). Hooks make the behavior deterministic instead of hoping the model remembers.">Hook</button>
+            <button type="button" data-why="Not quite. A subagent is for delegated work with scoped context. This is a guarantee about the main agent's own behavior at a known event.">Subagent</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="subagent">
+        <article class="card">
           <h3>A specialist should inspect only eval traces and return failure clusters to the main agent.</h3>
-          <div class="choices"><button type="button">Hook</button><button type="button">Subagent</button><button type="button">Longer prompt</button></div>
+          <div class="choices">
+            <button type="button" data-why="Not quite. Hooks are narrow event-triggered behaviors. This is a bounded analysis job with its own context needs and a compact deliverable.">Hook</button>
+            <button type="button" data-correct data-why="Correct. Scoped context (only traces), an isolated context window, and a compact returned artifact: that is exactly the subagent use case.">Subagent</button>
+            <button type="button" data-why="Not quite. A command could trigger the work, but the key property you need is context isolation, so trace noise does not pollute the orchestrator.">Command</button>
+          </div>
           <p class="answer"></p>
         </article>
       </div>
+    </section>
+
+    <section class="band">
+      <h2>Try It Cold</h2>
+      <p>Draft the frontmatter and section headers of a <code>SKILL.md</code> for this repeated task: <strong>"generate a retrieval eval report from the latest eval run."</strong> Write yours before revealing the model answer.</p>
+      <details>
+        <summary>Reveal a model answer</summary>
+        <pre><code>---
+name: retrieval-eval-report
+description: Generate a retrieval eval report from the
+  latest eval run results. Use when the user asks for
+  an eval report or after an eval run completes.
+---
+
+## Prerequisites
+- evals/results/*.json exists for the target run
+- golden question set version is recorded in the run
+
+## Steps
+1. Load the latest run and the previous baseline run.
+2. Compute hit rate, citation correctness, answerability.
+3. Diff against baseline; list regressions with case ids.
+4. Write docs/retrieval-eval-report.md using the template.
+
+## Output
+docs/retrieval-eval-report.md with metrics table,
+regression list, and one recommended next action.
+
+## Verification
+Report must cite real case ids; regression count must
+match the diff; fail if baseline run is missing.</code></pre>
+        <p class="small">Compare: did yours state when the skill triggers, what already has to exist, and a verification step that can fail? Those three are what separate a skill from a saved prompt.</p>
+      </details>
     </section>
 
     <section class="callout">
@@ -121,7 +168,7 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Create one harness asset for your portfolio workflow agent:</p>
+      <p>Build a real skill in your actual harness, not on paper. Create a skill file (for example <code>.cursor/skills/&lt;name&gt;/SKILL.md</code>, <code>.claude/skills/&lt;name&gt;/SKILL.md</code>, or <code>.codex/skills/&lt;name&gt;/SKILL.md</code>) for one repeated task in your portfolio workflow:</p>
       <ul>
         <li>Name the repeated task it standardizes.</li>
         <li>List prerequisites and required context.</li>
@@ -129,6 +176,7 @@
         <li>Add a verification step that can fail.</li>
         <li>Write one example input and one expected output.</li>
       </ul>
+      <p>Then invoke it once for real. Record what happened, including anything the skill assumed that it should have stated, in <code>docs/agentic-workflow-course-notes.md</code>.</p>
       <p class="small">Ask the agent to identify which parts are process, which are policy, and which are accidental local setup.</p>
     </section>
 
@@ -138,29 +186,22 @@
         <li><a href="0044-scriptable-agent-blocks.html">Lesson 0044: Scriptable Agent Blocks</a></li>
         <li><a href="0031-agent-orchestration-patterns.html">Lesson 0031: Agent Orchestration Patterns</a></li>
         <li><a href="0034-agent-evaluation-harness.html">Lesson 0034: Agent Evaluation Harness</a></li>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a></li>
         <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
       </ul>
     </section>
 
-    <footer>Sources: attached agentic workflow masterclass outline, roadmap agent-runtime lessons, and the local teaching workspace skill format.</footer>
+    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, Claude Code docs on <a href="https://code.claude.com/docs/en/skills">skills</a>, <a href="https://code.claude.com/docs/en/hooks-guide">hooks</a>, and <a href="https://code.claude.com/docs/en/sub-agents">subagents</a>, and <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic: Effective context engineering</a>. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review the skill you built.</footer>
   </main>
   <script>
-    const copy = {
-      skill: "Correct. This is a reusable process with a stable artifact and verification step.",
-      hook: "Correct. This is an event-triggered behavior at a known point in the workflow.",
-      subagent: "Correct. A bounded specialist with scoped context is a good subagent use."
-    };
-    document.querySelectorAll("[data-answer]").forEach(card => {
-      const expected = card.dataset.answer;
-      const answer = card.querySelector(".answer");
-      const buttons = card.querySelectorAll("button");
+    document.querySelectorAll(".choices").forEach(group => {
+      const answer = group.parentElement.querySelector(".answer");
+      const buttons = group.querySelectorAll("button");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("correct", "wrong"));
-          const text = button.textContent.toLowerCase();
-          const picked = text.includes("skill") ? "skill" : text.includes("hook") ? "hook" : text.includes("subagent") ? "subagent" : "command";
-          button.classList.add(picked === expected ? "correct" : "wrong");
-          answer.textContent = picked === expected ? copy[expected] : "Not quite. Match the asset to the kind of control you need: reusable process, event trigger, explicit command, or specialist delegation.";
+          button.classList.add(button.hasAttribute("data-correct") ? "correct" : "wrong");
+          answer.textContent = button.dataset.why;
         });
       });
     });

@@ -34,6 +34,8 @@
     button.wrong { border-color:var(--rose); background:#ffe8ee; }
     .choices { display:grid; gap:8px; margin-top:10px; }
     .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    details { margin-top:12px; }
+    summary { cursor:pointer; font-weight:700; color:var(--blue); }
     .callout { border-left:5px solid var(--amber); background:#fff3d8; border-radius:8px; padding:16px; }
     footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
@@ -57,11 +59,11 @@
     <section class="grid">
       <article class="card rollout">
         <h3>Token Economics</h3>
-        <p class="muted">Know which blocks spend context and why. Track latency and cost as design signals, not trivia.</p>
+        <p class="muted">Know which blocks spend context and why. Track latency and cost as design signals, not trivia. Anthropic frames context as a finite attention budget to spend deliberately (<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering</a>).</p>
       </article>
       <article class="card rollout">
         <h3>Team Reproducibility</h3>
-        <p class="muted">Document setup, required tools, secrets, versioning, local assumptions, and failure recovery.</p>
+        <p class="muted">Document setup, required tools, secrets, versioning, local assumptions, and failure recovery. Harnesses support this natively: skills and hooks are shareable files that can be versioned and bundled for a team (<a href="https://code.claude.com/docs/en/skills">Claude Code skills</a>).</p>
       </article>
       <article class="card rollout">
         <h3>Documentation Boundaries</h3>
@@ -97,22 +99,43 @@
     <section class="band">
       <h2>Interactive Drill: Team-Ready Or Personal Habit?</h2>
       <div class="grid">
-        <article class="card" data-answer="habit">
+        <article class="card">
           <h3>"Run my local command after setting the same env vars I always use."</h3>
-          <div class="choices"><button type="button">Team-ready</button><button type="button">Personal habit</button></div>
+          <div class="choices">
+            <button type="button" data-why="Not quite. 'The env vars I always use' is hidden knowledge living in one person's shell history. A new teammate cannot reproduce this run.">Team-ready</button>
+            <button type="button" data-correct data-why="Correct. Hidden local assumptions make this a personal workflow. Team-ready means the setup, including every env var, is written down and testable.">Personal habit</button>
+            <button type="button" data-why="Not quite. A README helps only if it actually captures the env vars and setup. As stated, the knowledge is still in the author's head, not in the repo.">Team-ready once a README exists somewhere</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="ready">
+        <article class="card">
           <h3>"The workflow has setup docs, permissions, sample inputs, expected outputs, and known failure modes."</h3>
-          <div class="choices"><button type="button">Team-ready</button><button type="button">Personal habit</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. Reproducibility means another engineer can run it, inspect it, and recover it. This list covers setup, authority, verification, and failure paths.">Team-ready</button>
+            <button type="button" data-why="Not quite. This is exactly what elevates a personal habit into a system: the knowledge has moved from the author's memory into inspectable artifacts.">Personal habit</button>
+            <button type="button" data-why="Not quite. An owner matters, but ownership complements documentation; it does not replace it. This workflow is ready precisely because it does not depend on one person being available.">Team-ready only if the author stays on the team</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="human">
+        <article class="card">
           <h3>"The agent can choose whether a risky architecture tradeoff is acceptable for the business."</h3>
-          <div class="choices"><button type="button">Good automation</button><button type="button">Needs human owner</button></div>
+          <div class="choices">
+            <button type="button" data-why="Not quite. The workflow can gather evidence and recommend, but accepting business risk is an accountability decision. Accountability cannot be delegated to a model.">Good automation</button>
+            <button type="button" data-correct data-why="Correct. A human owner must accept business and architecture risk. The agent's job is to surface the tradeoff with evidence, then stop at the checkpoint.">Needs a human owner</button>
+            <button type="button" data-why="Not quite. Eval pass rates measure past task performance, not authority over business risk. A high score does not make the agent accountable for the outcome.">Acceptable if the agent's eval pass rate is high</button>
+          </div>
           <p class="answer"></p>
         </article>
       </div>
+    </section>
+
+    <section class="band">
+      <h2>Try It Cold</h2>
+      <p>Pick the adoption metric for this rollout: a workflow that turns support tickets into triaged, prioritized briefs for the on-call engineer. Name the metric, how it is measured, and one metric you deliberately rejected. Then reveal.</p>
+      <details>
+        <summary>Reveal a model answer</summary>
+        <p>A strong choice: <strong>percentage of on-call shifts that use the generated brief without regenerating or discarding it</strong>, measured from run logs plus a one-question shift survey. It captures real adoption (people choosing to rely on the output) rather than activity. A tempting metric to reject: <strong>number of briefs generated</strong>. It goes up even when nobody reads them, and it rewards running the workflow rather than trusting it. Time-saved estimates are also weak at first: they are self-reported and drown in shift-to-shift noise until adoption is stable.</p>
+      </details>
     </section>
 
     <section class="callout">
@@ -122,7 +145,7 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Write a one-page rollout memo for your agentic workflow:</p>
+      <p>Write a one-page rollout memo for your agentic workflow and commit it as <code>docs/workflow-rollout-memo.md</code>:</p>
       <ul>
         <li>Purpose and non-goals.</li>
         <li>Who owns the workflow and who can approve risky actions.</li>
@@ -131,7 +154,7 @@
         <li>Known failure modes and support path.</li>
         <li>Adoption metric: time saved, review defects caught, eval pass rate, or setup success.</li>
       </ul>
-      <p class="small">Ask the agent to act as a new teammate and point out every step that assumes hidden knowledge.</p>
+      <p>Then run the completion gate for real: ask the agent to act as a new teammate following only the memo, and have it point out every step that assumes hidden knowledge. Fix the top findings, and note them in <code>docs/agentic-workflow-course-notes.md</code>. This memo is the final artifact of the course; also write a learning record (<code>learning-records/</code>) if the course changed how you think about agent work.</p>
     </section>
 
     <section>
@@ -140,29 +163,22 @@
         <li><a href="0039-deployable-ai-portfolio.html">Lesson 0039: Deployable AI Portfolio</a></li>
         <li><a href="0040-adoption-feedback-loop.html">Lesson 0040: Adoption Feedback Loop</a></li>
         <li><a href="../reference/agent-runtime-reference.html">Agent Runtime Reference</a></li>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a></li>
         <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
       </ul>
     </section>
 
-    <footer>Sources: attached agentic workflow masterclass outline, roadmap deployment and adoption lessons, and the AI engineering mission.</footer>
+    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic: Effective context engineering</a>, <a href="https://code.claude.com/docs/en/skills">Claude Code skills docs</a>, and roadmap deployment and adoption lessons. Stuck or curious? Ask your agent-teacher to explain, quiz you, or play the new teammate against your memo.</footer>
   </main>
   <script>
-    const copy = {
-      habit: "Correct. Hidden local assumptions make this a personal workflow, not a team-ready system.",
-      ready: "Correct. Reproducibility means another engineer can run, inspect, and recover it.",
-      human: "Correct. The workflow can surface evidence, but a human owner must accept business and architecture risk."
-    };
-    document.querySelectorAll("[data-answer]").forEach(card => {
-      const expected = card.dataset.answer;
-      const answer = card.querySelector(".answer");
-      const buttons = card.querySelectorAll("button");
-      buttons.forEach((button, index) => {
+    document.querySelectorAll(".choices").forEach(group => {
+      const answer = group.parentElement.querySelector(".answer");
+      const buttons = group.querySelectorAll("button");
+      buttons.forEach(button => {
         button.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("correct", "wrong"));
-          const text = button.textContent.toLowerCase();
-          const picked = text.includes("team-ready") ? "ready" : text.includes("human") ? "human" : index === 1 ? (expected === "human" ? "human" : "habit") : "ready";
-          button.classList.add(picked === expected ? "correct" : "wrong");
-          answer.textContent = picked === expected ? copy[expected] : "Not quite. Team rollout depends on reproducibility, explicit ownership, and human accountability.";
+          button.classList.add(button.hasAttribute("data-correct") ? "correct" : "wrong");
+          answer.textContent = button.dataset.why;
         });
       });
     });

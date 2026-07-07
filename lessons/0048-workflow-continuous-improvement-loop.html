@@ -34,6 +34,8 @@
     button.wrong { border-color:var(--rose); background:#ffe8ee; }
     .choices { display:grid; gap:8px; margin-top:10px; }
     .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    details { margin-top:12px; }
+    summary { cursor:pointer; font-weight:700; color:var(--blue); }
     .callout { border-left:5px solid var(--teal); background:#e6f4f1; border-radius:8px; padding:16px; }
     footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
@@ -50,7 +52,7 @@
 
     <section class="band">
       <h2>The One Idea</h2>
-      <p>A workflow gets better only when failures are captured close to when they happen, grouped into patterns, and converted into measured changes.</p>
+      <p>A workflow gets better only when failures are captured close to when they happen, grouped into patterns, and converted into measured changes. The capture half is what Anthropic calls structured note-taking: persistent notes outside the context window that survive across runs (<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering</a>). The measurement half is standard eval discipline: a change counts as an improvement only when a repeatable check says so (<a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals guide</a>).</p>
       <p>Do not let "the agent should improve itself" replace engineering. The system improves when you decide what to change, why, and how success will be measured.</p>
     </section>
 
@@ -88,7 +90,7 @@
       </article>
       <article class="band">
         <h2>Improve One Thing</h2>
-        <p>A retrospective should end with one measurable change: a new gate, a clearer template, a stricter tool policy, a better eval case, or a removed branch.</p>
+        <p>A retrospective should end with one measurable change: a new gate, a clearer template, a stricter tool policy, a better eval case, or a removed branch. If you want structure for the session itself, <a href="https://retromat.org/en/">Retromat</a> catalogs dozens of retrospective formats; any of them works as long as the output is one testable change.</p>
         <p class="muted">Too many simultaneous changes make the next result impossible to interpret.</p>
       </article>
     </section>
@@ -96,22 +98,54 @@
     <section class="band">
       <h2>Interactive Drill: Tune Or Redesign?</h2>
       <div class="grid">
-        <article class="card" data-answer="tune">
+        <article class="card">
           <h3>One block often returns invalid JSON, but the overall workflow shape still works.</h3>
-          <div class="choices"><button type="button">Tune one block</button><button type="button">Redesign whole workflow</button><button type="button">Ignore</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. A localized failure in one block starts with a local fix: tighter output contract, better examples, or stricter validation on that block.">Tune that one block</button>
+            <button type="button" data-why="Not quite. The graph is doing its job; the evidence points at one boundary. Redesign is for cross-block symptoms, not a single leaky contract.">Redesign the workflow graph</button>
+            <button type="button" data-why="Not quite. A checker model on every block taxes the whole workflow for one block's problem, and adds a second nondeterministic step where you wanted fewer.">Add a second model to check every block</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="redesign">
+        <article class="card">
           <h3>Different blocks keep asking for the same missing requirement and then drifting.</h3>
-          <div class="choices"><button type="button">Tune one prompt</button><button type="button">Redesign workflow</button><button type="button">Add tokens</button></div>
+          <div class="choices">
+            <button type="button" data-why="Not quite. Patching each prompt treats a structural gap as a wording problem. The same symptom in many blocks means the fix belongs upstream of all of them.">Tune each block's prompt</button>
+            <button type="button" data-correct data-why="Correct. Repeated cross-block symptoms mean the graph is missing an earlier requirement gate. Add an intake block that resolves the requirement once.">Redesign the workflow graph</button>
+            <button type="button" data-why="Not quite. Retry budgets bound how long a block flails; they do not supply the requirement it is missing. The drift will just repeat inside the budget.">Increase retry budgets</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="eval">
+        <article class="card">
           <h3>A fix feels better, but there is no case proving the old failure stays fixed.</h3>
-          <div class="choices"><button type="button">Add eval case</button><button type="button">Declare solved</button><button type="button">Remove logs</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. A fix needs a case that catches the old failure before it returns. Otherwise the next prompt or model change can silently reintroduce it.">Add an eval case for the failure</button>
+            <button type="button" data-why="Not quite. More logs help future diagnosis, but they are passive. Nothing will alert you when the failure quietly comes back next month.">Log more and move on</button>
+            <button type="button" data-why="Not quite. Ten eyeballed runs are neither repeatable nor comparable, and nobody reruns them after the next change. Capture the check as an eval case instead.">Run it ten times and eyeball the results</button>
+          </div>
           <p class="answer"></p>
         </article>
       </div>
+    </section>
+
+    <section class="band">
+      <h2>Try It Cold</h2>
+      <p>Yesterday your plan block approved a plan with no rollback section, and implementation later stalled on exactly that gap. Write the WAL entry (time, task, block, observation, decision, evidence, followUp), then reveal.</p>
+      <details>
+        <summary>Reveal a model answer</summary>
+        <pre><code>{
+  time: "2026-07-01T16:40",
+  task: "add retry to embedding call",
+  block: "plan-quality-gate",
+  observation: "gate passed a plan with no rollback
+    section; implementation stalled at cutover",
+  decision: "stopped the run; wrote rollback manually",
+  evidence: "run #143 trace; plan artifact rev 2",
+  followUp: "add 'rollback section present and
+    non-empty' as a deterministic gate check"
+}</code></pre>
+        <p class="small">Compare: does your entry point at a specific block, cite evidence a future you can find, and end in a follow-up that could become a gate or eval case? "The agent messed up the plan" fails all three.</p>
+      </details>
     </section>
 
     <section class="callout">
@@ -121,15 +155,15 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Run one mini-retrospective on your workflow agent:</p>
+      <p>Run one mini-retrospective on your workflow agent and write the result to <code>docs/workflow-retrospective.md</code>:</p>
       <ul>
         <li>Collect three recent trace or WAL observations.</li>
         <li>Group them into one failure pattern.</li>
-        <li>Decide whether the fix is local or structural.</li>
-        <li>Add one eval case or quality gate.</li>
-        <li>Write how you will know whether the change helped.</li>
+        <li>Decide whether the fix is local or structural, and say why.</li>
+        <li>Add one eval case or quality gate, for real, to your repo.</li>
+        <li>Write how you will know whether the change helped, with a number or a check.</li>
       </ul>
-      <p class="small">Ask the agent to argue against your chosen fix before you implement it.</p>
+      <p class="small">Ask the agent to argue against your chosen fix before you implement it, and record the strongest counterargument in the retrospective.</p>
     </section>
 
     <section>
@@ -138,29 +172,22 @@
         <li><a href="0049-team-agent-workflow-rollout.html">Lesson 0049: Team Agent Workflow Rollout</a></li>
         <li><a href="0009-tracing-ai-runs.html">Lesson 0009: Tracing AI Runs</a></li>
         <li><a href="0034-agent-evaluation-harness.html">Lesson 0034: Agent Evaluation Harness</a></li>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a></li>
         <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
       </ul>
     </section>
 
-    <footer>Sources: attached agentic workflow masterclass outline, roadmap tracing and eval lessons, and the agent-runtime specialization.</footer>
+    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic: Effective context engineering</a>, <a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals guide</a>, and <a href="https://retromat.org/en/">Retromat</a>. Stuck or curious? Ask your agent-teacher to explain, quiz you, or run the retrospective with you.</footer>
   </main>
   <script>
-    const copy = {
-      tune: "Correct. A localized failure in one block usually starts with a local contract or validation fix.",
-      redesign: "Correct. Repeated cross-block symptoms suggest the workflow is missing an earlier requirement gate.",
-      eval: "Correct. A fix needs a case that catches the old failure before it returns."
-    };
-    document.querySelectorAll("[data-answer]").forEach(card => {
-      const expected = card.dataset.answer;
-      const answer = card.querySelector(".answer");
-      const buttons = card.querySelectorAll("button");
+    document.querySelectorAll(".choices").forEach(group => {
+      const answer = group.parentElement.querySelector(".answer");
+      const buttons = group.querySelectorAll("button");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("correct", "wrong"));
-          const text = button.textContent.toLowerCase();
-          const picked = text.includes("tune") ? "tune" : text.includes("redesign") ? "redesign" : text.includes("eval") ? "eval" : "other";
-          button.classList.add(picked === expected ? "correct" : "wrong");
-          answer.textContent = picked === expected ? copy[expected] : "Not quite. Use the evidence pattern to decide local tune, structural redesign, or missing eval coverage.";
+          button.classList.add(button.hasAttribute("data-correct") ? "correct" : "wrong");
+          answer.textContent = button.dataset.why;
         });
       });
     });

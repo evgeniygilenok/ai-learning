@@ -278,14 +278,15 @@
   <main>
     <header>
       <a class="back" href="../index.html">Back to roadmap</a>
-      <p class="eyebrow">Specialization Course - 8 modules, 7 studios</p>
+      <p class="eyebrow">Specialization Course - 8 lessons, 8 studios, 1 capstone, roughly 12-18 hours</p>
       <h1>Agentic Workflow Engineering Practice</h1>
-      <p class="lede">A deeper course for turning agent work from "better prompting" into an engineered system of blocks, gates, tools, reviews, traces, and improvement loops.</p>
+      <p class="lede">A deeper course for turning agent work from "better prompting" into an engineered system of blocks, gates, tools, reviews, traces, and improvement loops. Each lesson runs about 40 minutes; the paired studio work is where most of the hours go.</p>
     </header>
 
     <section class="callout">
       <h2>Where It Fits</h2>
       <p>This course is best taken after the core roadmap covers controlled workflow agents and agent runtime design. It expands Stage 3 and Stage 7 into a full engineering practice: design the workflow, encode it in a harness, verify the result, review it, then improve the system from real evidence.</p>
+      <p class="small">One deliberate ordering choice: implementation strategies (0045) come before planning (0046), following the source outline. You will feel the cost of under-planned implementation first, which is what makes the planning discipline land. If you prefer plan-first, read 0046 before 0045; both orders work.</p>
     </section>
 
     <section class="grid">
@@ -359,152 +360,73 @@
 
     <section>
       <h2>Course Map</h2>
+      <p class="small">One row per module: the lesson that teaches it, the studio work that practices it, and the artifact that proves it. The artifacts are the course's job proof; each lesson's build assignment produces its row's artifact.</p>
       <table>
         <thead>
           <tr>
-            <th>Module</th>
-            <th>Focus</th>
-            <th>Deliverable</th>
+            <th>Module And Focus</th>
+            <th>Lesson</th>
+            <th>Studio Practice</th>
+            <th>Artifact</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td data-label="Module">1. Workflow Concept</td>
-            <td data-label="Focus">Blocks, workflow graphs, quality gates, human-in-the-loop checkpoints, and local or remote execution.</td>
-            <td data-label="Deliverable">A one-page workflow map for a real coding or product task.</td>
+            <td data-label="Module And Focus"><strong>1. Workflow Concept.</strong> Blocks, workflow graphs, quality gates, human checkpoints, execution platforms.</td>
+            <td data-label="Lesson"><a href="../lessons/0042-workflow-blocks-and-quality-gates.html">0042</a></td>
+            <td data-label="Studio Practice">Convert a one-shot prompt into a chain of blocks with one quality gate and one human approval checkpoint.</td>
+            <td data-label="Artifact"><code>docs/workflow-graph.md</code></td>
           </tr>
           <tr>
-            <td data-label="Module">2. Inside The Harness</td>
-            <td data-label="Focus">Skills, commands, hooks, subagents, team patterns, and native workflow capabilities in coding agents.</td>
-            <td data-label="Deliverable">A reusable skill or command with explicit input, output, and completion criteria.</td>
+            <td data-label="Module And Focus"><strong>2. Inside The Harness.</strong> Skills, commands, hooks, subagents, team patterns.</td>
+            <td data-label="Lesson"><a href="../lessons/0043-harness-skills-hooks-and-subagents.html">0043</a></td>
+            <td data-label="Studio Practice">Build and invoke a real skill in your harness with scoped context and a verification step that can fail.</td>
+            <td data-label="Artifact">A committed <code>SKILL.md</code> plus notes in <code>docs/agentic-workflow-course-notes.md</code></td>
           </tr>
           <tr>
-            <td data-label="Module">3. Outside The Harness</td>
-            <td data-label="Focus">One-shot CLI runs, structured JSON outputs, code generation, MCP, external tools, and project context.</td>
-            <td data-label="Deliverable">A scriptable one-shot workflow block with validated structured output.</td>
+            <td data-label="Module And Focus"><strong>3. Outside The Harness.</strong> One-shot CLI runs, JSON contracts, code generation, MCP, external tools.</td>
+            <td data-label="Lesson"><a href="../lessons/0044-scriptable-agent-blocks.html">0044</a></td>
+            <td data-label="Studio Practice">Script a headless one-shot block with schema validation, one repair attempt, and fail-closed behavior.</td>
+            <td data-label="Artifact">A committed script and validator plus example outputs</td>
           </tr>
           <tr>
-            <td data-label="Module">4. Implementation Phase</td>
-            <td data-label="Focus">Implementation strategies, templates, verification layers, slopwatch checks, and final handoff checklists.</td>
-            <td data-label="Deliverable">A verified implementation template for a repeated project task.</td>
+            <td data-label="Module And Focus"><strong>4. Implementation Phase.</strong> Strategy selection, templates, verification layers, slopwatch.</td>
+            <td data-label="Lesson"><a href="../lessons/0045-agent-implementation-strategies.html">0045</a></td>
+            <td data-label="Studio Practice">Run the same change directly and through a verification loop; compare diffs, tests, cost, and review burden.</td>
+            <td data-label="Artifact">Strategy comparison table in <code>docs/agentic-workflow-course-notes.md</code></td>
           </tr>
           <tr>
-            <td data-label="Module">5. Planning On Steroids</td>
-            <td data-label="Focus">Planning readiness, Definition of Done, requirement discovery, consensus planning, and research spikes.</td>
-            <td data-label="Deliverable">An executable plan with checkpoints and acceptance criteria.</td>
+            <td data-label="Module And Focus"><strong>5. Planning On Steroids.</strong> Planning readiness, Definition of Done, requirement discovery, research spikes.</td>
+            <td data-label="Lesson"><a href="../lessons/0046-agentic-planning-definition-of-done.html">0046</a></td>
+            <td data-label="Studio Practice">Turn a vague request into an executable plan, then have the agent attack it for remaining guesses.</td>
+            <td data-label="Artifact"><code>docs/plans/&lt;feature&gt;-plan.md</code></td>
           </tr>
           <tr>
-            <td data-label="Module">6. Review And After</td>
-            <td data-label="Focus">Self-review, automated code quality, doom-loop diagnosis, team review, and post-merge observability.</td>
-            <td data-label="Deliverable">A review packet for one AI-assisted change.</td>
+            <td data-label="Module And Focus"><strong>6. Review And After.</strong> Self-review, automated checks, doom-loop diagnosis, post-merge observability.</td>
+            <td data-label="Lesson"><a href="../lessons/0047-ai-assisted-code-review-system.html">0047</a></td>
+            <td data-label="Studio Practice">Build the review checklist and run it against one real past diff, keeping only findings that cite a file or requirement.</td>
+            <td data-label="Artifact"><code>docs/workflow-review-checklist.md</code></td>
           </tr>
           <tr>
-            <td data-label="Module">7. Continuous Improvement</td>
-            <td data-label="Focus">Write-ahead logs, workflow evals, retrospectives, structural refactors, and agentified research.</td>
-            <td data-label="Deliverable">A retrospective that converts failure evidence into one measured workflow change.</td>
+            <td data-label="Module And Focus"><strong>7. Continuous Improvement.</strong> WAL notes, workflow evals, retrospectives, structural refactors.</td>
+            <td data-label="Lesson"><a href="../lessons/0048-workflow-continuous-improvement-loop.html">0048</a></td>
+            <td data-label="Studio Practice">Run a mini-retrospective on real observations and land one eval case or gate in the repo.</td>
+            <td data-label="Artifact"><code>docs/workflow-retrospective.md</code></td>
           </tr>
           <tr>
-            <td data-label="Module">8. What Next</td>
-            <td data-label="Focus">Token economics, team rollout, documentation boundaries, weakly structured documents, and human responsibility.</td>
-            <td data-label="Deliverable">A team adoption brief for sharing the workflow responsibly.</td>
+            <td data-label="Module And Focus"><strong>8. Next Operating Layer.</strong> Token economics, team rollout, documentation boundaries, human responsibility.</td>
+            <td data-label="Lesson"><a href="../lessons/0049-team-agent-workflow-rollout.html">0049</a></td>
+            <td data-label="Studio Practice">Write the rollout memo, then have the agent play a new teammate following only the memo and fix what it trips on.</td>
+            <td data-label="Artifact"><code>docs/workflow-rollout-memo.md</code></td>
+          </tr>
+          <tr>
+            <td data-label="Module And Focus"><strong>Capstone: Full Cycle.</strong> Everything above on one real task.</td>
+            <td data-label="Lesson">All</td>
+            <td data-label="Studio Practice">Take one task from intake through plan, implementation, verification, review, observation, and one workflow improvement, scored against the completion gate below.</td>
+            <td data-label="Artifact">A recorded run plus updates to every artifact above</td>
           </tr>
         </tbody>
       </table>
-    </section>
-
-    <section>
-      <h2>Modules</h2>
-      <div class="grid">
-        <article class="card module">
-          <span class="tag">Module 1</span>
-          <h3>Concept Of Agentic Workflow</h3>
-          <p class="muted">Treat a workflow as a graph of blocks, not a pile of prompts. Learn where deterministic code, model calls, validators, and human checkpoints belong.</p>
-          <p><strong>Practice:</strong> map one real task into states, transitions, gates, and failure points.</p>
-        </article>
-        <article class="card module">
-          <span class="tag">Module 2</span>
-          <h3>Tools Inside The Harness</h3>
-          <p class="muted">Design skills, commands, hooks, subagents, and team patterns as codified process. Keep orchestration predictable as capability grows.</p>
-          <p><strong>Practice:</strong> build one reusable skill or command for a recurring engineering task.</p>
-        </article>
-        <article class="card module">
-          <span class="tag">Module 3</span>
-          <h3>Tools Outside The Harness</h3>
-          <p class="muted">Use one-shots, JSON contracts, code generation, MCP, CLI tools, and project context without letting tool failures poison the workflow.</p>
-          <p><strong>Practice:</strong> produce a scriptable block that fails closed on malformed output.</p>
-        </article>
-        <article class="card module">
-          <span class="tag">Module 4</span>
-          <h3>Implementation Phase</h3>
-          <p class="muted">Compare direct implementation, goal-driven loops, verification loops, and team-style execution. Use templates to carry standards into repeated work.</p>
-          <p><strong>Practice:</strong> run the same change through two strategies and compare quality, latency, and review cost.</p>
-        </article>
-        <article class="card module">
-          <span class="tag">Module 5</span>
-          <h3>Planning On Steroids</h3>
-          <p class="muted">Turn vague tasks into executable plans with Definition of Done, missing-requirement discovery, consensus checkpoints, and bounded research spikes.</p>
-          <p><strong>Practice:</strong> write a plan that another agent could execute without guessing the intent.</p>
-        </article>
-        <article class="card module">
-          <span class="tag">Module 6</span>
-          <h3>Review And Everything After</h3>
-          <p class="muted">Review AI-assisted changes by intent, invariants, edge cases, and operational behavior. Detect endless fix loops before they waste the day.</p>
-          <p><strong>Practice:</strong> create a self-review and post-merge observation checklist for one change.</p>
-        </article>
-        <article class="card module">
-          <span class="tag">Module 7</span>
-          <h3>Continuous Improvement Loop</h3>
-          <p class="muted">Use write-ahead logs, evals, and retrospectives to improve the workflow itself. Decide when to tune a block and when to redesign the graph.</p>
-          <p><strong>Practice:</strong> convert a logged failure into a measured improvement proposal.</p>
-        </article>
-        <article class="card module">
-          <span class="tag">Module 8</span>
-          <h3>Next Operating Layer</h3>
-          <p class="muted">Budget token cost, share workflows with a team, draw boundaries around AI documentation, and keep human judgment in the places it belongs.</p>
-          <p><strong>Practice:</strong> write a rollout memo for a workflow other engineers can adopt.</p>
-        </article>
-      </div>
-    </section>
-
-    <section>
-      <h2>Practice Studios</h2>
-      <div class="grid">
-        <article class="card studio">
-          <span class="tag">Studio 1</span>
-          <h3>First Workflow</h3>
-          <p class="muted">Convert a one-shot prompt into a chain of blocks with one quality gate and one human approval checkpoint.</p>
-        </article>
-        <article class="card studio">
-          <span class="tag">Studio 2</span>
-          <h3>Harness Tools</h3>
-          <p class="muted">Create a skill, add a trigger or command, pass scoped context to a helper, and return structured output.</p>
-        </article>
-        <article class="card studio">
-          <span class="tag">Studio 3</span>
-          <h3>Implementation Strategies</h3>
-          <p class="muted">Solve one task directly, then through a verification loop, and compare the diff, tests, and review burden.</p>
-        </article>
-        <article class="card studio">
-          <span class="tag">Studio 4</span>
-          <h3>Planning Pipeline</h3>
-          <p class="muted">Diagnose a raw task, define done, run a bounded research spike, and finish with an executable plan.</p>
-        </article>
-        <article class="card studio">
-          <span class="tag">Studio 5</span>
-          <h3>Review System</h3>
-          <p class="muted">Run self-review, automated quality checks, doom-loop diagnosis, and post-merge observation planning.</p>
-        </article>
-        <article class="card studio">
-          <span class="tag">Studio 6</span>
-          <h3>Improvement Loop</h3>
-          <p class="muted">Keep a WAL, build a tiny eval set, run a retrospective, and choose one workflow change to measure.</p>
-        </article>
-        <article class="card studio">
-          <span class="tag">Studio 7</span>
-          <h3>Full Cycle</h3>
-          <p class="muted">Take one task from intake to plan, implementation, verification, review, observation, and workflow improvement.</p>
-        </article>
-      </div>
     </section>
 
     <section class="two">
@@ -524,7 +446,7 @@
         </div>
         <div class="route">
           <div class="label">Job Proof</div>
-          <div>End with a workflow design doc, eval report, review checklist, adoption memo, and a recorded run from task intake through improvement.</div>
+          <div>End with <code>docs/workflow-graph.md</code>, <code>docs/agentic-workflow-course-notes.md</code>, <code>docs/workflow-review-checklist.md</code>, <code>docs/workflow-retrospective.md</code>, <code>docs/workflow-rollout-memo.md</code>, one real harness skill, one scriptable block with a validator, and a recorded run from task intake through improvement.</div>
         </div>
       </article>
 
@@ -546,6 +468,7 @@
     <section>
       <h2>Read Alongside</h2>
       <ul>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a> - the printable cheat sheet for every contract and checklist in this course</li>
         <li><a href="../lessons/0010-controlled-workflow-agents.html">Lesson 0010: Controlled Workflow Agents</a></li>
         <li><a href="../lessons/0016-eval-release-gates.html">Lesson 0016: Eval Release Gates</a></li>
         <li><a href="../lessons/0024-agent-retry-and-recovery.html">Lesson 0024: Agent Retry And Recovery</a></li>
@@ -556,7 +479,7 @@
     </section>
 
     <footer>
-      <p>Course source: synthesized from the attached agentic workflow masterclass outline and aligned with the AI Engineering Roadmap mission.</p>
+      <p>Course source: synthesized from the agentic workflow masterclass outline (see the <a href="../sources/agentic-workflow-masterclass-outline.md">source note</a>) and aligned with the AI Engineering Roadmap mission. External grounding: <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic: Building effective agents</a>, <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering</a>, <a href="https://code.claude.com/docs/en/skills">Claude Code skills</a>, <a href="https://cursor.com/docs/cli/headless">Cursor headless CLI</a>, and <a href="https://google.github.io/eng-practices/review/reviewer/standard.html">Google's code review standard</a>. After finishing, write a learning record if the course changed how you think about agent work, and ask your agent-teacher for a quiz or artifact review any time.</p>
     </footer>
   </main>
 </body>

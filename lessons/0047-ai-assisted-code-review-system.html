@@ -34,6 +34,8 @@
     button.wrong { border-color:var(--rose); background:#ffe8ee; }
     .choices { display:grid; gap:8px; margin-top:10px; }
     .answer { min-height:30px; margin-top:10px; color:var(--muted); font-size:.94rem; }
+    details { margin-top:12px; }
+    summary { cursor:pointer; font-weight:700; color:var(--blue); }
     .callout { border-left:5px solid var(--rose); background:#ffe8ee; border-radius:8px; padding:16px; }
     footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
@@ -51,7 +53,7 @@
     <section class="band">
       <h2>The One Idea</h2>
       <p>AI code review is not "let another model comment on the diff." It is a layered process: self-review, deterministic checks, semantic review, human judgment, and post-merge observation.</p>
-      <p>The review target is the contract: what the change was supposed to do, what it must not break, and what evidence proves it.</p>
+      <p>The review target is the contract: what the change was supposed to do, what it must not break, and what evidence proves it. The baseline checklist is the classic one — design, functionality, complexity, tests, naming, documentation (<a href="https://google.github.io/eng-practices/review/reviewer/looking-for.html">Google's What to look for in a code review</a>) — with AI-specific layers on top: intent drift, hidden assumptions, and generated complexity nobody asked for.</p>
     </section>
 
     <section class="grid">
@@ -90,29 +92,55 @@
       <article class="band">
         <h2>Doom-Loop Signal</h2>
         <p>If every AI-suggested fix creates a new unrelated issue, stop the loop. Return to the last good checkpoint, narrow the task, or rewrite the plan.</p>
-        <p class="muted">More iterations are not automatically more quality. Sometimes they are just drift.</p>
+        <p class="muted">More iterations are not automatically more quality. Sometimes they are just drift. Google's review standard has the same spirit for humans: seek continuous code-health improvement, not perfection through endless rounds (<a href="https://google.github.io/eng-practices/review/reviewer/standard.html">The standard of code review</a>).</p>
       </article>
     </section>
 
     <section class="band">
       <h2>Interactive Drill: Review The Signal</h2>
       <div class="grid">
-        <article class="card" data-answer="block">
+        <article class="card">
           <h3>The diff adds a generic abstraction with no requirement and no caller outside the new code.</h3>
-          <div class="choices"><button type="button">Block or simplify</button><button type="button">Ship faster</button><button type="button">Add more abstraction</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. This is AI-shaped overengineering unless a real requirement justifies it. Unused flexibility is a maintenance cost, not an investment.">Ask to remove or simplify it</button>
+            <button type="button" data-why="Not quite. Tests on unneeded code make it look load-bearing and harder to delete later. Testing does not justify code that has no requirement.">Ask for unit tests on the abstraction</button>
+            <button type="button" data-why="Not quite. 'May be useful later' is speculation, and speculative generality is a known code smell. If the need appears, the abstraction can be added then.">Approve; it may be useful later</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="ask">
+        <article class="card">
           <h3>The plan says "notify the owner," but the diff notifies every admin.</h3>
-          <div class="choices"><button type="button">Ask against intent</button><button type="button">Approve</button><button type="button">Ignore because tests pass</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. Tests cannot prove the change matches intent if the implemented behavior is different behavior. This is intent drift, the highest-value AI review catch.">Question it against the plan's intent</button>
+            <button type="button" data-why="Not quite. Green tests here prove that the wrong behavior works reliably. The mismatch is between the diff and the plan, which no test suite sees.">Approve since the tests pass</button>
+            <button type="button" data-why="Not quite. A volume metric detects the symptom after users are already spammed. The drift is visible in review right now, before it ships.">Add a post-merge metric on notification volume</button>
+          </div>
           <p class="answer"></p>
         </article>
-        <article class="card" data-answer="observe">
+        <article class="card">
           <h3>The change passes tests, but latency risk depends on production traffic shape.</h3>
-          <div class="choices"><button type="button">Add post-merge observation</button><button type="button">Delete logs</button><button type="button">Assume fine</button></div>
+          <div class="choices">
+            <button type="button" data-correct data-why="Correct. Some risks are only observable in production. Name the signal, the threshold, and who watches it as part of the review outcome.">Approve with a post-merge observation plan</button>
+            <button type="button" data-why="Not quite as a hard rule. Reproducing production traffic exactly is often impossible, and blocking indefinitely trades a bounded risk for zero progress. Judgment plus observation is the senior move.">Block until load tests reproduce production traffic</button>
+            <button type="button" data-why="Not quite. Autoscaling absorbs some load shapes and amplifies the cost of others. 'Assume the platform handles it' is exactly the hidden assumption review exists to catch.">Approve and assume autoscaling absorbs it</button>
+          </div>
           <p class="answer"></p>
         </article>
       </div>
+    </section>
+
+    <section class="band">
+      <h2>Try It Cold</h2>
+      <p>An agent implemented "add retry to the embedding call." The diff touches the retry helper, the embedding client, and, unexpectedly, the ingestion queue config. Write the three reviewer questions you would ask first, then reveal.</p>
+      <details>
+        <summary>Reveal a model answer</summary>
+        <ul>
+          <li>Why did the queue config change? The plan scoped retries to the embedding call; an unexplained third surface is either hidden coupling or scope creep, and it decides whether this is one change or two.</li>
+          <li>What happens on retry exhaustion? Intent was resilience; the failure path (dead-letter, alert, drop?) is where the real behavior contract lives, and where an agent most likely guessed.</li>
+          <li>Are the retries idempotent and budgeted? Re-embedding the same chunk is wasteful but safe; re-enqueueing ingestion work may not be. This is the invariant the diff must prove, not assert.</li>
+        </ul>
+        <p class="small">Compare: did your questions target intent, invariants, and the unexplained surface, or line-level style? The first three findings in AI review are almost always assumption-shaped.</p>
+      </details>
     </section>
 
     <section class="callout">
@@ -122,7 +150,7 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Create a review checklist for AI-assisted portfolio changes:</p>
+      <p>Create <code>docs/workflow-review-checklist.md</code> in your portfolio repo with sections for:</p>
       <ul>
         <li>Intent and Definition of Done.</li>
         <li>Changed files and ownership boundaries.</li>
@@ -131,7 +159,7 @@
         <li>Slopwatch: generic comments, over-abstraction, unused flexibility.</li>
         <li>Post-merge signals to watch.</li>
       </ul>
-      <p class="small">Ask the agent to use the checklist on one past diff and return only findings that cite a file or requirement.</p>
+      <p>Then run it for real: ask the agent to apply the checklist to one actual past diff from your repo and return only findings that cite a file or requirement. Record the findings, and one checklist improvement they revealed, in <code>docs/agentic-workflow-course-notes.md</code>.</p>
     </section>
 
     <section>
@@ -140,29 +168,22 @@
         <li><a href="0048-workflow-continuous-improvement-loop.html">Lesson 0048: Workflow Continuous Improvement Loop</a></li>
         <li><a href="0017-llm-as-judge-tradeoffs.html">Lesson 0017: LLM-As-Judge Tradeoffs</a></li>
         <li><a href="0034-agent-evaluation-harness.html">Lesson 0034: Agent Evaluation Harness</a></li>
+        <li><a href="../reference/agentic-workflow-reference.html">Agentic Workflow Reference</a></li>
         <li><a href="../courses/agentic-workflow-engineering.html">Agentic Workflow Engineering Practice course</a></li>
       </ul>
     </section>
 
-    <footer>Sources: attached agentic workflow masterclass outline, roadmap eval and review lessons, and the agent-runtime specialization.</footer>
+    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, Google eng-practices on <a href="https://google.github.io/eng-practices/review/reviewer/standard.html">the review standard</a> and <a href="https://google.github.io/eng-practices/review/reviewer/looking-for.html">what to look for</a>, and roadmap eval and review lessons. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review your checklist against a real diff.</footer>
   </main>
   <script>
-    const copy = {
-      block: "Correct. This is likely AI-shaped overengineering unless a real requirement justifies it.",
-      ask: "Correct. Tests cannot prove the change matches intent if the target behavior was different.",
-      observe: "Correct. Some risks need post-merge signals, not just pre-merge confidence."
-    };
-    document.querySelectorAll("[data-answer]").forEach(card => {
-      const expected = card.dataset.answer;
-      const answer = card.querySelector(".answer");
-      const buttons = card.querySelectorAll("button");
+    document.querySelectorAll(".choices").forEach(group => {
+      const answer = group.parentElement.querySelector(".answer");
+      const buttons = group.querySelectorAll("button");
       buttons.forEach(button => {
         button.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("correct", "wrong"));
-          const text = button.textContent.toLowerCase();
-          const picked = text.includes("block") || text.includes("simplify") ? "block" : text.includes("intent") ? "ask" : text.includes("observation") ? "observe" : "other";
-          button.classList.add(picked === expected ? "correct" : "wrong");
-          answer.textContent = picked === expected ? copy[expected] : "Not quite. Review against intent, evidence, and operational risk.";
+          button.classList.add(button.hasAttribute("data-correct") ? "correct" : "wrong");
+          answer.textContent = button.dataset.why;
         });
       });
     });

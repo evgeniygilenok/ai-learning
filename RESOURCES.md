@@ -43,6 +43,31 @@
 - [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)
   Use for regulated-industry risk language, governance, mapping, measuring, managing, and communicating AI risk.
 
+### Agentic workflow practice (course: lessons 0042-0049)
+
+- [Anthropic engineering: Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
+  Use for workflow patterns (prompt chaining with gates, routing, evaluator-optimizer loops, orchestrator-workers) and for the discipline of keeping agent designs simple.
+- [Anthropic engineering: Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+  Use for attention budgets, just-in-time context, compaction, and structured note-taking that survives across runs.
+- [Anthropic engineering: Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
+  Use for tool contracts, token-efficient tool outputs, and improving tools through evals instead of intuition.
+- [Claude Code docs: Skills](https://code.claude.com/docs/en/skills)
+  Use for the SKILL.md standard, invocation control, and packaging repeatable process as a harness asset.
+- [Claude Code docs: Hooks guide](https://code.claude.com/docs/en/hooks-guide)
+  Use for deterministic, event-triggered behavior around agent lifecycle events.
+- [Claude Code docs: Subagents](https://code.claude.com/docs/en/sub-agents)
+  Use for bounded specialists with scoped context, preloaded skills, and isolated context windows.
+- [Cursor docs: Headless CLI](https://cursor.com/docs/cli/headless)
+  Use for scripting one-shot agent runs in shell scripts and CI.
+- [Cursor docs: CLI output format](https://cursor.com/docs/cli/reference/output-format)
+  Use for the json and stream-json contracts that make one-shot runs machine-checkable.
+- [Google eng-practices: The standard of code review](https://google.github.io/eng-practices/review/reviewer/standard.html)
+  Use for review judgment: code health over perfection, and principles over preference.
+- [Google eng-practices: What to look for in a code review](https://google.github.io/eng-practices/review/reviewer/looking-for.html)
+  Use for the review checklist baseline that lesson 0047 extends with AI-specific checks.
+- [Retromat: retrospective formats](https://retromat.org/en/)
+  Use for structuring workflow retrospectives so they end in one measurable change.
+
 ## Wisdom (Communities)
 
 - [OpenAI Developer Community](https://community.openai.com/)

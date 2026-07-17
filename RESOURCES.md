@@ -1,5 +1,8 @@
 # AI Engineering Resources
 
+**Last reviewed:** 2026-07-17  
+**Review policy:** Recheck official links, versions, renamed APIs, deprecations, and framework changes quarterly. Provider examples are illustrations; the course contracts remain vendor-neutral.
+
 ## Knowledge
 
 - [OpenAI API docs: Text generation](https://developers.openai.com/api/docs/guides/text)
@@ -16,8 +19,8 @@
   Use once basic tool calling is clear and the work moves into multi-step workflows.
 - [OpenAI Agents SDK docs: MCP](https://openai.github.io/openai-agents-python/mcp/)
   Use for Model Context Protocol integration choices, tool filtering, hosted MCP tools, approvals, caching, and tracing.
-- [OpenAI API docs: Evals](https://developers.openai.com/api/docs/guides/evals)
-  Use for test datasets, graders, regression checks, and moving beyond "it feels good."
+- [OpenAI: Evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices)
+  Use for representative datasets, task-specific graders, calibration, regression checks, and moving beyond "it feels good." This replaces the legacy generic Evals learning path.
 - [OpenAI API docs: Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices)
   Use for reliability, deployment, observability, rate limits, and operating AI features.
 - [OpenAI API docs: Safety best practices](https://developers.openai.com/api/docs/guides/safety-best-practices)
@@ -32,16 +35,20 @@
   Use for long-running, stateful agents, human-in-the-loop workflows, persistence, and graph orchestration.
 - [Model Context Protocol docs](https://modelcontextprotocol.io/docs/getting-started/intro)
   Use for provider-neutral understanding of MCP as a standard for connecting AI applications to external data sources, tools, and workflows.
+- [Model Context Protocol: Security best practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices)
+  Use for confused-deputy, token-passthrough, SSRF, local-server, session, consent, and least-scope controls around MCP clients and servers.
 - [Qdrant documentation](https://qdrant.tech/documentation/)
   Use for vector search, filtering, hybrid retrieval, indexing, and RAG search engineering.
 - [pgvector on GitHub](https://github.com/pgvector/pgvector)
   Use when the simplest useful architecture is Postgres plus vector similarity search.
 - [Braintrust docs: Evaluate systematically](https://www.braintrust.dev/docs/evaluate)
   Use for eval loops, experiments, production scoring, and turning traces into test datasets.
-- [OWASP Top 10 for Large Language Model Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-  Use for prompt injection, sensitive information disclosure, excessive agency, supply chain, and other LLM-specific risks.
-- [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)
-  Use for regulated-industry risk language, governance, mapping, measuring, managing, and communicating AI risk.
+- [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/)
+  Version taught: 2025. Use for prompt injection, sensitive information disclosure, supply chain, data/model poisoning, improper output handling, excessive agency, system prompt leakage, vector/embedding weaknesses, misinformation, and unbounded consumption.
+- [NIST AI Resource Center and AI RMF](https://airc.nist.gov/)
+  Version taught: AI RMF 1.0, identified explicitly because it is under revision. Use Govern/Map/Measure/Manage for regulated-industry communication.
+- [NIST AI 600-1: Generative AI Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf)
+  Use as the generative-AI companion to AI RMF 1.0 for risks and actions; record the publication/version when citing it in an artifact.
 
 ### Agentic workflow practice (course: lessons 0042-0049)
 
@@ -81,3 +88,12 @@
 
 - Pick one fintech or regulated-industry AI community after the first project, so security and compliance instincts are tested against practitioners.
 - Add one high-quality course or book only after the first two lessons reveal whether more structure is useful.
+
+## Quarterly Source Review Checklist
+
+- Check every external URL and replace redirects or dead links with the current primary source.
+- Review provider API names, default models, SDK examples, and announced deprecations.
+- Review OWASP, NIST AI RMF/GenAI Profile, and MCP security guidance for version changes.
+- Mark provider-specific lesson examples with a reviewed date; preserve vendor-neutral contracts in prose.
+- Search the repository for `legacy`, `deprecated`, old eval URLs, old OWASP URLs, and deleted-plan references.
+- Record the review date here and in the footer of each reference companion.

@@ -42,14 +42,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0009">
   <main>
     <header>
       <p class="eyebrow">Lesson 0009 - 30 minutes</p>
       <h1>If you cannot trace an AI run, you cannot debug it.</h1>
       <p class="lede">AI product failures are usually cross-boundary failures: prompt, retrieval, model choice, tool call, schema validation, latency, or cost.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#grounded-retrieval">Minimum viable grounded retrieval</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/src/trace.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0008</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind tracing ai runs.</li><li>Trace model, retrieval, validation, latency, usage, and failure spans.</li><li>Produce inspectable evidence in starter/src/trace.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>one failed run can be diagnosed without reproducing it from memory.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0008-retrieval-evals.html">← 0008: Retrieval Evals</a>
+        <a rel="next" href="../lessons/0010-controlled-workflow-agents.html">0010: Controlled Workflow Agents →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0009"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0009">A trace is an operational record, not a prompt dump</h2><p>Capture stable run/model/version IDs, redacted inputs, retrieval IDs and scores, validation, tool decisions, latency, usage, retries, rate-limit events, and outcome. Set timeouts and retry budgets at span boundaries. A useful drift signal compares distributions or failure slices over time; it does not treat one unusual run as a trend.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -172,7 +200,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI production best practices, Braintrust evaluation docs, and standard distributed tracing habits adapted for AI features.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI production best practices, Braintrust evaluation docs, and standard distributed tracing habits adapted for AI features.</footer>
   </main>
   <script>
     const answers = {

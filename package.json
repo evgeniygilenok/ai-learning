@@ -1,0 +1,15 @@
+{
+  "name": "applied-ai-engineering-course",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "curriculum:render": "node scripts/render-curriculum.mjs",
+    "curriculum:check": "node scripts/check-course.mjs",
+    "starter:demo": "node --experimental-strip-types starter/src/app.ts",
+    "starter:test": "node --experimental-strip-types --test starter/test/*.test.ts",
+    "test": "npm run curriculum:check && npm run starter:test"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

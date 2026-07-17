@@ -1,0 +1,9 @@
+[
+  {
+    "id": "transfer-pending-001",
+    "query": "How long can a transfer remain pending?",
+    "expectedSourceIds": ["policy-transfer-status-2026-01"],
+    "slice": "common-policy-question",
+    "notes": "Expand with ambiguous, unauthorized, stale-version, and unanswerable cases."
+  }
+]

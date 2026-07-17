@@ -208,14 +208,38 @@
       .reveal { display: block; }
     }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0001">
   <main>
     <header>
       <p class="eyebrow">Lesson 0001 - 20 minutes</p>
       <h1>The AI engineering map: wrap probabilistic models in product contracts.</h1>
       <p class="lede">You already know how to build software. The new skill is designing the boundaries around model behavior so the product is useful, measurable, and safe enough to ship.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#foundations">Product foundations</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>20 min reading · 45 min build · Artifact: <code>MISSION.md and starter/README.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="introduce">introduce</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Read MISSION.md</li><li>Node.js 22+ for the flagship starter</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind ai engineering map.</li><li>Map model uncertainty to product contracts.</li><li>Produce inspectable evidence in MISSION.md and starter/README.md.</li></ul></div>
+        <div><h3>Done when</h3><p>a marked architecture map names the product, retrieval, workflow, eval, operations, and security boundaries.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0036-target-role-skill-matrix.html">← 0036: Target Role Skill Matrix</a>
+        <a rel="next" href="../lessons/0002-anatomy-of-a-model-call.html">0002: Anatomy of a Model Call →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -384,7 +408,7 @@ Return valid JSON matching:
       <p class="small">Ask the agent follow-up questions whenever a term feels slippery. The point is not to memorize the map; it is to use it while building.</p>
     </section>
 
-    <footer>
+    <footer>Source review: 2026-07-17. 
       Lesson source basis: OpenAI API docs for structured outputs, function calling, embeddings, agents, and evals; Anthropic docs for prompt engineering and tool use; Braintrust docs for systematic evaluation; OWASP LLM Top 10 for security framing.
     </footer>
   </main>

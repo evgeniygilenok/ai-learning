@@ -41,14 +41,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0045">
   <main>
     <header>
       <p class="eyebrow">Lesson 0045 - 40 minutes</p>
       <h1>Choose the implementation loop before you ask the agent to code.</h1>
       <p class="lede">The right strategy depends on ambiguity, risk, reversibility, test coverage, and how much coordination the task needs.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#workflow-specialization">Agentic workflow engineering</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>40 min reading · 80 min build · Artifact: <code>starter/docs/implementation-strategy.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0044</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind agent implementation strategies.</li><li>Choose direct, verification-loop, or orchestrator-worker execution by risk.</li><li>Produce inspectable evidence in starter/docs/implementation-strategy.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the comparison ties strategy to coupling, checks, cost, latency, and recovery.</p><p><a href="../reference/agentic-workflow-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0044-scriptable-agent-blocks.html">← 0044: Scriptable Agent Blocks</a>
+        <a rel="next" href="../lessons/0046-agentic-planning-definition-of-done.html">0046: Agentic Planning Definition Of Done →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -166,7 +190,7 @@
       </ul>
     </section>
 
-    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic: Building effective agents</a>, and roadmap eval and retry lessons. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review your strategy comparison.</footer>
+    <footer>Source review: 2026-07-17. Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, <a href="https://www.anthropic.com/engineering/building-effective-agents">Anthropic: Building effective agents</a>, and roadmap eval and retry lessons. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review your strategy comparison.</footer>
   </main>
   <script>
     document.querySelectorAll(".choices").forEach(group => {

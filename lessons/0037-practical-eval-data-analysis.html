@@ -38,14 +38,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0037">
   <main>
     <header>
       <p class="eyebrow">Lesson 0037 - 40 minutes</p>
       <h1>Read eval data like an engineer, not like a scoreboard.</h1>
       <p class="lede">The practical Python/data gap is small but important: you need to group failures, compare runs, and turn raw cases into a decision.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#supporting">Supporting technical tracks</a> · supporting</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>40 min reading · 80 min build · Artifact: <code>starter/evals/analysis.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete the orientation and relevant core-stage prerequisites</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind practical eval data analysis.</li><li>Interpret distributions, sampling error, confidence, slices, and tradeoffs.</li><li>Produce inspectable evidence in starter/evals/analysis.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the report avoids over-reading one aggregate score and states uncertainty.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0036-target-role-skill-matrix.html">← 0036: Target Role Skill Matrix</a>
+        <a rel="next" href="../lessons/0038-provider-comparison-and-tool-ecosystem.html">0038: Provider Comparison And Tool Ecosystem →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0037"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0037">Read the distribution before the average</h2><p>Report counts, rates, and denominators; inspect distributions and slices; distinguish precision, recall, ranking, and task success; estimate sampling error or confidence; and state practical effect size. Multiple correlated examples do not create independent evidence, and a one-point aggregate change may be smaller than dataset uncertainty.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -116,12 +144,12 @@ Next fix: enforce ACL filter before rerank</code></pre>
         <li><a href="0016-eval-release-gates.html">Lesson 0016: Eval Release Gates</a></li>
         <li><a href="0025-agent-evaluation.html">Lesson 0025: Agent Evaluation</a></li>
         <li><a href="0038-provider-comparison-and-tool-ecosystem.html">Lesson 0038: Provider Comparison And Tool Ecosystem</a></li>
-        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evals docs</a></li>
         <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust eval docs</a></li>
       </ul>
     </section>
 
-    <footer>Sources: OpenAI evals docs, Braintrust evaluation docs, and roadmap v4 skill-gap remediation.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI evals docs, Braintrust evaluation docs, and the live supporting quantitative track.</footer>
   </main>
   <script>
     const copy = {

@@ -1,5 +1,7 @@
 # Mission: AI Engineering
 
+The live learning path, stage gates, workload, and completion standard are defined in `courses/applied-ai-engineering.html`; lesson metadata and navigation are generated from `assets/curriculum.mjs`.
+
 ## Why
 Become an AI Engineer / AI Product Engineer by using an existing senior software engineering background to ship reliable AI features, not by detouring into research-heavy ML. The practical target is to build portfolio-grade systems that can survive senior interviews and eventually fintech-style production constraints.
 

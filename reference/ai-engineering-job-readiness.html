@@ -84,7 +84,7 @@
           <li>Save 5 roles.</li>
           <li>Contact 3 people.</li>
           <li>Run 1 interview drill.</li>
-          <li>Apply selectively after Stage 4, consistently after Stage 6.</li>
+          <li>Apply selectively after the Production Boundaries gate, consistently after the Core Portfolio and Interview gate.</li>
         </ul>
       </article>
       <article class="card">
@@ -113,6 +113,27 @@
     </section>
 
     <section>
+      <h2>Common Artifact Rubric</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Dimension</th><th>Level 3: demonstrated</th><th>Level 4: defensible</th></tr></thead>
+          <tbody>
+            <tr><td>Correctness and contract integrity</td><td>Validated behavior plus failure tests.</td><td>Versioned contracts, negative tests, and recovery evidence.</td></tr>
+            <tr><td>Evidence and evaluation quality</td><td>Representative cases, slices, and a failure taxonomy.</td><td>Human calibration, uncertainty, production feedback, and change history.</td></tr>
+            <tr><td>Operational and security judgment</td><td>Measured service limits and tested trust boundaries.</td><td>Threats, detection, response, rollout, rollback, and incident learning.</td></tr>
+            <tr><td>Explanation and tradeoff clarity</td><td>Alternatives, evidence, and decision are linked.</td><td>Audience-aware defense with explicit revisit triggers.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Each core stage needs level 3 in every dimension. The final gate needs at least two level-4 dimensions and none below level 3.</p>
+    </section>
+
+    <section class="band">
+      <h2>Completion Record</h2>
+      <p>Use <a href="../starter/evidence/completion-record.md"><code>starter/evidence/completion-record.md</code></a>. For every core stage, link working behavior, one failed run and diagnosis, an eval or review result, an operational observation, a decision record, and rubric scores. Completion is based on those inspectable artifacts—not lesson page views.</p>
+    </section>
+
+    <section>
       <h2>Related Lessons</h2>
       <ul>
         <li><a href="../lessons/0036-target-role-skill-matrix.html">Lesson 0036: Target Role Skill Matrix</a></li>
@@ -125,7 +146,7 @@
       </ul>
     </section>
 
-    <footer>Sources: roadmap v4, OpenAI production and eval guidance, OWASP LLM Top 10, and the roadmap lesson catalog.</footer>
+    <footer>Source review: 2026-07-17. Sources: the live course contract, OpenAI production and eval guidance, OWASP LLM Top 10, and the roadmap lesson catalog.</footer>
   </main>
 </body>
 </html>

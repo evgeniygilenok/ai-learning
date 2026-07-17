@@ -39,14 +39,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0007">
   <main>
     <header>
       <p class="eyebrow">Lesson 0007 - 30 minutes</p>
       <h1>RAG is the art of sending the model the right evidence packet.</h1>
       <p class="lede">Retrieval-augmented generation works when search, filtering, context assembly, and citation rules act as one product contract.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#grounded-retrieval">Minimum viable grounded retrieval</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/src/retrieval.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="implement">implement</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0006</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind rag context packets.</li><li>Assemble evidence, permissions, citations, and answer rules.</li><li>Produce inspectable evidence in starter/src/retrieval.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>answers cite only authorized retrieved chunks and decline without sufficient evidence.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0006-semantic-search-starts-with-chunks.html">← 0006: Semantic Search Starts With Chunks</a>
+        <a rel="next" href="../lessons/0008-retrieval-evals.html">0008: Retrieval Evals →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -153,12 +177,12 @@
       <ul>
         <li><a href="0008-retrieval-evals.html">Lesson 0008: Retrieval Evals</a></li>
         <li><a href="https://developers.openai.com/api/docs/guides/text">OpenAI text generation docs</a></li>
-        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a></li>
+        <li><a href="https://genai.owasp.org/llm-top-10/">OWASP LLM Top 10</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
     </section>
 
-    <footer>Sources: OpenAI text generation docs, OWASP LLM Top 10, and production RAG design patterns.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI text generation docs, OWASP LLM Top 10, and production RAG design patterns.</footer>
   </main>
   <script>
     const messages = {

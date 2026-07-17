@@ -40,14 +40,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0038">
   <main>
     <header>
       <p class="eyebrow">Lesson 0038 - 45 minutes</p>
       <h1>Compare providers on one task, not on vibes.</h1>
       <p class="lede">Provider literacy means you can ship with one default stack while still understanding how model, tool, and connector choices change product behavior.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#supporting">Supporting technical tracks</a> · supporting</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>45 min reading · 90 min build · Artifact: <code>starter/docs/provider-decision.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0037</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind provider comparison and tool ecosystem.</li><li>Compare providers on one fixed task and durable contract.</li><li>Produce inspectable evidence in starter/docs/provider-decision.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the decision uses measured quality, latency, cost, portability, safety, and operational fit.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0037-practical-eval-data-analysis.html">← 0037: Practical Eval Data Analysis</a>
+        <a rel="next" href="../lessons/0039-deployable-ai-portfolio.html">0039: Deployable AI Portfolio →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0038"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0038">A provider decision is a controlled comparison</h2><p>Freeze the task, context, schema, cases, sampling settings, and scoring method. Measure quality by slice, latency distribution, cost per successful task, rate-limit behavior, portability, safety controls, data policy, observability, versioning, and retirement burden. Record the revisit trigger instead of declaring a permanent winner.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -135,7 +163,7 @@ decision: default for portfolio</code></pre>
       </ul>
     </section>
 
-    <footer>Sources: OpenAI Agents SDK MCP docs, Model Context Protocol docs, Anthropic docs, Gemini API docs, and roadmap v4 provider-literacy guidance.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI Agents SDK MCP docs, Model Context Protocol docs, Anthropic docs, Gemini API docs, and the live supporting provider track.</footer>
   </main>
   <script>
     const copy = {

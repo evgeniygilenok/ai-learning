@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0014">
   <main>
     <header>
       <p class="eyebrow">Lesson 0014 - 35 minutes</p>
       <h1>Threat model the AI-specific boundary, not just the web app.</h1>
       <p class="lede">AI security work is about where untrusted text can influence context, tools, memory, output, or user decisions.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#production-boundaries">Production boundaries</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>35 min reading · 70 min build · Artifact: <code>starter/docs/threat-model.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0013</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind ai security threat model.</li><li>Model OWASP 2025, MCP, SSRF, confused-deputy, session, and scope risks.</li><li>Produce inspectable evidence in starter/docs/threat-model.md.</li></ul></div>
+        <div><h3>Done when</h3><p>each high-risk misuse case has a prevention, detection, and response control.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0013-multi-tenant-ai-architecture.html">← 0013: Multi-Tenant AI Architecture</a>
+        <a rel="next" href="../lessons/0015-portfolio-system-design-story.html">0015: Portfolio System Design Story →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -95,6 +119,12 @@
     </section>
 
     <section class="band">
+      <h2>Current Security Frame</h2>
+      <p>Use the <a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 for LLM Applications 2025</a> as a checklist, not as the threat model itself. For the flagship system, cover prompt injection, sensitive disclosure, supply chain, data/model poisoning, improper output handling, excessive agency, system-prompt leakage, vector/embedding weaknesses, misinformation, and unbounded consumption.</p>
+      <p>If you add MCP, also test confused-deputy authorization, token passthrough, SSRF, local-server compromise, session binding, consent, and scope minimization using the <a href="https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices">official MCP security practices</a>. Map the resulting controls lightly to NIST AI RMF <strong>Govern, Map, Measure, and Manage</strong> so you can communicate the system to a regulated audience.</p>
+    </section>
+
+    <section class="band">
       <h2>Interactive Drill: Name The Threat</h2>
       <div class="grid">
         <article class="card" data-answer="injection">
@@ -129,12 +159,13 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Write a threat model for the Enterprise Knowledge Assistant.</p>
+      <p>Implement the threat model in <code>starter/docs/threat-model.md</code> for the flagship support assistant.</p>
       <ul>
         <li>Choose four boundaries: input, retrieval, model output, tool execution, memory, or traces.</li>
         <li>For each boundary, name one threat and one mitigation.</li>
         <li>Add one eval or log signal that would catch the failure later.</li>
         <li>Mark which mitigations are code controls versus prompt instructions.</li>
+        <li>Run at least one red-team misuse case and preserve the blocked trace or test as stage evidence.</li>
       </ul>
       <p class="small">Ask the agent to review your threat model against the OWASP LLM Top 10.</p>
     </section>
@@ -143,13 +174,13 @@
       <h2>Read Next</h2>
       <ul>
         <li><a href="0015-portfolio-system-design-story.html">Lesson 0015: Portfolio System Design Story</a></li>
-        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a></li>
+        <li><a href="https://genai.owasp.org/llm-top-10/">OWASP LLM Top 10</a></li>
         <li><a href="https://developers.openai.com/api/docs/guides/safety-best-practices">OpenAI safety best practices</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
     </section>
 
-    <footer>Sources: OWASP LLM Top 10 and OpenAI safety best practices.</footer>
+    <footer>Source review: 2026-07-17. Sources: OWASP LLM Top 10 and OpenAI safety best practices.</footer>
   </main>
   <script>
     const labels = ["injection", "poisoning", "output"];

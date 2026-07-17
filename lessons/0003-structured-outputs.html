@@ -42,14 +42,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0003">
   <main>
     <header>
       <p class="eyebrow">Lesson 0003 - 30 minutes</p>
       <h1>Structured outputs turn model text into product data.</h1>
       <p class="lede">A chatbot can return prose. A product feature usually needs typed fields, validation, and predictable failure behavior.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#foundations">Product foundations</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/src/triage.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="implement">implement</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0002</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind structured outputs.</li><li>Validate model output before the product consumes it.</li><li>Produce inspectable evidence in starter/src/triage.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>valid input passes and malformed output produces a typed failure.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0002-anatomy-of-a-model-call.html">← 0002: Anatomy of a Model Call</a>
+        <a rel="next" href="../lessons/0004-streaming-ux.html">0004: Streaming UX →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -180,7 +204,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI structured outputs docs and the roadmap's Product Triage Assistant project.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI structured outputs docs and the roadmap's Product Triage Assistant project.</footer>
   </main>
   <script>
     document.querySelectorAll("[data-answer]").forEach(card => {

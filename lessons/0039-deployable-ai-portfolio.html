@@ -38,14 +38,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0039">
   <main>
     <header>
       <p class="eyebrow">Lesson 0039 - 45 minutes</p>
       <h1>Make your AI portfolio runnable, not just impressive.</h1>
       <p class="lede">A reviewer trusts a project faster when setup, secrets, seed data, health checks, and eval smoke tests are boringly clear.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#deployment">Deployment and adoption proof</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>45 min reading · 90 min build · Artifact: <code>starter/docs/runbook.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Pass the Core portfolio and interview gate gate</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind deployable ai portfolio.</li><li>Make setup, secrets, data, health, SLOs, rollout, rollback, and retirement reproducible.</li><li>Produce inspectable evidence in starter/docs/runbook.md.</li></ul></div>
+        <div><h3>Done when</h3><p>a reviewer can start and verify the system from a clean checkout.</p><p><a href="../reference/ai-engineering-job-readiness.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0030-final-portfolio-and-interview-drill.html">← 0030: Core Portfolio and Interview Gate</a>
+        <a rel="next" href="../lessons/0040-adoption-feedback-loop.html">0040: Adoption Feedback Loop →</a>
+        <a href="../lessons/0031-agent-orchestration-patterns.html">Optional branch: 0031 · Agent Orchestration Patterns ↗</a>
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0039"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0039">Deployment includes change and failure, not only startup</h2><p>Prove clean-checkout setup, health/readiness, secret and data handling, rate limits, SLOs, staged rollout, rollback, model/version retirement, drift signals, and an incident path. A reproducible local release is acceptable when external hosting is unnecessary, but the reviewer must be able to run the same checks.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -130,7 +158,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI production best practices, roadmap v4 deployment sprint, and the AI infrastructure lessons.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI production best practices, the live deployment and adoption stage, and the AI infrastructure lessons.</footer>
   </main>
   <script>
     const copy = {

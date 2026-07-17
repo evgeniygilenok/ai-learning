@@ -1,0 +1,20 @@
+[
+  {
+    "id": "chunk-transfer-pending-v1",
+    "sourceId": "policy-transfer-status-2026-01",
+    "title": "Synthetic transfer status policy",
+    "text": "A pending transfer may take up to two business days. Escalate only after the stated window or when a risk flag is present.",
+    "tenantId": "demo-bank",
+    "allowedRoles": ["support-agent"],
+    "effectiveDate": "2026-01-15"
+  },
+  {
+    "id": "chunk-account-access-v1",
+    "sourceId": "policy-account-access-2026-02",
+    "title": "Synthetic account access policy",
+    "text": "Never request a password or one-time code. Route locked accounts to the verified recovery workflow.",
+    "tenantId": "demo-bank",
+    "allowedRoles": ["support-agent", "security-reviewer"],
+    "effectiveDate": "2026-02-01"
+  }
+]

@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0019">
   <main>
     <header>
       <p class="eyebrow">Lesson 0019 - 30 minutes</p>
       <h1>AI observability should not become accidental data hoarding.</h1>
       <p class="lede">Prompts, outputs, retrieved chunks, traces, memories, and eval examples all need retention and redaction rules.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#production-boundaries">Production boundaries</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/docs/data-policy.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0018</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind data retention and redaction.</li><li>Define collection, redaction, access, retention, and deletion per artifact.</li><li>Produce inspectable evidence in starter/docs/data-policy.md.</li></ul></div>
+        <div><h3>Done when</h3><p>sample traces preserve diagnostic value without retaining prohibited content.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0018-queues-and-background-jobs.html">← 0018: Queues And Background Jobs</a>
+        <a rel="next" href="../lessons/0020-ai-infrastructure-decisions.html">0020: AI Infrastructure Decisions →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -147,7 +171,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI production best practices, OpenAI safety best practices, and the roadmap's data retention topic.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI production best practices, OpenAI safety best practices, and the roadmap's data retention topic.</footer>
   </main>
   <script>
     const feedback = {

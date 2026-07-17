@@ -39,14 +39,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0011">
   <main>
     <header>
       <p class="eyebrow">Lesson 0011 - 30 minutes</p>
       <h1>Agent memory is persisted state with a product reason.</h1>
       <p class="lede">Do not let "memory" become a vague bucket. Decide what should be saved, why it matters, who can see it, and when it expires.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#controlled-workflows">Controlled workflows</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/src/state.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0010</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind memory and persistence.</li><li>Persist purpose-limited state with provenance, visibility, and retention.</li><li>Produce inspectable evidence in starter/src/state.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>an interrupted run resumes from saved state without replaying completed effects.</p><p><a href="../reference/agent-runtime-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0010-controlled-workflow-agents.html">← 0010: Controlled Workflow Agents</a>
+        <a rel="next" href="../lessons/0012-model-routing-and-caching.html">0012: Model Routing And Caching →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -156,7 +180,7 @@
       </ul>
     </section>
 
-    <footer>Sources: LangGraph TypeScript docs, OpenAI production best practices, and OpenAI safety best practices.</footer>
+    <footer>Source review: 2026-07-17. Sources: LangGraph TypeScript docs, OpenAI production best practices, and OpenAI safety best practices.</footer>
   </main>
   <script>
     const messages = {

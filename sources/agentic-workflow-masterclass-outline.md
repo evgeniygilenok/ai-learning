@@ -3,13 +3,12 @@
 ## Provenance
 
 The course `courses/agentic-workflow-engineering.html` and lessons 0042-0049 were
-synthesized from an "agentic workflow masterclass outline" that was provided as a
-chat attachment during the session that created them. The original attachment was
-not saved into this repository, so this note reconstructs its structure from the
-course materials that were derived from it.
+synthesized from an "agentic workflow masterclass outline" provided as a chat
+attachment during their creation. The original attachment is unavailable. The
+reconstructed outline below, corroborated by the named primary sources, is now the
+permanent source basis for this specialization rather than a placeholder.
 
-**TODO (owner):** if you still have the original outline, paste it below the
-divider at the end of this file so lesson footers point at a recoverable source.
+**Source basis adopted:** 2026-07-17. Review public corroborating sources quarterly.
 
 ## Reconstructed Outline
 
@@ -55,7 +54,3 @@ The reconstructed claims are grounded in these public sources (also tracked in
 - [Google eng-practices: The standard of code review](https://google.github.io/eng-practices/review/reviewer/standard.html)
   and [What to look for](https://google.github.io/eng-practices/review/reviewer/looking-for.html) -
   review discipline that lessons 0047 adapts to AI-assisted changes.
-
----
-
-<!-- Paste the original masterclass outline below this line. -->

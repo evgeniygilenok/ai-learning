@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0027">
   <main>
     <header>
       <p class="eyebrow">Lesson 0027 - 35 minutes</p>
       <h1>Enterprise RAG is search, security, and evaluation glued together.</h1>
       <p class="lede">The system design question is not "vector database or not?" It is how evidence becomes reliable, permitted, cited context.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#portfolio-gate">Core portfolio and interview gate</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>35 min reading · 70 min build · Artifact: <code>starter/docs/architecture.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0026</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind enterprise rag design.</li><li>Integrate source authority, ingestion, retrieval, security, evals, and observability.</li><li>Produce inspectable evidence in starter/docs/architecture.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the architecture walkthrough follows one query and one deletion end to end.</p><p><a href="../reference/ai-engineering-job-readiness.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0026-ai-support-assistant-design.html">← 0026: AI Support Assistant Design</a>
+        <a rel="next" href="../lessons/0030-final-portfolio-and-interview-drill.html">0030: Core Portfolio and Interview Gate →</a>
+        <a href="../lessons/0028-coding-copilot-design.html">Optional branch: 0028 · Coding Copilot Design ↗</a>
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -106,12 +130,12 @@
       <ul>
         <li><a href="0028-coding-copilot-design.html">Lesson 0028: Coding Copilot Design</a></li>
         <li><a href="https://qdrant.tech/documentation/">Qdrant documentation</a></li>
-        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evals docs</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
     </section>
 
-    <footer>Sources: Qdrant documentation, OpenAI evals docs, and the roadmap's enterprise RAG practice design.</footer>
+    <footer>Source review: 2026-07-17. Sources: Qdrant documentation, OpenAI evals docs, and the roadmap's enterprise RAG practice design.</footer>
   </main>
   <script>
     const copy = { security: "Correct. Cross-tenant leakage is the first priority.", retrieval: "Correct. Citations follow retrieval quality.", eval: "Correct. You need measurement before comparing changes." };

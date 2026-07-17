@@ -42,14 +42,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0036">
   <main>
     <header>
       <p class="eyebrow">Lesson 0036 - 35 minutes</p>
       <h1>Turn job descriptions into a proof plan.</h1>
       <p class="lede">Before adding more features, translate the market into evidence. A skill matrix keeps the roadmap pointed at jobs instead of vague self-improvement.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#orientation">Orientation and proof plan</a> · orientation</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>35 min reading · 70 min build · Artifact: <code>starter/evidence/orientation/role-proof-matrix.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="introduce">introduce</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete the orientation and relevant core-stage prerequisites</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind target role skill matrix.</li><li>Convert repeated job requirements into inspectable proof gaps.</li><li>Produce inspectable evidence in starter/evidence/orientation/role-proof-matrix.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the matrix names target titles, evidence locations, current strength, and next build.</p><p><a href="../reference/ai-engineering-job-readiness.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a href="../courses/applied-ai-engineering.html">← Main course</a>
+        <a rel="next" href="../lessons/0001-ai-engineering-map.html">0001: AI Engineering Map →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -105,7 +129,7 @@
       <h2>Build Assignment</h2>
       <p>Create <code>docs/target-role.md</code> in your portfolio repo.</p>
       <ul>
-        <li>Pick 2-3 target titles from `plan-v4.md`.</li>
+        <li>Pick 2-3 target titles from current job descriptions and record the source date.</li>
         <li>Collect 10 job descriptions or summaries.</li>
         <li>Extract 8 recurring requirements.</li>
         <li>Map each requirement to portfolio evidence.</li>
@@ -125,7 +149,7 @@
       </ul>
     </section>
 
-    <footer>Sources: roadmap v4 target-role guidance, OpenAI production best practices, and the portfolio evidence matrix.</footer>
+    <footer>Source review: 2026-07-17. Sources: the live course orientation and proof plan, OpenAI production best practices, and the portfolio evidence matrix.</footer>
   </main>
   <script>
     const copy = {

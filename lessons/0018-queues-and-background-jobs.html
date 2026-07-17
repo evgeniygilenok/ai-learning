@@ -39,14 +39,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0018">
   <main>
     <header>
       <p class="eyebrow">Lesson 0018 - 30 minutes</p>
       <h1>Move slow AI work out of the request path.</h1>
       <p class="lede">Queues and background jobs keep AI products responsive when ingestion, evals, retries, or long workflows take too long.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#production-boundaries">Production boundaries</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/docs/operations.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0017</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind queues and background jobs.</li><li>Set idempotency, retry budgets, backpressure, rate limits, and dead-letter handling.</li><li>Produce inspectable evidence in starter/docs/operations.md.</li></ul></div>
+        <div><h3>Done when</h3><p>a duplicate job is harmless and overload has an explicit shedding or delay policy.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0017-llm-as-judge-tradeoffs.html">← 0017: LLM-As-Judge Tradeoffs</a>
+        <a rel="next" href="../lessons/0019-data-retention-and-redaction.html">0019: Data Retention And Redaction →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0018"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0018">Retries consume a shared reliability budget</h2><p>Set a per-attempt timeout and total retry budget, use exponential backoff with jitter, respect provider rate-limit headers, and cap concurrency. Define backpressure, load shedding, idempotency keys, dead-letter review, and replay behavior. A queue that accepts infinite work is delayed failure, not resilience.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -154,7 +182,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI production best practices and standard queue design patterns applied to AI work.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI production best practices and standard queue design patterns applied to AI work.</footer>
   </main>
   <script>
     const feedback = {

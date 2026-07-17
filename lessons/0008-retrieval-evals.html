@@ -42,14 +42,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0008">
   <main>
     <header>
       <p class="eyebrow">Lesson 0008 - 30 minutes</p>
       <h1>Retrieval evals tell you whether search actually improved.</h1>
       <p class="lede">A RAG system without retrieval evals is mostly vibes. A small golden set gives every retrieval change a scoreboard.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#grounded-retrieval">Minimum viable grounded retrieval</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/evals/retrieval-cases.json</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="implement">implement</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0007</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind retrieval evals.</li><li>Measure recall, precision, ranking, and answerability on representative cases.</li><li>Produce inspectable evidence in starter/evals/retrieval-cases.json.</li></ul></div>
+        <div><h3>Done when</h3><p>the report includes slices, failure categories, uncertainty, and a before/after comparison.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0007-rag-context-packets.html">← 0007: RAG Context Packets</a>
+        <a rel="next" href="../lessons/0009-tracing-ai-runs.html">0009: Tracing AI Runs →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0008"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0008">Representative evidence beats a large convenient dataset</h2><p>Sample real task shapes and include common, high-risk, ambiguous, adversarial, stale, unauthorized, and unanswerable slices. Report retrieval recall and precision separately from answer quality; a single aggregate can hide a critical regression. Use confidence intervals or repeated resampling when a small score might be sampling noise, and keep a named failure taxonomy so each change targets a cause.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -158,13 +186,13 @@
       <h2>Read Next</h2>
       <ul>
         <li><a href="0009-tracing-ai-runs.html">Lesson 0009: Tracing AI Runs</a></li>
-        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evals docs</a></li>
         <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust eval docs</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
     </section>
 
-    <footer>Sources: OpenAI evals docs, Braintrust evaluation docs, and retrieval evaluation patterns for RAG systems.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI evals docs, Braintrust evaluation docs, and retrieval evaluation patterns for RAG systems.</footer>
   </main>
   <script>
     const resultText = {

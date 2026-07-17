@@ -41,14 +41,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0043">
   <main>
     <header>
       <p class="eyebrow">Lesson 0043 - 40 minutes</p>
       <h1>Harness tools turn your process into reusable behavior.</h1>
       <p class="lede">Skills, commands, hooks, and subagents are not decoration around prompting. They are how you package workflow decisions so they repeat.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#workflow-specialization">Agentic workflow engineering</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>40 min reading · 80 min build · Artifact: <code>starter/.codex/skills/</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0042</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind harness skills hooks and subagents.</li><li>Encode one repeated task as scoped reusable harness behavior.</li><li>Produce inspectable evidence in starter/.codex/skills/.</li></ul></div>
+        <div><h3>Done when</h3><p>the skill receives only needed context and its verification can fail.</p><p><a href="../reference/agentic-workflow-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0042-workflow-blocks-and-quality-gates.html">← 0042: Workflow Blocks And Quality Gates</a>
+        <a rel="next" href="../lessons/0044-scriptable-agent-blocks.html">0044: Scriptable Agent Blocks →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -191,7 +215,7 @@ match the diff; fail if baseline run is missing.</code></pre>
       </ul>
     </section>
 
-    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, Claude Code docs on <a href="https://code.claude.com/docs/en/skills">skills</a>, <a href="https://code.claude.com/docs/en/hooks-guide">hooks</a>, and <a href="https://code.claude.com/docs/en/sub-agents">subagents</a>, and <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic: Effective context engineering</a>. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review the skill you built.</footer>
+    <footer>Source review: 2026-07-17. Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, Claude Code docs on <a href="https://code.claude.com/docs/en/skills">skills</a>, <a href="https://code.claude.com/docs/en/hooks-guide">hooks</a>, and <a href="https://code.claude.com/docs/en/sub-agents">subagents</a>, and <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic: Effective context engineering</a>. Stuck or curious? Ask your agent-teacher to explain, quiz you, or review the skill you built.</footer>
   </main>
   <script>
     document.querySelectorAll(".choices").forEach(group => {

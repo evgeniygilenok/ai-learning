@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0028">
   <main>
     <header>
       <p class="eyebrow">Lesson 0028 - 35 minutes</p>
       <h1>A coding copilot is a context engine with a careful action boundary.</h1>
       <p class="lede">The challenge is not generating code. It is choosing context, proposing changes, testing safely, and earning developer trust.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#portfolio-gate">Core portfolio and interview gate</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>35 min reading · 70 min build · Artifact: <code>starter/docs/optional-coding-copilot.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0027</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind coding copilot design.</li><li>Transfer the course contracts to a coding-assistant context.</li><li>Produce inspectable evidence in starter/docs/optional-coding-copilot.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the design constrains context, patches, execution, permissions, and evaluation.</p><p><a href="../reference/ai-engineering-job-readiness.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0027-enterprise-rag-design.html">← 0027: Enterprise RAG Design</a>
+        <a rel="next" href="../lessons/0029-personal-assistant-agent-design.html">0029: Personal Assistant Agent Design →</a>
+        <a href="../lessons/0030-final-portfolio-and-interview-drill.html">Optional branch: 0030 · Core Portfolio and Interview Gate ↗</a>
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -111,7 +135,7 @@
       </ul>
     </section>
 
-    <footer>Sources: LangGraph TypeScript docs and the roadmap's coding copilot practice design.</footer>
+    <footer>Source review: 2026-07-17. Sources: LangGraph TypeScript docs and the roadmap's coding copilot practice design.</footer>
   </main>
   <script>
     const copy = { allow: "Correct. Read-only planning is usually safe with logging.", ask: "Correct. Destructive or externally visible actions need approval." };

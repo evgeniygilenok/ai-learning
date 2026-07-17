@@ -41,14 +41,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0035">
   <main>
     <header>
       <p class="eyebrow">Lesson 0035 - 40 minutes</p>
       <h1>Tool execution is normal backend code with extra gates.</h1>
       <p class="lede">The model may request a tool call. Your runtime validates, authorizes, approves, executes, retries, records, and returns the result.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#agent-runtime">Hardened agent runtime</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>40 min reading · 80 min build · Artifact: <code>starter/src/tools.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0034</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind tool execution runtime.</li><li>Add schema validation, policy, approval, idempotency, timeout, and audit gates.</li><li>Produce inspectable evidence in starter/src/tools.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>malicious, duplicated, timed-out, and unauthorized calls fail predictably.</p><p><a href="../reference/agent-runtime-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0034-agent-evaluation-harness.html">← 0034: Agent Evaluation Harness</a>
+        <a rel="next" href="../lessons/0039-deployable-ai-portfolio.html">0039: Deployable AI Portfolio →</a>
+        <a href="../lessons/0042-workflow-blocks-and-quality-gates.html">Optional branch: 0042 · Workflow Blocks And Quality Gates ↗</a>
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0035"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0035">MCP expands the authorization surface</h2><p>When tools arrive through MCP, prevent confused-deputy flows, token passthrough, SSRF, local-server compromise, session mix-ups, silent consent, and broad scopes. Validate schemas and destinations outside the model, bind authorization to the user and session, minimize scopes, add idempotency and timeout gates, and audit both denied and executed calls.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -166,12 +194,12 @@
         <li><a href="0005-tool-calling-boundaries.html">Lesson 0005: Tool Calling Boundaries</a></li>
         <li><a href="0024-agent-retry-and-recovery.html">Lesson 0024: Agent Retry And Recovery</a></li>
         <li><a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI function calling docs</a></li>
-        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP Top 10 for LLM Applications</a></li>
+        <li><a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 for LLM Applications</a></li>
         <li><a href="../reference/agent-runtime-reference.html">Agent Runtime Reference</a></li>
       </ul>
     </section>
 
-    <footer>Sources: OpenAI function calling docs, OWASP LLM Top 10, and the roadmap tool-calling and retry lessons.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI function calling docs, OWASP LLM Top 10, and the roadmap tool-calling and retry lessons.</footer>
   </main>
   <script>
     const copy = {

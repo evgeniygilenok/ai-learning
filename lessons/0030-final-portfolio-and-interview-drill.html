@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0030">
   <main>
     <header>
       <p class="eyebrow">Lesson 0030 - 45 minutes</p>
-      <h1>Finish the roadmap by turning work into interview proof.</h1>
-      <p class="lede">The final skill is packaging your system so a senior interviewer can see product judgment, engineering judgment, and AI-specific reliability.</p>
+      <h1>Pass the core portfolio and interview gate.</h1>
+      <p class="lede">The core gate is packaging your system so a senior interviewer can see product judgment, engineering judgment, and AI-specific reliability.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#portfolio-gate">Core portfolio and interview gate</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>45 min reading · 90 min build · Artifact: <code>starter/evidence/completion-record.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lessons 0026-0027</li><li>Treat lessons 0028-0029 as optional design-transfer studios</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind core portfolio and interview gate.</li><li>Assemble the cumulative evidence and rehearse an end-to-end defense.</li><li>Produce inspectable evidence in starter/evidence/completion-record.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the completion record links working behavior, a failure, an eval, an operational observation, and a decision record for every core stage.</p><p><a href="../reference/ai-engineering-job-readiness.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0027-enterprise-rag-design.html">← 0027: Enterprise RAG Design</a>
+        <a rel="next" href="../lessons/0039-deployable-ai-portfolio.html">0039: Deployable AI Portfolio →</a>
+        <a href="../lessons/0031-agent-orchestration-patterns.html">Optional branch: 0031 · Agent Orchestration Patterns ↗</a>
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -93,11 +117,12 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Produce the final portfolio package.</p>
+      <p>Complete <code>starter/evidence/completion-record.md</code> and produce the core portfolio package. This is the core-path gate; deployment/adoption and advanced specializations continue afterward.</p>
       <ul>
         <li>Write a one-page architecture brief.</li>
         <li>Capture three screenshots or short clips from the product.</li>
-        <li>Include one eval report and one trace walkthrough.</li>
+        <li>Include one eval report, one failed trace walkthrough, and the measured fix.</li>
+        <li>Link the threat model, operational budget/SLOs, and a release decision.</li>
         <li>Write five interview questions and answer them out loud.</li>
       </ul>
       <p class="small">Ask the agent to run a senior AI engineering mock interview against your final package.</p>
@@ -108,13 +133,13 @@
       <ul>
         <li><a href="../index.html">Back to AI Engineering Roadmap</a></li>
         <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
-        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
-        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evals docs</a></li>
+        <li><a href="https://genai.owasp.org/llm-top-10/">OWASP LLM Top 10</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
     </section>
 
-    <footer>Sources: Plan v2 portfolio shape, OpenAI production best practices, OpenAI evals docs, and OWASP LLM Top 10.</footer>
+    <footer>Source review: 2026-07-17. Sources: The live course portfolio contract, OpenAI production best practices, OpenAI evals docs, and OWASP LLM Top 10.</footer>
   </main>
   <script>
     const copy = { strong: "Correct. This proves judgment, reliability, and product boundaries.", weak: "Correct. Tool lists are weak unless tied to tradeoffs and behavior." };

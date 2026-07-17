@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0029">
   <main>
     <header>
       <p class="eyebrow">Lesson 0029 - 35 minutes</p>
       <h1>A personal assistant agent is mostly permissions and memory design.</h1>
       <p class="lede">Calendar, tasks, messages, and knowledge tools are useful only when scoped by consent, context, and reversibility.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#portfolio-gate">Core portfolio and interview gate</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>35 min reading · 70 min build · Artifact: <code>starter/docs/optional-personal-assistant.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0028</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind personal assistant agent design.</li><li>Transfer memory and permission policies to a personal-assistant context.</li><li>Produce inspectable evidence in starter/docs/optional-personal-assistant.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the design distinguishes read, draft, approval, write, retention, and revocation.</p><p><a href="../reference/ai-engineering-job-readiness.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0028-coding-copilot-design.html">← 0028: Coding Copilot Design</a>
+        <a rel="next" href="../lessons/0030-final-portfolio-and-interview-drill.html">0030: Core Portfolio and Interview Gate →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -104,7 +128,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI safety best practices and the roadmap's personal assistant agent practice design.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI safety best practices and the roadmap's personal assistant agent practice design.</footer>
   </main>
   <script>
     const copy = { suggest: "Correct. Read-only synthesis can stay in suggestion mode.", approve: "Correct. External or destructive actions need explicit approval." };

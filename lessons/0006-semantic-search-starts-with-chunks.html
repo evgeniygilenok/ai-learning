@@ -40,14 +40,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0006">
   <main>
     <header>
       <p class="eyebrow">Lesson 0006 - 25 minutes</p>
       <h1>Semantic search starts with the chunk, not the vector.</h1>
       <p class="lede">Embeddings make language searchable, but your retrieval quality depends on what you choose to embed.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#grounded-retrieval">Minimum viable grounded retrieval</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>25 min reading · 50 min build · Artifact: <code>starter/data/documents.json</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="introduce">introduce</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Pass the Product foundations gate</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind semantic search starts with chunks.</li><li>Create source-aware chunks with stable IDs and metadata.</li><li>Produce inspectable evidence in starter/data/documents.json.</li></ul></div>
+        <div><h3>Done when</h3><p>every chunk traces to a source and carries fields required for filtering.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0005-tool-calling-boundaries.html">← 0005: Tool Calling Boundaries</a>
+        <a rel="next" href="../lessons/0007-rag-context-packets.html">0007: RAG Context Packets →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -159,7 +183,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI embeddings docs, Qdrant documentation, and pgvector-style vector search patterns.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI embeddings docs, Qdrant documentation, and pgvector-style vector search patterns.</footer>
   </main>
   <script>
     const feedback = {

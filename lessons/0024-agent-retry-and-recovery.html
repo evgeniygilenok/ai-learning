@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0024">
   <main>
     <header>
       <p class="eyebrow">Lesson 0024 - 30 minutes</p>
       <h1>Agent reliability is mostly recovery design.</h1>
       <p class="lede">Multi-step workflows fail in normal ways: missing info, bad tool arguments, timeouts, partial success, and user rejection.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#enterprise-hardening">Enterprise retrieval and agent hardening</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/src/workflow.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0023</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind agent retry and recovery.</li><li>Classify retryable failures and recover without duplicating side effects.</li><li>Produce inspectable evidence in starter/src/workflow.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>timeout, invalid result, and partial tool failure scenarios reach intentional outcomes.</p><p><a href="../reference/agent-runtime-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0023-hybrid-search-and-reranking.html">← 0023: Hybrid Search And Reranking</a>
+        <a rel="next" href="../lessons/0025-agent-evaluation.html">0025: Agent Evaluation →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -107,7 +131,7 @@
       </ul>
     </section>
 
-    <footer>Sources: LangGraph TypeScript docs and production workflow recovery patterns.</footer>
+    <footer>Source review: 2026-07-17. Sources: LangGraph TypeScript docs and production workflow recovery patterns.</footer>
   </main>
   <script>
     const copy = { retry: "Correct. A read-only transient failure can retry with backoff.", stop: "Correct. Permission and unsafe side-effect cases need stop, approval, or redesign." };

@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0023">
   <main>
     <header>
       <p class="eyebrow">Lesson 0023 - 35 minutes</p>
       <h1>Hybrid search broadens recall. Reranking sharpens precision.</h1>
       <p class="lede">A strong RAG retriever often combines semantic search, keyword search, metadata filters, and a final reranking step.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#enterprise-hardening">Enterprise retrieval and agent hardening</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>35 min reading · 70 min build · Artifact: <code>starter/src/retrieval.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0022</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind hybrid search and reranking.</li><li>Compare lexical, semantic, hybrid, and reranked retrieval on the same cases.</li><li>Produce inspectable evidence in starter/src/retrieval.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>a tradeoff table supports the selected retrieval strategy by slice.</p><p><a href="../reference/agent-runtime-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0022-metadata-filters-and-acl.html">← 0022: Metadata Filters And ACL</a>
+        <a rel="next" href="../lessons/0024-agent-retry-and-recovery.html">0024: Agent Retry And Recovery →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -111,7 +135,7 @@
       </ul>
     </section>
 
-    <footer>Sources: Qdrant documentation and production RAG retrieval patterns.</footer>
+    <footer>Source review: 2026-07-17. Sources: Qdrant documentation and production RAG retrieval patterns.</footer>
   </main>
   <script>
     const copy = { keyword: "Correct. Exact IDs and labels benefit from keyword matching.", rerank: "Correct. Reranking sharpens a broad candidate set.", semantic: "Correct. The wording is indirect, so semantic search helps." };

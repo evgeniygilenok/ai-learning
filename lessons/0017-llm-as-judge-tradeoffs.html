@@ -38,14 +38,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0017">
   <main>
     <header>
       <p class="eyebrow">Lesson 0017 - 30 minutes</p>
       <h1>Use LLM judges for judgment, not for everything.</h1>
       <p class="lede">A judge model is useful when quality is semantic, but it should sit beside deterministic checks and human review.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#production-boundaries">Production boundaries</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/evals/judge-calibration.json</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0016</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind llm-as-judge tradeoffs.</li><li>Calibrate semantic scorers against blinded human judgments.</li><li>Produce inspectable evidence in starter/evals/judge-calibration.json.</li></ul></div>
+        <div><h3>Done when</h3><p>agreement, disagreements, slices, and limits are reported before the judge gates a release.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0016-eval-release-gates.html">← 0016: Eval Release Gates</a>
+        <a rel="next" href="../lessons/0018-queues-and-background-jobs.html">0018: Queues And Background Jobs →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0017"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0017">Judge calibration is an experiment</h2><p>Blind and randomize examples, collect independent human labels, compare agreement overall and by slice, inspect disagreements, and state uncertainty. Do not let the same judge define the rubric, label the calibration set, and gate the release without independent checks; correlated errors can look like agreement.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -143,13 +171,13 @@
       <h2>Read Next</h2>
       <ul>
         <li><a href="0018-queues-and-background-jobs.html">Lesson 0018: Queues And Background Jobs</a></li>
-        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evals docs</a></li>
         <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust eval docs</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
     </section>
 
-    <footer>Sources: OpenAI evals docs, Braintrust eval docs, and the roadmap's LLM-as-judge tradeoff topic.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI evals docs, Braintrust eval docs, and the roadmap's LLM-as-judge tradeoff topic.</footer>
   </main>
   <script>
     const feedback = {

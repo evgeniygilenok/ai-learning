@@ -39,14 +39,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0005">
   <main>
     <header>
       <p class="eyebrow">Lesson 0005 - 30 minutes</p>
       <h1>Tool calling lets the model ask. Your application decides.</h1>
       <p class="lede">The model should not directly perform privileged actions. It proposes tool calls through schemas, and product code enforces policy.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#foundations">Product foundations</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/src/tools.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0004</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind tool calling boundaries.</li><li>Separate model requests from policy, approval, execution, and audit.</li><li>Produce inspectable evidence in starter/src/tools.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>write tools default to dry-run and cannot execute without explicit approval.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0004-streaming-ux.html">← 0004: Streaming UX</a>
+        <a rel="next" href="../lessons/0006-semantic-search-starts-with-chunks.html">0006: Semantic Search Starts With Chunks →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -153,13 +177,13 @@
         <li><a href="0006-semantic-search-starts-with-chunks.html">Lesson 0006: Semantic Search Starts With Chunks</a></li>
         <li><a href="https://developers.openai.com/api/docs/guides/function-calling">OpenAI function calling docs</a></li>
         <li><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview">Anthropic tool use overview</a></li>
-        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a></li>
+        <li><a href="https://genai.owasp.org/llm-top-10/">OWASP LLM Top 10</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
       <p class="small">Ask the agent to critique your tool policy like a security reviewer.</p>
     </section>
 
-    <footer>Sources: OpenAI function calling docs, Anthropic tool use docs, and OWASP LLM Top 10 security framing.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI function calling docs, Anthropic tool use docs, and OWASP LLM Top 10 security framing.</footer>
   </main>
   <script>
     const labels = ["allow", "ask", "block"];

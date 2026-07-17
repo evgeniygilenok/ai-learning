@@ -41,8 +41,9 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0046">
   <main>
     <header>
       <p class="eyebrow">Lesson 0046 - 40 minutes</p>
@@ -50,10 +51,33 @@
       <p class="lede">Agentic planning should discover missing requirements, define success, isolate uncertainty, and create checkpoints before implementation starts.</p>
     </header>
 
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#workflow-specialization">Agentic workflow engineering</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>40 min reading · 80 min build · Artifact: <code>starter/docs/executable-plan.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0045</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind agentic planning definition of done.</li><li>Translate ambiguous work into observable behavior, tests, evals, rollout, and non-goals.</li><li>Produce inspectable evidence in starter/docs/executable-plan.md.</li></ul></div>
+        <div><h3>Done when</h3><p>an independent reviewer can determine completion without inferring intent.</p><p><a href="../reference/agentic-workflow-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0045-agent-implementation-strategies.html">← 0045: Agent Implementation Strategies</a>
+        <a rel="next" href="../lessons/0047-ai-assisted-code-review-system.html">0047: AI-Assisted Code Review System →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
     <section class="band">
       <h2>The One Idea</h2>
       <p>Agents fill gaps. That is useful when the gap is harmless and dangerous when the gap is a requirement. Planning exists to decide which unknowns can be handled later and which must be resolved now.</p>
-      <p>A good Definition of Done turns "make it work" into checks the workflow can actually run or inspect. The term comes from Scrum, where it is a formal commitment describing the state work must meet to count as complete (<a href="https://scrumguides.org/scrum-guide.html">Scrum Guide</a>); for agent workflows the strongest done criteria are executable, which is the same discipline <a href="https://developers.openai.com/api/docs/guides/evals">OpenAI's eval guidance</a> applies to model behavior: define good before you build, then check it repeatedly.</p>
+      <p>A good Definition of Done turns "make it work" into checks the workflow can actually run or inspect. The term comes from Scrum, where it is a formal commitment describing the state work must meet to count as complete (<a href="https://scrumguides.org/scrum-guide.html">Scrum Guide</a>); for agent workflows the strongest done criteria are executable, which is the same discipline <a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI's eval guidance</a> applies to model behavior: define good before you build, then check it repeatedly.</p>
     </section>
 
     <section class="grid">
@@ -174,7 +198,7 @@
       </ul>
     </section>
 
-    <footer>Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, the <a href="https://scrumguides.org/scrum-guide.html">Scrum Guide</a> on Definition of Done, <a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals guide</a>, and roadmap portfolio planning lessons. Stuck or curious? Ask your agent-teacher to explain, quiz you, or attack your plan.</footer>
+    <footer>Source review: 2026-07-17. Sources: <a href="../sources/agentic-workflow-masterclass-outline.md">masterclass outline source note</a>, the <a href="https://scrumguides.org/scrum-guide.html">Scrum Guide</a> on Definition of Done, <a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evals guide</a>, and roadmap portfolio planning lessons. Stuck or curious? Ask your agent-teacher to explain, quiz you, or attack your plan.</footer>
   </main>
   <script>
     document.querySelectorAll(".choices").forEach(group => {

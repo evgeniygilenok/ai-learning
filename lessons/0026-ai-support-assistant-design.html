@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0026">
   <main>
     <header>
       <p class="eyebrow">Lesson 0026 - 35 minutes</p>
       <h1>Design an AI support assistant around trust, escalation, and source control.</h1>
       <p class="lede">Support is a perfect system-design practice case because wrong answers can frustrate users or create policy risk.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#portfolio-gate">Core portfolio and interview gate</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>35 min reading · 70 min build · Artifact: <code>starter/docs/product-brief.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Pass the Enterprise retrieval and agent hardening gate</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind ai support assistant design.</li><li>Tie trust, escalation, and source control to a real support workflow.</li><li>Produce inspectable evidence in starter/docs/product-brief.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the brief names users, risks, success measures, refusal behavior, and evidence.</p><p><a href="../reference/ai-engineering-job-readiness.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0025-agent-evaluation.html">← 0025: Agent Evaluation</a>
+        <a rel="next" href="../lessons/0027-enterprise-rag-design.html">0027: Enterprise RAG Design →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -110,7 +134,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI production best practices and the roadmap's AI support assistant practice design.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI production best practices and the roadmap's AI support assistant practice design.</footer>
   </main>
   <script>
     const copy = { answer: "Correct. Low-risk, cited self-service guidance can be answered.", escalate: "Correct. Policy exceptions and security issues need human or specialized workflow review." };

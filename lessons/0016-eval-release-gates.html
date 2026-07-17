@@ -39,14 +39,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0016">
   <main>
     <header>
       <p class="eyebrow">Lesson 0016 - 30 minutes</p>
       <h1>An eval harness becomes useful when it can block a risky release.</h1>
       <p class="lede">A good release gate turns "the prompt feels better" into a concrete pass, fail, or needs-review decision.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#production-boundaries">Production boundaries</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/evals/release-gate.json</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0015</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind eval release gates.</li><li>Turn exact and semantic checks into ship, block, or review decisions.</li><li>Produce inspectable evidence in starter/evals/release-gate.json.</li></ul></div>
+        <div><h3>Done when</h3><p>a known regression blocks release while an uncertain result requests review.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0015-portfolio-system-design-story.html">← 0015: Portfolio System Design Story</a>
+        <a rel="next" href="../lessons/0017-llm-as-judge-tradeoffs.html">0017: LLM-As-Judge Tradeoffs →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0016"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0016">A gate needs calibrated evidence and an explicit uncertain state</h2><p>Block exact contract, authorization, and safety regressions deterministically. Use representative slices for semantic quality, calibrate model graders against blinded human judgments, and route borderline or low-confidence results to review. Record who can override, why, for how long, and which follow-up case enters the suite.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -148,13 +176,13 @@
       <h2>Read Next</h2>
       <ul>
         <li><a href="0017-llm-as-judge-tradeoffs.html">Lesson 0017: LLM-As-Judge Tradeoffs</a></li>
-        <li><a href="https://developers.openai.com/api/docs/guides/evals">OpenAI evals docs</a></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evals docs</a></li>
         <li><a href="https://www.braintrust.dev/docs/evaluate">Braintrust eval docs</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
     </section>
 
-    <footer>Sources: OpenAI evals docs, Braintrust eval docs, and the roadmap's eval harness goal.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI evals docs, Braintrust eval docs, and the roadmap's eval harness goal.</footer>
   </main>
   <script>
     const feedback = {

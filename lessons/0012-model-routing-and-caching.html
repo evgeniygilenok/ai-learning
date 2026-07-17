@@ -38,14 +38,42 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0012">
   <main>
     <header>
       <p class="eyebrow">Lesson 0012 - 30 minutes</p>
       <h1>Route expensive intelligence only where it earns its keep.</h1>
       <p class="lede">Model routing and caching turn latency and cost from vague complaints into explicit product controls.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#production-boundaries">Production boundaries</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>30 min reading · 60 min build · Artifact: <code>starter/docs/optimization-decision.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Pass the Controlled workflows gate</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind model routing and caching.</li><li>Choose among prompts, retrieval, tools, routing, model changes, and fine-tuning from eval evidence.</li><li>Produce inspectable evidence in starter/docs/optimization-decision.md.</li></ul></div>
+        <div><h3>Done when</h3><p>the decision record compares quality, cost, latency, risk, and cache safety.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0011-memory-and-persistence.html">← 0011: Memory And Persistence</a>
+        <a rel="next" href="../lessons/0013-multi-tenant-ai-architecture.html">0013: Multi-Tenant AI Architecture →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0012"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0012">Optimize in evidence order</h2><p>Start from an eval-defined baseline. Improve instructions/examples, then context or retrieval, then add a deterministic tool/check, then consider routing or a different model. Fine-tune only when the task is stable, the data is suitable, the baseline is reproducible, and measured benefit exceeds data, deployment, monitoring, and rollback cost.</p></section>
+    <!-- COURSE-DEPTH:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -152,7 +180,7 @@
       </ul>
     </section>
 
-    <footer>Sources: OpenAI production best practices and OpenAI text generation docs.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI production best practices and OpenAI text generation docs.</footer>
   </main>
   <script>
     const labels = ["fast", "escalate", "fallback"];

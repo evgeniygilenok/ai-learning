@@ -38,14 +38,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0004">
   <main>
     <header>
       <p class="eyebrow">Lesson 0004 - 25 minutes</p>
       <h1>Streaming is a product decision, not just an API option.</h1>
       <p class="lede">Streaming improves perceived speed, but it also changes UI state, cancellation, validation, and error handling.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#foundations">Product foundations</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>25 min reading · 50 min build · Artifact: <code>starter/src/app.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="implement">implement</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0003</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind streaming ux.</li><li>Expose queued, streaming, validating, complete, and failed states.</li><li>Produce inspectable evidence in starter/src/app.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>a run visibly traverses states and recovers from an injected stream failure.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0003-structured-outputs.html">← 0003: Structured Outputs</a>
+        <a rel="next" href="../lessons/0005-tool-calling-boundaries.html">0005: Tool Calling Boundaries →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -136,7 +160,7 @@ error can happen at:
       </ul>
     </section>
 
-    <footer>Sources: OpenAI streaming responses docs and production UX patterns for asynchronous systems.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI streaming responses docs and production UX patterns for asynchronous systems.</footer>
   </main>
   <script>
     const chunks = [

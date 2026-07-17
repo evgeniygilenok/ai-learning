@@ -39,14 +39,38 @@
     @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
     @media print { body { background:#fff; } main { padding:24px; } button { display:none; } }
   </style>
+  <link rel="stylesheet" href="../assets/course.css">
 </head>
-<body>
+<body data-lesson-id="0013">
   <main>
     <header>
       <p class="eyebrow">Lesson 0013 - 35 minutes</p>
       <h1>Multi-tenant AI design starts before the model call.</h1>
       <p class="lede">Tenant isolation must apply to prompts, retrieval, tools, memory, traces, caches, and eval data.</p>
     </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#production-boundaries">Production boundaries</a> · core</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>35 min reading · 70 min build · Artifact: <code>starter/docs/tenant-boundaries.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0012</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind multi-tenant ai architecture.</li><li>Apply tenant identity through retrieval, tools, memory, traces, caches, and jobs.</li><li>Produce inspectable evidence in starter/docs/tenant-boundaries.md.</li></ul></div>
+        <div><h3>Done when</h3><p>cross-tenant negative tests fail closed at every named boundary.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0012-model-routing-and-caching.html">← 0012: Model Routing And Caching</a>
+        <a rel="next" href="../lessons/0014-ai-security-threat-model.html">0014: AI Security Threat Model →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
 
     <section class="band">
       <h2>The One Idea</h2>
@@ -150,12 +174,12 @@
         <li><a href="0014-ai-security-threat-model.html">Lesson 0014: AI Security Threat Model</a></li>
         <li><a href="https://developers.openai.com/api/docs/guides/production-best-practices">OpenAI production best practices</a></li>
         <li><a href="https://developers.openai.com/api/docs/guides/safety-best-practices">OpenAI safety best practices</a></li>
-        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP LLM Top 10</a></li>
+        <li><a href="https://genai.owasp.org/llm-top-10/">OWASP LLM Top 10</a></li>
         <li><a href="../reference/ai-engineering-glossary.html">AI Engineering Glossary</a></li>
       </ul>
     </section>
 
-    <footer>Sources: OpenAI production best practices, OpenAI safety best practices, and OWASP LLM Top 10.</footer>
+    <footer>Source review: 2026-07-17. Sources: OpenAI production best practices, OpenAI safety best practices, and OWASP LLM Top 10.</footer>
   </main>
   <script>
     const messages = {

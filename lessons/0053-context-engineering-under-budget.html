@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Lesson 0053: Context Engineering Under Budget</title>
+<style>:root{--ink:#14202b;--muted:#5d6875;--line:#d7dee7;--paper:#f7f9fc;--panel:#fff;--blue:#2563eb;--teal:#0f766e;--amber:#b45309}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6}main{max-width:1040px;margin:auto;padding:38px 22px 64px}header{padding-bottom:22px;border-bottom:2px solid var(--line)}h1{margin:0;max-width:900px;font-size:clamp(2rem,5vw,4rem);line-height:1.04}.eyebrow{color:var(--teal);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.lede,.muted{color:var(--muted)}section{margin:26px 0}.band,.card,.callout{padding:18px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:12px}.callout{border-left:5px solid var(--amber)}pre{overflow:auto;padding:16px;border-radius:8px;background:#0f172a;color:#e2e8f0}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}a{color:var(--blue)}footer{margin-top:30px;padding-top:18px;border-top:2px solid var(--line);color:var(--muted)}</style>
+<link rel="stylesheet" href="../assets/course.css"></head><body data-lesson-id="0053"><main>
+<header><p class="eyebrow">Lesson 0053 · 45 minutes</p><h1>Context is assembled per step, not accumulated by habit.</h1><p class="lede">Force a long agent run beyond its uncompressed step budget, compact old history with provenance, and measure whether lower tokens preserve outcomes.</p></header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#real-agent-stack">Real-world agent stack</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>45 min reading · 90 min build · Artifact: <code>starter/src/state.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0052</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind context engineering under budget.</li><li>Implement history compaction, per-step token budgets, and just-in-time context assembly on a long run.</li><li>Produce inspectable evidence in starter/src/state.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>the long task completes with measured before/after tokens and outcome quality on the same eval cases.</p><p><a href="../reference/agent-runtime-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0052-hosted-observability-and-evals.html">← 0052: Hosted Observability And Evals</a>
+        <a rel="next" href="../lessons/0039-deployable-ai-portfolio.html">0039: Deployable AI Portfolio →</a>
+        <a href="../lessons/0034-agent-evaluation-harness.html">Optional branch: 0034 · Agent Evaluation Harness ↗</a>
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0053"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0053">Context is a per-step budget with a quality cost</h2><p>Assemble only required policy, relevant facts, recent turns, and a provenance-preserving summary. Force a run beyond the uncompressed step budget, then compare tokens, latency, task success, and failure slices before and after compaction on the same cases. Saving tokens is not a win if critical state disappears.</p></section>
+    <!-- COURSE-DEPTH:END -->
+<section class="band"><h2>The one idea</h2><p>A large context window is a capacity ceiling, not permission to resend everything. At each step, reserve output capacity, include required policy and current state, retrieve relevant facts just in time, keep a recent-turn budget, and summarize older history with source message IDs.</p></section>
+<section class="grid"><article class="card"><h3>Required policy</h3><p class="muted">Approval, authorization, user intent, and stop conditions survive every compaction.</p></article><article class="card"><h3>Current state</h3><p class="muted">Pending call, completed effect IDs, budgets, and unresolved decisions are explicit.</p></article><article class="card"><h3>Just-in-time facts</h3><p class="muted">Retrieve source-backed details for the current step instead of pinning a whole corpus.</p></article><article class="card"><h3>Older history</h3><p class="muted">Summarize decisions and tool results with provenance; discard chatter that has no future value.</p></article></section>
+<section class="band"><h2>Experiment design</h2><p>Create a synthetic run whose uncompressed history exceeds the configured input budget. Run the same cases with compaction off and on.</p><table><thead><tr><th>Measure</th><th>Before</th><th>After</th><th>Decision</th></tr></thead><tbody><tr><td>Input/output tokens</td><td>TBD</td><td>TBD</td><td>Lower is useful only if quality holds</td></tr><tr><td>Task/path pass rate by slice</td><td>TBD</td><td>TBD</td><td>No approval/authorization regression</td></tr><tr><td>Latency and cost per success</td><td>TBD</td><td>TBD</td><td>Report distribution, not one run</td></tr><tr><td>Summary/provenance errors</td><td>TBD</td><td>TBD</td><td>Any lost critical fact gets a case</td></tr></tbody></table></section>
+<section class="callout"><h2>Quality boundary</h2><p>If a summary drops a rejection, completed effect ID, tenant boundary, or authoritative source version, the optimization fails even when tokens fall sharply. Add the loss as a regression case before changing the summarizer.</p></section>
+<section class="band"><h2>Build assignment</h2><ol><li>Use <code>assembleContext</code> to enforce an input budget and output reservation.</li><li>Replace the deterministic test summarizer with <code>createModelSummarizer</code> for the real run.</li><li>Complete a multi-step task whose raw history cannot fit the configured step budget.</li><li>Evaluate before/after on the same agent cases and fill <code>starter/evidence/specialization-real-agent-stack/context-tradeoff.md</code>.</li></ol></section>
+<section><h2>Read next</h2><ul><li><a href="0034-agent-evaluation-harness.html">Revisit Lesson 0034: Agent Evaluation Harness</a></li><li><a href="0039-deployable-ai-portfolio.html">Lesson 0039: Deployable AI Portfolio</a></li><li><a href="0033-agent-memory-design.html">Lesson 0033: Agent Memory Design</a></li><li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic: Effective context engineering for AI agents</a></li><li><a href="../starter/README.md">Flagship context path</a></li></ul></section>
+<footer>Source review: 2026-07-20. Sources: Anthropic context-engineering guidance and the course's agent-state, memory, and evaluation contracts.</footer>
+</main></body></html>

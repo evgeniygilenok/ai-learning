@@ -1,10 +1,12 @@
 # AI Engineering Resources
 
-**Last reviewed:** 2026-07-17  
+**Last reviewed:** 2026-07-20
 **Review policy:** Recheck official links, versions, renamed APIs, deprecations, and framework changes quarterly. Provider examples are illustrations; the course contracts remain vendor-neutral.
 
 ## Knowledge
 
+- [OpenAI API docs: Current model guidance](https://developers.openai.com/api/docs/guides/latest-model)
+  Use for the real-provider default and quarterly model review. The starter uses `gpt-5.6-terra` as the balanced course default reviewed 2026-07-20; preserve the provider boundary and rerun evals before changing it.
 - [OpenAI API docs: Text generation](https://developers.openai.com/api/docs/guides/text)
   Use for the core request/response mental model, message inputs, and the Responses API surface.
 - [OpenAI API docs: Structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
@@ -33,16 +35,26 @@
   Use to stay provider-literate and avoid learning only one vendor surface.
 - [LangGraph TypeScript docs: Overview](https://docs.langchain.com/oss/javascript/langgraph/overview)
   Use for long-running, stateful agents, human-in-the-loop workflows, persistence, and graph orchestration.
+- [LangGraph TypeScript docs: Interrupts](https://docs.langchain.com/oss/javascript/langgraph/interrupts)
+  Use for dynamic approval pauses, checkpoint/thread identity, restart/resume behavior, and interrupt safety rules.
+- [LangGraph PostgresSaver reference](https://reference.langchain.com/javascript/langchain-langgraph-checkpoint-postgres/index/PostgresSaver)
+  Starter version reviewed: `@langchain/langgraph` 1.4.7 and `@langchain/langgraph-checkpoint-postgres` 1.0.4. Use for the durable framework module and rerun the approval-resume tests on upgrade.
 - [Model Context Protocol docs](https://modelcontextprotocol.io/docs/getting-started/intro)
   Use for provider-neutral understanding of MCP as a standard for connecting AI applications to external data sources, tools, and workflows.
+- [MCP TypeScript v1 server guide](https://ts.sdk.modelcontextprotocol.io/server)
+  Starter version reviewed: `@modelcontextprotocol/sdk` 1.29.0 with Zod 4.4.3. The official SDK's v1 line is used for the runnable local server while v2 is pre-release; review the migration only after a stable v2 release.
 - [Model Context Protocol: Security best practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices)
   Use for confused-deputy, token-passthrough, SSRF, local-server, session, consent, and least-scope controls around MCP clients and servers.
 - [Qdrant documentation](https://qdrant.tech/documentation/)
   Use for vector search, filtering, hybrid retrieval, indexing, and RAG search engineering.
+- [Qdrant search and filtering](https://qdrant.tech/documentation/search/)
+  Use for Stage 5's real vector query, score interpretation, payload return, and tenant/role filters. The local course image is pinned to Qdrant 1.18.2.
 - [pgvector on GitHub](https://github.com/pgvector/pgvector)
   Use when the simplest useful architecture is Postgres plus vector similarity search.
 - [Braintrust docs: Evaluate systematically](https://www.braintrust.dev/docs/evaluate)
   Use for eval loops, experiments, production scoring, and turning traces into test datasets.
+- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai)
+  Use for lesson 0052's portable hosted trace fields. The starter emits the dated `https://opentelemetry.io/schemas/gen-ai/1.42.0` schema and treats GenAI conventions as review-dated rather than stable forever.
 - [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/)
   Version taught: 2025. Use for prompt injection, sensitive information disclosure, supply chain, data/model poisoning, improper output handling, excessive agency, system prompt leakage, vector/embedding weaknesses, misinformation, and unbounded consumption.
 - [NIST AI Resource Center and AI RMF](https://airc.nist.gov/)

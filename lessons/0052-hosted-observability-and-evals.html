@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Lesson 0052: Hosted Observability And Evals</title>
+<style>:root{--ink:#14202b;--muted:#5d6875;--line:#d7dee7;--paper:#f7f9fc;--panel:#fff;--blue:#2563eb;--teal:#0f766e;--amber:#b45309}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6}main{max-width:1040px;margin:auto;padding:38px 22px 64px}header{padding-bottom:22px;border-bottom:2px solid var(--line)}h1{margin:0;max-width:900px;font-size:clamp(2rem,5vw,4rem);line-height:1.04}.eyebrow{color:var(--teal);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.lede,.muted{color:var(--muted)}section{margin:26px 0}.band,.card,.callout{padding:18px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:12px}.callout{border-left:5px solid var(--amber)}pre{overflow:auto;padding:16px;border-radius:8px;background:#0f172a;color:#e2e8f0}a{color:var(--blue)}footer{margin-top:30px;padding-top:18px;border-top:2px solid var(--line);color:var(--muted)}</style>
+<link rel="stylesheet" href="../assets/course.css"></head><body data-lesson-id="0052"><main>
+<header><p class="eyebrow">Lesson 0052 · 45 minutes</p><h1>A hosted trace earns its place when it blocks or explains a release.</h1><p class="lede">Export the existing agent cases through one OTLP/HTTP backend, preserve redaction, and gate one release decision on the hosted result.</p></header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#real-agent-stack">Real-world agent stack</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>45 min reading · 90 min build · Artifact: <code>starter/src/trace.ts and starter/src/hosted-eval.ts</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0051</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind hosted observability and evals.</li><li>Export redacted OpenTelemetry GenAI spans to one hosted backend and port the agent release gate.</li><li>Produce inspectable evidence in starter/src/trace.ts and starter/src/hosted-eval.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>a failed real-model run is diagnosable in the hosted trace and an agent regression blocks release.</p><p><a href="../reference/agent-runtime-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0051-mcp-server-authoring.html">← 0051: MCP Server Authoring</a>
+        <a rel="next" href="../lessons/0053-context-engineering-under-budget.html">0053: Context Engineering Under Budget →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0052"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0052">A hosted trace must change a release decision</h2><p>Export redacted spans using one dated OpenTelemetry GenAI schema and one hosted OTLP receiver. Port an existing agent case instead of making a showcase-only dataset. Verify the backend can locate a failed real run by run ID, explain its path and usage, and block a known approval or tool regression.</p></section>
+    <!-- COURSE-DEPTH:END -->
+<section class="band"><h2>The one idea</h2><p>Do not build a second evaluation universe for a vendor dashboard. Port the same task IDs, slices, path assertions, and release policy. The hosted system is an operational view and durable collaboration surface; deterministic checks remain the contract.</p></section>
+<section class="grid"><article class="card"><h3>Identity</h3><p class="muted">Stable eval case, run, model, and version IDs join local evidence to hosted traces.</p></article><article class="card"><h3>Path</h3><p class="muted">Trace model decisions, tool proposals, policy outcomes, approvals, retries, and termination.</p></article><article class="card"><h3>Usage</h3><p class="muted">Export latency and input/output token counts; keep raw prompt and tool content redacted.</p></article><article class="card"><h3>Gate</h3><p class="muted">A known approval/path regression must turn the release decision from pass to block.</p></article></section>
+<section class="band"><h2>Run the hosted gate</h2><pre><code>export OTEL_EXPORTER_OTLP_ENDPOINT="https://your-one-hosted-backend.example"
+export OTEL_EXPORTER_OTLP_HEADERS="authorization=Bearer ..."
+npm run starter:eval:hosted
+
+# Required real-model evidence:
+OPENAI_API_KEY="..." REAL_MODEL_EVAL=1 npm run starter:eval:hosted</code></pre><p>The starter emits OTLP/HTTP JSON with a dated OpenTelemetry GenAI schema URL. Treat that schema as review-dated: GenAI conventions can still evolve.</p></section>
+<section class="callout"><h2>Failure drill</h2><p>Temporarily make the scripted or real model terminate before approval, or propose the write first. Run the hosted suite, confirm the command exits nonzero, find the trace by eval ID, explain the bad path without raw content, restore the contract, and link the failed/passing runs in the release record.</p></section>
+<section class="band"><h2>Build assignment</h2><ol><li>Choose one hosted OTLP receiver and record the account/project setup plus retention policy.</li><li>Verify redaction by inspecting an exported span.</li><li>Port all current <code>agent-cases.json</code> cases and add the real deviation from lesson 0010.</li><li>Preserve one failed trace, local exit code, diagnosis, fix, and passing rerun.</li></ol></section>
+<section><h2>Read next</h2><ul><li><a href="0053-context-engineering-under-budget.html">Lesson 0053: Context Engineering Under Budget</a></li><li><a href="0034-agent-evaluation-harness.html">Lesson 0034: Agent Evaluation Harness</a></li><li><a href="https://github.com/open-telemetry/semantic-conventions-genai">OpenTelemetry GenAI semantic conventions</a></li><li><a href="https://opentelemetry.io/docs/concepts/semantic-conventions/">OpenTelemetry semantic conventions overview</a></li><li><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI evaluation best practices</a></li></ul></section>
+<footer>Source review: 2026-07-20. Sources: OpenTelemetry GenAI conventions/schema, OpenTelemetry semantic-convention guidance, and OpenAI evaluation guidance.</footer>
+</main></body></html>

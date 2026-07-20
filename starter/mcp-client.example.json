@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "regulated-support-tools": {
+      "command": "npm",
+      "args": ["run", "starter:mcp"],
+      "env": {
+        "MCP_TENANT_ID": "demo-bank",
+        "MCP_SCOPES": "transfers:read",
+        "MCP_WRITE_MODE": "disabled"
+      }
+    }
+  }
+}

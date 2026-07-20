@@ -1,6 +1,6 @@
 # Course Completion Record
 
-For each core stage, link the actual locations for all five evidence types. A claim without an inspectable location is incomplete.
+For each core stage, link the actual locations for all five evidence types. A claim without an inspectable location is incomplete. From Grounded retrieval onward, working behavior must link both deterministic verification and a redacted real-model run/trace.
 
 | Stage | Working behavior | Failed run and diagnosis | Eval/review result | Operational observation | Decision record | Rubric scores |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -12,4 +12,19 @@ For each core stage, link the actual locations for all five evidence types. A cl
 | Portfolio gate | | | | | | |
 | Deployment/adoption | | | | | | |
 
-Final gate: demonstrate user need, implementation, retrieval, workflow/agent behavior, evals, traces, security boundary, operations, deployment, and one feedback-driven improvement. Show a failed run, diagnose it, change the system, and explain the measured result.
+## Required specialization proof
+
+| Specialization | Working behavior | Failed run and diagnosis | Eval/review result | Operational observation | Decision record | Rubric scores |
+| --- | --- | --- | --- | --- | --- | --- |
+| Hardened agent runtime | | | | | | |
+| Real-world agent stack (LangGraph, MCP, hosted OTLP, context) | | | | | | |
+
+## Public proof package
+
+- Public GitHub repo and case-study README:
+- Hosted/auth-gated demo:
+- 3-minute demo video:
+- Written technical deep dive:
+- One-link recruiter landing location:
+
+Final gate: demonstrate user need, real implementation, Qdrant-backed retrieval, model-driven workflow/agent behavior, evals, hosted traces, LangGraph/Postgres recovery, MCP security, context tradeoffs, operations, public deployment, and one feedback-driven improvement. Show a failed real run, diagnose it, change the system, and explain the measured result.

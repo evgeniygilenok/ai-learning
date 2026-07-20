@@ -113,12 +113,12 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Write the retrieval filter contract for your Enterprise Knowledge Assistant.</p>
+      <p>Implement and test the Qdrant payload-filter contract for the regulated-support assistant.</p>
       <ul>
         <li>Define required metadata fields on every chunk.</li>
-        <li>Write the filter object for a normal user and an admin.</li>
+        <li>Write the Qdrant <code>must</code> filter for tenant identity and allowed roles; apply it inside vector search, never after retrieval.</li>
         <li>Define what happens to stale or deleted content.</li>
-        <li>Add one eval case for cross-tenant leakage.</li>
+        <li>Add cross-tenant and empty-scope negative cases that prove forbidden payload never enters candidates, traces, or citations.</li>
       </ul>
       <p class="small">Ask the agent to review your filter as a data isolation reviewer.</p>
     </section>
@@ -133,7 +133,7 @@
       </ul>
     </section>
 
-    <footer>Source review: 2026-07-17. Sources: Qdrant documentation, pgvector, and OWASP LLM Top 10 guidance on sensitive information disclosure.</footer>
+    <footer>Source review: 2026-07-20. Sources: Qdrant filtering documentation, pgvector, and OWASP LLM Top 10 guidance on sensitive information disclosure.</footer>
   </main>
   <script>
     const copy = { safe: "Correct. Filtering happens before text enters context.", unsafe: "Correct. This can leak data through context, cache, or model output." };

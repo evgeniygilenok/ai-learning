@@ -68,7 +68,7 @@
       </div>
       <nav class="course-contract__nav" aria-label="Curriculum navigation">
         <a rel="prev" href="../lessons/0034-agent-evaluation-harness.html">← 0034: Agent Evaluation Harness</a>
-        <a rel="next" href="../lessons/0039-deployable-ai-portfolio.html">0039: Deployable AI Portfolio →</a>
+        <a rel="next" href="../lessons/0050-langgraph-with-durable-approval.html">0050: LangGraph With Durable Approval →</a>
         <a href="../lessons/0042-workflow-blocks-and-quality-gates.html">Optional branch: 0042 · Workflow Blocks And Quality Gates ↗</a>
       </nav>
     </section>
@@ -183,6 +183,7 @@
         <li><code>run_tests(command)</code> as sandboxed with command allowlist and timeout.</li>
       </ul>
       <p>For each tool, define schema, policy, approval rule, retry rule, result envelope, and audit fields.</p>
+      <p>Exercise the runtime with real model-proposed calls. Preserve one blocked proposed write, one malformed-argument rejection, one unauthorized tenant/scope rejection, and one replayed idempotency key before wrapping the same contracts in MCP.</p>
       <p class="small">Ask the agent to threat-model the runtime for prompt injection, duplicate writes, and privilege escalation.</p>
     </section>
 
@@ -199,7 +200,7 @@
       </ul>
     </section>
 
-    <footer>Source review: 2026-07-17. Sources: OpenAI function calling docs, OWASP LLM Top 10, and the roadmap tool-calling and retry lessons.</footer>
+    <footer>Source review: 2026-07-20. Sources: OpenAI function calling docs, OWASP LLM Top 10, MCP security guidance, and the roadmap tool-calling and retry lessons.</footer>
   </main>
   <script>
     const copy = {

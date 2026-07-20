@@ -63,8 +63,8 @@
       </div>
       <div class="course-contract__grid">
         <div><h3>Prerequisites</h3><ul><li>Complete lesson 0001</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
-        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind anatomy of a model call.</li><li>Add token budgets, timeout/error classes, rate-limit behavior, and model-version telemetry.</li><li>Produce inspectable evidence in starter/src/provider.ts.</li></ul></div>
-        <div><h3>Done when</h3><p>the fake provider demonstrates success plus transient and permanent failure handling.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind anatomy of a model call.</li><li>Implement a real env-keyed ModelProvider with token budgets, timeouts, typed failures, usage, and model-version telemetry while retaining the fake.</li><li>Produce inspectable evidence in starter/src/provider.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>a clean checkout with an API key runs real triage within the spend guardrail and fake-provider failure tests still pass.</p><p><a href="../reference/ai-engineering-glossary.html">Open the stage companion reference</a>.</p></div>
       </div>
       <nav class="course-contract__nav" aria-label="Curriculum navigation">
         <a rel="prev" href="../lessons/0001-ai-engineering-map.html">← 0001: AI Engineering Map</a>
@@ -161,7 +161,7 @@ async function createBrief(input: ProductBriefRequest) {
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Implement the provider boundary in <code>starter/src/provider.ts</code>, then exercise it from <code>starter/src/app.ts</code>. It should define:</p>
+      <p>Graduate the existing provider boundary in <code>starter/src/provider.ts</code>, then exercise it from <code>starter/src/app.ts</code>. Keep <code>FakeModelProvider</code> for tests and make the real, env-keyed Responses API adapter the default CLI path. It should define:</p>
       <ul>
         <li>The input type.</li>
         <li>The output type.</li>
@@ -169,8 +169,9 @@ async function createBrief(input: ProductBriefRequest) {
         <li>Input and output token budgets, timeout, model plus version, and safe usage telemetry.</li>
         <li>Separate transient failures (rate limit, timeout, provider unavailable) from permanent failures (invalid credentials, unsupported request, context overflow).</li>
         <li>A bounded retry policy: per-attempt timeout, total retry budget, jitter/backoff, and no retry for permanent failures.</li>
+        <li>Strict structured output, provider request ID, real token usage, and a redacted trace artifact.</li>
       </ul>
-      <p>Run <code>npm run starter:test</code>. The win is not the API syntax. The win is that the AI dependency now has a version-aware, budgeted contract whose success and failure paths your app can test.</p>
+      <p>Set a $15 provider-dashboard hard stop, export <code>OPENAI_API_KEY</code>, run <code>npm run starter:demo</code>, then run <code>npm run starter:test</code>. Preserve the real telemetry beside deterministic transient, permanent, and invalid-output tests. The win is a version-aware, budgeted contract whose real success and deterministic failure paths remain testable.</p>
     </section>
 
     <section>
@@ -183,7 +184,7 @@ async function createBrief(input: ProductBriefRequest) {
       <p class="small">Ask the agent to quiz you on model-call boundaries if this still feels abstract.</p>
     </section>
 
-    <footer>Source review: 2026-07-17. Sources: OpenAI text generation docs and the mission's product-engineering constraints.</footer>
+    <footer>Source review: 2026-07-20. Sources: OpenAI Responses API/model guidance, structured outputs, and the mission's product-engineering constraints.</footer>
   </main>
   <script>
     const feedback = document.getElementById("feedback");

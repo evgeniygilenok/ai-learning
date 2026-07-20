@@ -1,5 +1,5 @@
 {
   "policy": "block-on-contract-or-authorization-regression; review-on-semantic-uncertainty",
   "thresholds": { "contractPassRate": 1, "authorizationPassRate": 1 },
-  "lastReviewed": "2026-07-17"
+  "lastReviewed": "2026-07-20"
 }

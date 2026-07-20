@@ -112,12 +112,13 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Add recovery rules to your controlled workflow agent.</p>
+      <p>Add recovery rules to the real model-driven flagship workflow.</p>
       <ul>
         <li>Define max step count and max retries.</li>
         <li>Choose checkpoints for plan, dry run, review, and execution.</li>
         <li>List which tools are safe to retry.</li>
         <li>Define user-facing messages for stopped and recoverable failures.</li>
+        <li>Inject a provider timeout, malformed tool result, and post-write acknowledgement timeout; prove only the safe boundary retries and completed effect IDs are not duplicated.</li>
       </ul>
       <p class="small">Ask the agent to look for retry loops, duplicate side effects, and missing checkpoints.</p>
     </section>
@@ -131,7 +132,7 @@
       </ul>
     </section>
 
-    <footer>Source review: 2026-07-17. Sources: LangGraph TypeScript docs and production workflow recovery patterns.</footer>
+    <footer>Source review: 2026-07-20. Sources: LangGraph TypeScript docs, Responses API failure behavior, and production workflow recovery patterns.</footer>
   </main>
   <script>
     const copy = { retry: "Correct. A read-only transient failure can retry with backoff.", stop: "Correct. Permission and unsafe side-effect cases need stop, approval, or redesign." };

@@ -6,10 +6,22 @@
     "curriculum:render": "node scripts/render-curriculum.mjs",
     "curriculum:check": "node scripts/check-course.mjs",
     "starter:demo": "node --experimental-strip-types starter/src/app.ts",
+    "starter:demo:fake": "node --experimental-strip-types --eval \"import('./starter/src/app.ts').then(({runDeterministicTriage}) => runDeterministicTriage('Why is my synthetic transfer still pending?').then(console.log))\"",
+    "starter:agent": "node --experimental-strip-types starter/src/agent-demo.ts",
+    "starter:langgraph": "node --experimental-strip-types starter/src/langgraph-demo.ts",
+    "starter:mcp": "node --experimental-strip-types starter/src/mcp-server.ts",
+    "starter:vector": "node --experimental-strip-types starter/src/vector-demo.ts",
+    "starter:eval:hosted": "node --experimental-strip-types starter/src/hosted-eval.ts",
     "starter:test": "node --experimental-strip-types --test starter/test/*.test.ts",
     "test": "npm run curriculum:check && npm run starter:test"
   },
   "engines": {
     "node": ">=22"
+  },
+  "dependencies": {
+    "@langchain/langgraph": "^1.4.7",
+    "@langchain/langgraph-checkpoint-postgres": "^1.0.4",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
   }
 }

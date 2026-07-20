@@ -53,11 +53,13 @@
         <table>
           <thead><tr><th>Requirement</th><th>Evidence</th></tr></thead>
           <tbody>
-            <tr><td>LLM product integration</td><td>Product triage assistant with structured outputs, streaming states, and validation.</td></tr>
-            <tr><td>RAG</td><td>Knowledge assistant with chunks, metadata, citations, answerability, and retrieval evals.</td></tr>
+            <tr><td>LLM product integration</td><td>Real-provider product triage with strict structured outputs, usage telemetry, streaming states, validation, and deterministic failure tests.</td></tr>
+            <tr><td>RAG</td><td>Qdrant-backed knowledge assistant with chunks, ACL payload filters, citations, answerability, and measured lexical/semantic/hybrid retrieval evals.</td></tr>
             <tr><td>Evaluation</td><td>Golden datasets, CI smoke gate, before/after reports, and failure clusters.</td></tr>
-            <tr><td>Observability</td><td>Traces for retrieval, model calls, validation, tool calls, latency, cost, and failures.</td></tr>
-            <tr><td>Agents</td><td>Controlled workflow with state, approvals, retries, recovery, and trace-based evals.</td></tr>
+            <tr><td>Observability</td><td>Redacted OpenTelemetry GenAI traces in one hosted backend for model calls, tool paths, latency, usage, and failed release cases.</td></tr>
+            <tr><td>Agents</td><td>Real model-driven controlled workflow plus LangGraph/Postgres rebuild with approvals, retries, durable recovery, and trace-based evals.</td></tr>
+            <tr><td>MCP</td><td>Working MCP server invoked from a real client with confused-deputy, least-scope, approval, and replay tests.</td></tr>
+            <tr><td>Context engineering</td><td>Measured compaction and just-in-time context assembly with before/after tokens, latency, and outcome quality.</td></tr>
             <tr><td>Tool safety</td><td>Validated, authorized, approval-gated, idempotent, and audited tool execution.</td></tr>
             <tr><td>Security</td><td>Threat model, redaction, ACL-aware retrieval, tenant boundaries, and prompt-injection mitigations.</td></tr>
             <tr><td>Production readiness</td><td>Clean run path, seed data, CI, env config, health checks, and deployment notes.</td></tr>
@@ -90,7 +92,11 @@
       <article class="card">
         <h3>Proof Package</h3>
         <ul>
-          <li>3-minute demo.</li>
+          <li>One public recruiter link.</li>
+          <li>Public GitHub repo with a case-study README.</li>
+          <li>Hosted/auth-gated synthetic demo.</li>
+          <li>3-minute demo video.</li>
+          <li>Written eval or recovery deep dive.</li>
           <li>10-minute architecture walkthrough.</li>
           <li>Eval report.</li>
           <li>Trace walkthrough.</li>
@@ -146,7 +152,7 @@
       </ul>
     </section>
 
-    <footer>Source review: 2026-07-17. Sources: the live course contract, OpenAI production and eval guidance, OWASP LLM Top 10, and the roadmap lesson catalog.</footer>
+    <footer>Source review: 2026-07-20. Sources: the live course contract, OpenAI production/eval guidance, LangGraph, MCP, OpenTelemetry GenAI, Qdrant, OWASP LLM Top 10, and the roadmap lesson catalog.</footer>
   </main>
 </body>
 </html>

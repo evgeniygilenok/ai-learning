@@ -63,8 +63,8 @@
       </div>
       <div class="course-contract__grid">
         <div><h3>Prerequisites</h3><ul><li>Pass the Minimum viable grounded retrieval gate</li></ul></div>
-        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind controlled workflow agents.</li><li>Encode workflow states, stop conditions, approvals, and tool transitions.</li><li>Produce inspectable evidence in starter/src/workflow.ts.</li></ul></div>
-        <div><h3>Done when</h3><p>a risky action pauses for approval and a rejected action reaches a safe terminal state.</p><p><a href="../reference/agent-runtime-reference.html">Open the stage companion reference</a>.</p></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind controlled workflow agents.</li><li>Let the real model propose workflow tool calls while code owns state, validation, approval, execution, and termination.</li><li>Produce inspectable evidence in starter/src/workflow.ts.</li></ul></div>
+        <div><h3>Done when</h3><p>a real proposed write pauses for approval and one wrong-tool, malformed-args, or premature-termination deviation is preserved.</p><p><a href="../reference/agent-runtime-reference.html">Open the stage companion reference</a>.</p></div>
       </div>
       <nav class="course-contract__nav" aria-label="Curriculum navigation">
         <a rel="prev" href="../lessons/0009-tracing-ai-runs.html">← 0009: Tracing AI Runs</a>
@@ -170,14 +170,14 @@
 
     <section class="band">
       <h2>Build Assignment</h2>
-      <p>Design a dry-run coding workflow agent for a Jira-style ticket.</p>
+      <p>Run the regulated-support flagship through <code>runModelDrivenWorkflow</code>. The real LLM—not a hardcoded event—must propose <code>lookupTransfer</code> and <code>draftEscalation</code>; the runtime must retain control.</p>
       <ul>
-        <li>Define six states from intake to final checklist.</li>
-        <li>List the tools available in each state.</li>
-        <li>Mark each tool as read-only, draft, or side-effecting.</li>
-        <li>Add two approval gates and two stop conditions.</li>
+        <li>Run <code>npm run starter:agent</code> and preserve the real proposed write at <code>awaiting-approval</code>.</li>
+        <li>Reject once and prove the write did not execute; approve once and prove the effect ID is unique.</li>
+        <li>Capture one observed deviation: wrong tool, malformed arguments, or premature termination. If the first runs behave, perturb the prompt/tool description until one appears.</li>
+        <li>Add the deviation to <code>agent-cases.json</code> before changing the prompt or runtime.</li>
       </ul>
-      <p class="small">Ask the agent to critique the workflow for excessive agency and missing recovery paths.</p>
+      <p class="small">Your evidence must separate the model's proposal from the application's validation, authorization, approval, execution, and audit decisions.</p>
     </section>
 
     <section>
@@ -191,7 +191,7 @@
       </ul>
     </section>
 
-    <footer>Source review: 2026-07-17. Sources: OpenAI Agents SDK docs, LangGraph TypeScript docs, and OWASP LLM Top 10 guidance on excessive agency.</footer>
+    <footer>Source review: 2026-07-20. Sources: OpenAI function-calling/agent guidance, LangGraph TypeScript docs, and OWASP LLM Top 10 guidance on excessive agency.</footer>
   </main>
   <script>
     const labels = [

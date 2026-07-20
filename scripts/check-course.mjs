@@ -7,7 +7,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
 const forbidden = [/plan-v\d+\.md/i, /developers\.openai\.com\/api\/docs\/guides\/evals(?:["'#?]|$)/, /owasp\.org\/www-project-top-10-for-large-language-model-applications/];
 
-if (lessons.length !== 49) errors.push(`Expected 49 lesson records, found ${lessons.length}`);
+if (lessons.length !== 53) errors.push(`Expected 53 lesson records, found ${lessons.length}`);
+if (stages.length !== 13) errors.push(`Expected 13 stage/track records, found ${stages.length}`);
 const ids = new Set();
 for (const lesson of lessons) {
   if (ids.has(lesson.id)) errors.push(`Duplicate lesson ID ${lesson.id}`);
@@ -20,7 +21,7 @@ for (const lesson of lessons) {
   if (!html) { errors.push(`Missing ${lesson.href}`); continue; }
   if (!html.includes(`data-lesson-id="${lesson.id}"`)) errors.push(`${lesson.href} missing lesson ID`);
   if (!html.includes("<!-- COURSE-CONTRACT:START -->")) errors.push(`${lesson.href} missing generated contract`);
-  if (!html.includes("Source review: 2026-07-17")) errors.push(`${lesson.href} missing source review date`);
+  if (!html.includes("Source review:")) errors.push(`${lesson.href} missing source review date`);
   await checkLinks(path, html);
   checkForbidden(lesson.href, html);
 }
@@ -34,6 +35,11 @@ for (const relative of ["index.html", "courses/applied-ai-engineering.html", "co
   const text = await readFile(path, "utf8");
   checkForbidden(relative, text);
   if (relative.endsWith(".html")) await checkLinks(path, text);
+}
+
+const course = await readFile(resolve(root, "courses/applied-ai-engineering.html"), "utf8");
+for (const phrase of ["experienced-engineer agentic track", "10-12 weeks", "redacted real-model run/trace", "public proof package"]) {
+  if (!course.toLowerCase().includes(phrase)) errors.push(`Course page missing upgrade contract: ${phrase}`);
 }
 
 if (errors.length) {

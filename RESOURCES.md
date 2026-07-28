@@ -1,6 +1,5 @@
 # AI Engineering Resources
-
-**Last reviewed:** 2026-07-20
+**Last reviewed:** 2026-07-27
 **Review policy:** Recheck official links, versions, renamed APIs, deprecations, and framework changes quarterly. Provider examples are illustrations; the course contracts remain vendor-neutral.
 
 ## Knowledge
@@ -61,6 +60,41 @@
   Version taught: AI RMF 1.0, identified explicitly because it is under revision. Use Govern/Map/Measure/Manage for regulated-industry communication.
 - [NIST AI 600-1: Generative AI Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf)
   Use as the generative-AI companion to AI RMF 1.0 for risks and actions; record the publication/version when citing it in an artifact.
+
+### AI agent security (course: lessons 0054-0061; reviewed 2026-07-27)
+
+**Threats, requirements, and operations**
+
+- [OWASP Top 10 for Agentic Applications for 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
+  Use ASI01-ASI10 to organize agent-specific threat paths; it is a risk-awareness list, not a complete verification standard.
+- [OWASP Artificial Intelligence Security Verification Standard (AISVS) 1.0](https://owasp.org/www-project-artificial-intelligence-security-verification-standard-aisvs-docs/)
+  Use versioned v1.0 requirement IDs for testable controls, especially agent orchestration, MCP, access, memory, supply chain, and monitoring.
+- [NIST AI Risk Management Framework 1.0](https://www.nist.gov/itl/ai-risk-management-framework) and [NIST AI 600-1: Generative AI Profile](https://doi.org/10.6028/NIST.AI.600-1)
+  Use Govern, Map, Measure, and Manage for the assurance argument and the GenAI profile for risk-specific actions; record the publication version.
+- [NIST AI 100-2e2025: Adversarial Machine Learning](https://doi.org/10.6028/NIST.AI.100-2e2025)
+  Use the March 2025 edition for current attack/mitigation terminology; note its published errata when citing details.
+- [NIST SP 800-61 Rev. 3](https://doi.org/10.6028/NIST.SP.800-61r3)
+  Final April 2025. Use its CSF 2.0 community profile to integrate preparation, detection, response, recovery, and lessons learned.
+- [MITRE ATLAS](https://atlas.mitre.org/)
+  Use the living AI threat knowledge base for technique/case cross-checks; record technique ID/name and review date because the catalog changes.
+
+**MCP protocol and security**
+
+- [MCP specification 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25)
+  Stable baseline taught by this path; pin the negotiated protocol and SDK rather than linking only to latest.
+- [MCP Security Best Practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices)
+  Use for confused-deputy, token audience/passthrough, SSRF, local-server, session, consent, and scope-minimization controls.
+- [MCP 2026-07-28 specification release candidate](https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/)
+  **Emerging, not stable as of the 2026-07-27 review.** Do not treat it as the deployed baseline; confirm final publication, changelog, SDK support, and migration tests first.
+
+**Evaluation tools**
+
+- [AgentDojo](https://agentdojo.spylab.ai/) — tool-using agent utility and prompt-injection security tasks.
+- [Inspect AI](https://inspect.aisi.org.uk/) — composable datasets, agents, sandboxed tools, scorers, logs, and eval orchestration.
+- [PyRIT](https://microsoft.github.io/PyRIT/) — risk-identification and red-team scenario orchestration.
+- [garak](https://github.com/NVIDIA/garak) — probe/detector-based model and dialogue-system vulnerability scanning.
+
+Pin any chosen tool/package and suite commit, run it only against authorized synthetic or isolated targets, and retain project-specific authorization, effect, isolation, and benign-utility oracles as the final gate.
 
 ### Agentic workflow practice (course: lessons 0042-0049)
 

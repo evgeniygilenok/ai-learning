@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0059: Context, Memory, and Multi-Agent Trust</title>
+  <style>
+    :root{color-scheme:light;--ink:#14202b;--muted:#5d6875;--line:#d7dee7;--paper:#f7f9fc;--panel:#fff;--blue:#2563eb;--teal:#0f766e;--amber:#b45309;--rose:#be123c;--green:#15803d;--violet:#6d28d9;--code:#0f172a}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.6}main{max-width:1080px;margin:auto;padding:38px 22px 64px}header{padding-bottom:24px;border-bottom:2px solid var(--line)}.back,a{color:var(--blue);text-decoration-thickness:2px}.back{display:inline-block;margin-bottom:18px;font-weight:750}.eyebrow{color:var(--teal);font-size:.78rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}h1{max-width:940px;margin:6px 0 0;font-size:clamp(2.15rem,5.5vw,4.4rem);line-height:1.03;letter-spacing:-.025em}h2{margin:0 0 12px;font-size:clamp(1.35rem,3vw,2rem);line-height:1.17}h3{margin:0 0 8px;font-size:1.04rem}p{margin:0 0 12px}ul,ol{margin:8px 0 0;padding-left:22px}li+li{margin-top:6px}section{margin:28px 0}.lede{max-width:840px;margin:16px 0 0;color:var(--muted);font-size:1.08rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px}.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card,.band,.callout{padding:18px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.card{border-top:5px solid var(--teal)}.card:nth-child(4n+2){border-top-color:var(--blue)}.card:nth-child(4n+3){border-top-color:var(--amber)}.card:nth-child(4n){border-top-color:var(--violet)}.callout{border-left:5px solid var(--amber);background:#fffaf2}.danger{border-left-color:var(--rose);background:#fff3f5}.success{border-left-color:var(--green);background:#f1fbf4}.muted,.small{color:var(--muted)}.small{font-size:.93rem}.meta{margin-top:22px}.meta strong{display:block;margin-bottom:3px}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}pre{margin:12px 0 0;overflow:auto;padding:17px;border-radius:9px;background:var(--code);color:#e2e8f0;line-height:1.48}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px;background:var(--panel)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#eef4fb;color:var(--muted);font-size:.76rem;letter-spacing:.07em;text-transform:uppercase}tr:last-child td{border-bottom:0}.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.state{padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:750}.arrow{color:var(--muted)}.checklist{columns:2;column-gap:30px}.checklist li{break-inside:avoid}nav.next{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid var(--line)}footer{margin-top:32px;padding-top:18px;border-top:2px solid var(--line);color:var(--muted);font-size:.94rem}@media(max-width:760px){main{padding:26px 16px 48px}.two{grid-template-columns:1fr}.checklist{columns:1}}@media print{body{background:#fff}main{padding:24px}.back,nav.next{display:none}.card,.band,.callout{break-inside:avoid}}
+  </style>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-lesson-id="0059"><main>
+  <header><a class="back" href="../courses/ai-agent-security.html">← AI Agent Security path</a><p class="eyebrow">Lesson 0059 · 50 min reading · 100 min build</p><h1>Context carries provenance, not permission.</h1><p class="lede">Keep source, tenant, session, purpose, and trust attached through compaction; govern durable memory; and make every agent delegation authenticated, attenuated, replay-safe, and bounded.</p><div class="grid meta"><article class="card"><strong>Prerequisite</strong><span class="small">Lessons 0054–0058, explicit runtime identities, and an isolated synthetic agent.</span></article><article class="card"><strong>Artifact</strong><span class="small"><code>starter/docs/context-integrity-policy.md</code></span></article><article class="card"><strong>Done when</strong><span class="small">Poisoned/cross-tenant memory, forged/replayed peers, privilege expansion, cycles, and fan-out fail closed while benign scoped continuity still works.</span></article></div></header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#ai-agent-security">AI agent security</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>50 min reading · 100 min build · Artifact: <code>starter/docs/context-integrity-policy.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0058</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind context memory and multi-agent trust.</li><li>Protect context and memory with provenance, tenant and purpose scope, write authority, quarantine, expiry, promotion, revocation, and authenticated inter-agent envelopes.</li><li>Produce inspectable evidence in starter/docs/context-integrity-policy.md.</li></ul></div>
+        <div><h3>Done when</h3><p>poisoned, replayed, cross-tenant, unsigned, stale, or over-delegated synthetic messages cannot become trusted context, durable memory, or transitive authority.</p><p><a href="../reference/ai-agent-security-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0058-sandboxed-agent-execution.html">← 0058: Sandboxed Agent Execution</a>
+        <a rel="next" href="../lessons/0060-adversarial-evals-and-security-gates.html">0060: Adversarial Evals And Security Gates →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0059"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0059">Context and memory need provenance plus write authority</h2><p>Authenticate inter-agent envelopes and preserve sender, tenant, purpose, source, timestamp, expiry, and delegation limits. Quarantine untrusted writes, require promotion policy for durable memory, prevent transitive authority, and support revocation and rebuild. Test poisoning, replay, stale context, cross-tenant reads, and summary laundering across multiple hops.</p></section>
+    <!-- COURSE-DEPTH:END -->
+
+  <section class="callout danger"><h2>Lab safety boundary</h2><p>Use two fictional tenants, fake agents, in-memory storage, verified-envelope fixtures, inert instructions, and no network. Do not connect a live vector database, messaging platform, A2A/MCP endpoint, identity provider, or long-term personal memory. Test message authentication with pre-verified fixtures or reviewed libraries—not home-grown production cryptography.</p></section>
+
+  <section class="band"><h2>The one idea</h2><p>Content can be authentic and still be untrusted for authority. A signed peer may send a wrong fact; an approved document may contain an injected instruction; a correct summary may lose the tenant label that made it safe. Treat received trust and data-class labels as claims. Resolve provenance locally in application code, bind the result to the exact content digest and lineage, sample receiver-owned fresh time, and re-authorize every memory read, write, delegation, and sink.</p></section>
+
+  <section><h2>Use a context envelope, not a string pile</h2><div class="two"><article class="band"><pre><code>type ContextEnvelope = Readonly&lt;{
+  contextId: string;
+  contentRef: string;       // opaque fixture reference
+  sourceKind: "policy" | "user" | "document"
+    | "tool" | "memory" | "peer";
+  sourceId: string;
+  trust: "trusted_control" | "untrusted_data";
+  tenantId: string;
+  subjectRef: string;
+  sessionId: string;
+  purpose: string;
+	  dataClasses: readonly string[]; // received claims, never authority
+	  resolvedClassificationRef: string; // app-issued; binds digest + lineage
+  createdAt: string;
+  expiresAt: string;
+  parentRefs: readonly string[];
+  contentDigest: `sha256:${string}`;
+	}&gt;;</code></pre></article><article class="band"><h3>Assembly invariants</h3><ul><li>Authorization selects sources before content reaches the model; filtering afterward is too late.</li><li>Policy/control context is stored separately and can be changed only through its trusted control-plane path.</li><li>Retrieved, tool, memory, and peer content remains untrusted data even if relevant, signed, or previously summarized.</li><li>Every transform derives a new envelope that retains all parents; missing tenant/trust/purpose fails closed.</li><li>Received labels are claims. A pinned application resolver reclassifies the exact bytes/artifact and binds its decision to <code>contentDigest</code>, parent lineage, tenant, purpose, and resolver version.</li><li>Compaction preserves decisions, rejections, approvals, effect IDs, budgets, resolver-issued provenance, and expiry—not just prose.</li><li>Trace, cache, scorer, and memory access enforce the same tenant/data-class boundary as retrieval.</li></ul></article></div></section>
+
+  <section><h2>Define context zones explicitly</h2><div class="table-wrap"><table><thead><tr><th>Zone</th><th>Lifetime / scope</th><th>May contain</th><th>Must not do</th></tr></thead><tbody>
+    <tr><td>Control plane</td><td>Versioned system/policy scope</td><td>Application policy, trusted run identity, allowed task graph, enforcement versions.</td><td>Accept a write from model output, retrieved content, memory, or peer message.</td></tr>
+    <tr><td>Step context</td><td>One step, one tenant/run</td><td>Minimum authorized facts and tool results needed now.</td><td>Carry forward automatically or erase origin/trust labels.</td></tr>
+    <tr><td>Session state</td><td>One agent and session by default</td><td>Pending decision, effect IDs, budgets, recent turns, scoped summary.</td><td>Cross tenants, users, agents, or sessions without a new explicit policy.</td></tr>
+    <tr><td>Durable memory</td><td>Purpose/tenant/subject scoped; TTL</td><td>Validated facts/preferences with source, confidence, reviewer state, and versions.</td><td>Store credentials, approvals, policy, identity/role claims, free-form commands, or hidden control text.</td></tr>
+    <tr><td>Peer exchange</td><td>One task/delegation; short expiry</td><td>Minimal data and bounded requested result under an authenticated envelope.</td><td>Forward the parent's token, inherit ambient tools, or grant more authority than the parent.</td></tr>
+  </tbody></table></div></section>
+
+  <section class="band"><h2>Memory is a state machine</h2><div class="flow" aria-label="Memory lifecycle"><span class="state">candidate</span><span class="arrow">→</span><span class="state">validated</span><span class="arrow">→</span><span class="state">active</span><span class="arrow">→</span><span class="state">expired / deleted</span></div><div class="flow" aria-label="Memory containment path"><span class="state">any non-final state</span><span class="arrow">→</span><span class="state">quarantined</span><span class="arrow">→</span><span class="state">restored or deleted</span></div><ol><li><strong>Propose:</strong> the model may propose a typed candidate; it cannot write directly.</li><li><strong>Resolve:</strong> a trusted application resolver classifies the exact content digest and lineage; missing, malformed, forged, or downgraded provenance fails closed.</li><li><strong>Authorize:</strong> deterministic policy samples fresh application time and verifies writer, tenant, subject, purpose, type, source, TTL, resolved data class, and prohibited content class.</li><li><strong>Validate:</strong> resolve factual sources where possible; distinguish user preference from externally asserted fact; require review for sensitive durable classes.</li><li><strong>Activate:</strong> version the entry and indexes. Retrieval returns the entry plus its envelope, never naked text.</li><li><strong>Use:</strong> re-resolve and authorize each read for the exact body/artifact, current tenant, session, purpose, and agent; lower confidence/trust when transformations lose fidelity.</li><li><strong>Expire/delete/quarantine:</strong> remove from retrieval immediately, keep minimal governed tombstone/evidence, find derived summaries, and rebuild affected indexes.</li><li><strong>Rollback:</strong> select a known-good version and prove later runs no longer retrieve poisoned or derived content.</li></ol></section>
+
+  <section class="callout"><h2>A summary can launder trust</h2><p>If untrusted vendor text becomes “the agent remembers that policy allows this vendor,” the wording changed but provenance did not. Derived memory inherits the most restrictive tenant, trust, data-class, purpose, and expiry of its parents unless a named validation process explicitly upgrades a specific property. A model cannot perform that upgrade on its own.</p></section>
+
+  <section><h2>Authenticate the peer; authorize the delegation</h2><div class="two"><article class="band"><h3>Verified message envelope</h3><pre><code>type DelegationEnvelope = Readonly&lt;{
+  messageId: string;
+  senderAgentId: string;    // verified transport identity
+  audienceAgentId: string;
+  tenantId: string;
+  userDelegationRef: string;
+  parentTaskId: string;
+  taskId: string;
+  sessionId: string;
+  allowedSkills: readonly string[];
+  capabilityRef: string;    // attenuated, audience-bound
+	  dataClasses: readonly string[]; // sender claims only
+  depthRemaining: number;
+  fanoutRemaining: number;
+  stepsRemaining: number;
+  expiresAt: string;
+  nonce: string;
+  bodyDigest: `sha256:${string}`;
+  transportAuthRef: string;
+	}&gt;;</code></pre></article><article class="band"><h3>Receiver checks</h3><ol><li>Authenticate transport/server and obtain sender identity outside message content.</li><li>Sample receiver-owned time now; validate schema, protocol version, audience, expiry, nonce, body digest, and replay store. Never reuse a context-carried time for authority.</li><li>Bind user, tenant, session, parent task, and purpose to trusted state.</li><li>Locally resolve classification for the exact body/artifact digest and lineage; sender labels are claims, and missing, forged, or downgraded resolution denies.</li><li>Verify requested skill/action/data against local policy and the attenuated capability.</li><li>Require child budgets to be no larger than every remaining parent budget.</li><li>Treat message body/artifacts as untrusted data; validate outputs before reuse or effect.</li><li>Record parent/child edge, decision, reason, and cancellation route without raw sensitive text.</li></ol></article></div><p class="small">Protocols can advertise authentication requirements, but the receiving application remains responsible for authorization at skill, data, action, and downstream-tool boundaries. Never accept an in-payload “I am the system agent” claim as identity.</p></section>
+
+  <section><h2>Make authority and budgets shrink</h2><div class="table-wrap"><table><thead><tr><th>Dimension</th><th>Delegation rule</th><th>Breaker</th></tr></thead><tbody>
+    <tr><td>Capability</td><td>Child gets the intersection of parent grant, local policy, requested skill, object, destination, audience, and expiry.</td><td>Deny any attempted expansion; a new user approval cannot be implied by a peer.</td></tr>
+    <tr><td>Depth / graph</td><td>Decrement depth on every edge; carry root and parent task; keep a visited path.</td><td>Reject depth below zero, self-edge, repeated task/message ID, or cycle.</td></tr>
+    <tr><td>Fan-out / concurrency</td><td>Reserve child count atomically from the parent's remaining budget.</td><td>Reject new child at limit; cancel descendants when parent stops.</td></tr>
+    <tr><td>Steps / retries</td><td>Child use consumes parent totals; retry only idempotent/reconciled work.</td><td>Terminal failure or human escalation at limit—no peer retry storm.</td></tr>
+    <tr><td>Time / tokens / spend</td><td>Child deadline and quota cannot exceed parent remainder.</td><td>Hard cancellation with one terminal state and quarantined partial output.</td></tr>
+    <tr><td>Data</td><td>Share the minimum authorized references; preserve tenant, purpose, class, source, and expiry.</td><td>Block cross-tenant/class/purpose use and quarantine wrongly propagated derivatives.</td></tr>
+  </tbody></table></div></section>
+
+  <section class="band"><h2>Build <code>context-integrity-policy.md</code></h2><ol><li>Declare scope, owners, synthetic fixture IDs, policy/protocol versions, source review date, prohibited production use, and links to ASI06–ASI08 threat paths.</li><li>Define the context envelope and authority table for control, step, session, durable memory, and peer-exchange zones.</li><li>Write assembly rules for authorization-before-retrieval, received-label claims, local provenance resolution bound to exact digest/lineage, compaction, cache/trace/scorer isolation, and missing-resolution failure.</li><li>Specify allowed memory types, writer/readers, tenant/subject/purpose scopes, validation, TTL, confidence, prohibited classes, state transitions, quarantine, deletion, derived-data discovery, and rollback.</li><li>Specify the verified delegation envelope, transport identity boundary, receiver-owned fresh clock, local authorization, capability attenuation, replay store, message/task lifecycle, cancellation, and budget accounting.</li><li>Implement the policy with in-memory stores and a fake message bus that opens no network. Use pre-verified sender fixtures; do not implement custom production signatures.</li><li>Run the required paired cases and save decisions, reason codes, versioned state diffs, bounded graph, and clean rollback evidence without raw hostile text.</li></ol></section>
+
+  <section><h2>Required safe tests</h2><div class="table-wrap"><table><thead><tr><th>Case</th><th>Expected result</th><th>Oracle</th></tr></thead><tbody>
+    <tr><td>Benign scoped preference with source and TTL</td><td>Validated, activated, retrieved only for matching tenant/subject/purpose, then expires.</td><td>Versioned entry and authorized retrieval/expiry decisions.</td></tr>
+    <tr><td>Low-trust content requests durable instruction, policy, role, approval, or secret</td><td>Write denied or quarantined; later session does not retrieve it.</td><td>State machine and empty later context.</td></tr>
+    <tr><td>Cross-tenant/session/agent read or cache/summary laundering</td><td>Denied before content enters context; derived record retains restrictive parents.</td><td>No forbidden bytes in model/trace; lineage and denial reason.</td></tr>
+    <tr><td>Quarantine and rollback after one entry influenced summaries</td><td>Entry and derivatives leave active indexes; known-good version restores; regression passes.</td><td>Before/after index/state diff and replayed case.</td></tr>
+    <tr><td>Authenticated, bounded one-hop benign delegation</td><td>Allowed for exact skill/data; child returns schema-valid artifact; no inherited ambient tool.</td><td>Verified envelope, attenuated capability, parent/child trace.</td></tr>
+    <tr><td>Old branded context plus newly expired envelope/capability</td><td>Receiver's fresh clock rejects it before model or tool invocation.</td><td>Clock sample and stable expiry reason; zero child/effect/state consumption.</td></tr>
+    <tr><td>Missing, forged, or downgraded provenance for an exact body/artifact</td><td>Local resolution fails or keeps the restrictive class; sender “public” claim has no authority.</td><td>Resolver version/ref, content digest/lineage, stable denial; zero sink.</td></tr>
+    <tr><td>Forged sender, wrong audience/tenant, expired/replayed nonce, changed body</td><td>Rejected before model or tool invocation.</td><td>Stable reason; zero child run/effect.</td></tr>
+    <tr><td>Privilege expansion, excessive depth/fan-out, cycle, retry storm</td><td>Rejected or stopped at first limit; cancellation reaches descendants.</td><td>Bounded graph/counters, terminal states, zero extra effects.</td></tr>
+  </tbody></table></div></section>
+
+  <section class="callout success"><h2>Acceptance gate</h2><ul class="checklist"><li>Every context item has origin, trust, tenant, subject/session, purpose, claimed class, app-resolved class/reference, digest, lifetime, and lineage.</li><li>Unauthorized content never enters model context, trace, cache, scorer, or memory.</li><li>Durable memory has typed writes, explicit readers, validation, TTL, quarantine, delete, derived-data cleanup, and rollback.</li><li>Credentials, identity/role claims, policy, approvals, and free-form instructions cannot become memory.</li><li>Peer identity comes from verified transport; body and classification claims never establish identity, authority, or data sensitivity.</li><li>Delegated capability and all budgets only shrink; audience, tenant, object/data, skill/action, fresh expiry, and purpose are re-authorized locally.</li><li>Stale time, missing/forged/downgraded provenance, replay, mutation, wrong audience, cross-tenant access, cycles, fan-out, depth, retries, and cancellation are deterministically tested.</li><li>All tests use in-memory synthetic fixtures and a no-network fake bus.</li></ul></section>
+
+  <section><h2>Primary sources</h2><ul><li><a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/">OWASP Top 10 for Agentic Applications for 2026 — ASI06, ASI07, and ASI08</a></li><li><a href="https://genai.owasp.org/resource/securing-agentic-applications-guide-1-0/">OWASP Securing Agentic Applications Guide 1.0</a></li><li><a href="https://genai.owasp.org/resource/multi-agentic-system-threat-modeling-guide-v1-0/">OWASP Multi-Agentic System Threat Modeling Guide v1.0</a></li><li><a href="https://genai.owasp.org/2026/05/13/memory-is-a-feature-it-is-also-an-attack-surface/">OWASP: Memory Is a Feature. It Is Also an Attack Surface</a></li><li><a href="https://a2a-protocol.org/v1.0.0/specification/">Agent2Agent Protocol specification v1.0.0</a></li><li><a href="https://doi.org/10.6028/NIST.SP.800-207">NIST SP 800-207: Zero Trust Architecture</a> and <a href="https://doi.org/10.6028/NIST.SP.800-207A">NIST SP 800-207A</a></li></ul></section>
+
+  <nav class="next" aria-label="Lesson navigation"><a rel="prev" href="0058-sandboxed-agent-execution.html">← 0058: Sandboxed Agent Execution</a><a rel="next" href="0060-adversarial-evals-and-security-gates.html">0060: Adversarial Evals and Security Gates →</a></nav>
+  <footer>Source review: 2026-07-27. Protocols and provider memory behavior evolve; pin the implementation version and revalidate identity, authorization, lifecycle, and rollback semantics before deployment.</footer>
+</main></body></html>

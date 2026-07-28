@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A hands-on VPN and network engineering curriculum: packet fundamentals, a learning tunnel, and a production WireGuard home-lab gateway.">
+  <title>VPN &amp; Network Engineering Track</title>
+  <link rel="stylesheet" href="assets/vpn-course.css">
+</head>
+<body>
+<main>
+  <header class="hero">
+    <a class="back" href="../../index.html">← All learning tracks</a>
+    <p class="eyebrow">VPN &amp; Network Engineering · new track</p>
+    <h1>Understand every boundary a packet crosses.</h1>
+    <p class="lede">Start with routes and sockets, build an isolated TUN-over-UDP learning tunnel, then deploy WireGuard as the production gateway to a Proxmox home lab. The custom build teaches mechanisms; the audited build protects real traffic.</p>
+    <div class="actions">
+      <a class="button button--primary" href="lessons/0001-one-packet-two-journeys.html">Start lesson 0001</a>
+      <a class="button" href="reference/networking-vpn-glossary.html">Open the glossary</a>
+      <a class="button" href="MISSION.md">Read the mission</a>
+    </div>
+    <div class="badges" aria-label="Track summary">
+      <span class="badge">25 short lessons</span>
+      <span class="badge">70–100 hours</span>
+      <span class="badge">Mac client + Linux labs</span>
+      <span class="badge">Go learning tunnel</span>
+      <span class="badge">WireGuard production gateway</span>
+    </div>
+  </header>
+
+  <section aria-labelledby="two-builds-title">
+    <p class="eyebrow">One mission, two builds</p>
+    <h2 id="two-builds-title">Separate understanding from production trust.</h2>
+    <div class="two">
+      <article class="card">
+        <p class="meta">Learning build · isolated</p>
+        <h3>TUN + UDP tunnel in Go</h3>
+        <p>You will handle packet I/O, framing, loss, authenticated encryption, nonces, replay windows, routing, MTU, shutdown, and tests. It runs only inside Linux VMs or network namespaces.</p>
+      </article>
+      <article class="card">
+        <p class="meta">Production build · real home access</p>
+        <h3>WireGuard gateway in a Proxmox VM</h3>
+        <p>You will use a reviewed implementation, expose one UDP port, apply least-route and firewall policy, reach selected home services, rotate peers, monitor health, and rehearse recovery.</p>
+      </article>
+    </div>
+    <aside class="callout safety">
+      <h3>Security boundary</h3>
+      <p>The learning tunnel is not a replacement for WireGuard. Correct cryptographic primitives do not automatically create a secure protocol: identity binding, key exchange, replay handling, state transitions, denial-of-service behavior, side channels, implementation bugs, and operations all matter.</p>
+    </aside>
+  </section>
+
+  <section aria-labelledby="topology-title">
+    <p class="eyebrow">Target production topology</p>
+    <h2 id="topology-title">Terminate the VPN before the services it protects.</h2>
+    <div class="topology" role="img" aria-label="Mac or phone connects across the Internet and home router to a dedicated WireGuard VM on Proxmox, which routes only allowed traffic to the LAN, Docker, or k3s services.">
+      <div class="topology__node"><strong>Mac / phone</strong><small>WireGuard peer</small></div>
+      <span class="topology__arrow">→</span>
+      <div class="topology__node"><strong>Internet</strong><small>outer UDP packet</small></div>
+      <span class="topology__arrow">→</span>
+      <div class="topology__node"><strong>Home router</strong><small>one UDP forward</small></div>
+      <span class="topology__arrow">→</span>
+      <div class="topology__node"><strong>VPN VM</strong><small>decrypt + policy + route</small></div>
+    </div>
+    <div class="topology" role="img" aria-label="The VPN VM routes through explicit firewall policy to the home LAN, Docker services, or k3s ingress while keeping Proxmox management private.">
+      <div class="topology__node"><strong>VPN VM</strong><small>dedicated trust boundary</small></div>
+      <span class="topology__arrow">→</span>
+      <div class="topology__node"><strong>Firewall</strong><small>default deny</small></div>
+      <span class="topology__arrow">→</span>
+      <div class="topology__node"><strong>LAN / Docker / k3s</strong><small>selected destinations</small></div>
+      <span class="topology__arrow">↛</span>
+      <div class="topology__node"><strong>Proxmox UI</strong><small>not public</small></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="roadmap-title">
+    <p class="eyebrow">Detailed roadmap</p>
+    <h2 id="roadmap-title">The route from first packet to operated gateway.</h2>
+
+    <article class="stage" id="packet-mental-model">
+      <div class="stage__head">
+        <div class="stage__title"><span class="stage__number">0</span><div><p class="meta">Orientation</p><h3>Packet mental model</h3></div></div>
+        <p class="workload">3–4 hours</p>
+      </div>
+      <p>Learn what a VPN changes—and what it does not—by tracing inner and outer packets, route selection, encryption boundaries, and the return path.</p>
+      <p class="gate"><strong>Gate:</strong> Given a destination, predict whether it enters the tunnel, name what each observer can see, and trace the reply.</p>
+      <div class="lesson-grid">
+        <a class="lesson-card" href="lessons/0001-one-packet-two-journeys.html"><span class="meta">0001 · ready · interactive</span><h3>One Packet, Two Journeys</h3><p>Route → TUN → encrypt → UDP → decrypt → route.</p></a>
+        <article class="lesson-card planned"><span class="meta">0002 · planned</span><h3>Who Can See What?</h3><p>Threat boundaries, metadata, DNS, endpoints, and the limits of VPN privacy.</p></article>
+      </div>
+    </article>
+
+    <article class="stage" id="ip-routing">
+      <div class="stage__head">
+        <div class="stage__title"><span class="stage__number">1</span><div><p class="meta">Foundations</p><h3>IP addressing and routing</h3></div></div>
+        <p class="workload">10–14 hours</p>
+      </div>
+      <p>Build the vocabulary and mechanical skill to inspect interfaces, subnet boundaries, next hops, route tables, longest-prefix matching, DNS, and packet size.</p>
+      <p class="gate"><strong>Gate:</strong> Diagnose five route examples and prove the selected interface and next hop with operating-system commands.</p>
+      <div class="lesson-grid">
+        <article class="lesson-card planned"><span class="meta">0003 · planned</span><h3>Interfaces, Addresses, and Frames</h3><p>NICs, MAC, ARP/NDP, IP, loopback, and virtual interfaces.</p></article>
+        <article class="lesson-card planned"><span class="meta">0004 · planned</span><h3>Subnetting Without Guesswork</h3><p>CIDR, network ranges, overlap, and a home-lab address plan.</p></article>
+        <article class="lesson-card planned"><span class="meta">0005 · planned</span><h3>Longest Prefix Wins</h3><p>Connected, static, default, and tunnel routes on macOS and Linux.</p></article>
+        <article class="lesson-card planned"><span class="meta">0006 · planned</span><h3>DNS Is Its Own Packet Flow</h3><p>Resolvers, search domains, split DNS, leaks, and failure diagnosis.</p></article>
+      </div>
+    </article>
+
+    <article class="stage" id="linux-transport">
+      <div class="stage__head">
+        <div class="stage__title"><span class="stage__number">2</span><div><p class="meta">Systems lab</p><h3>Linux, sockets, NAT, and firewalls</h3></div></div>
+        <p class="workload">10–14 hours</p>
+      </div>
+      <p>Make two isolated hosts on one Linux machine, send UDP between them, observe state, and distinguish forwarding, filtering, and address translation.</p>
+      <p class="gate"><strong>Gate:</strong> Capture a UDP exchange and explain every address, port, route, namespace, firewall decision, and NAT rewrite.</p>
+      <div class="lesson-grid">
+        <article class="lesson-card planned"><span class="meta">0007 · planned</span><h3>Two Hosts in One Linux VM</h3><p>Network namespaces, veth pairs, loopback, and repeatable teardown.</p></article>
+        <article class="lesson-card planned"><span class="meta">0008 · planned</span><h3>UDP Sockets in Go</h3><p>Datagrams, bind, send, receive, loss, duplication, and ordering.</p></article>
+        <article class="lesson-card planned"><span class="meta">0009 · planned</span><h3>Forwarding Is Not NAT</h3><p>Router behavior, stateful filtering, masquerade, and conntrack.</p></article>
+        <article class="lesson-card planned"><span class="meta">0010 · planned</span><h3>Read a Packet Capture</h3><p>tcpdump/Wireshark filters, headers, checksums, and evidence.</p></article>
+      </div>
+    </article>
+
+    <article class="stage" id="learning-tunnel">
+      <div class="stage__head">
+        <div class="stage__title"><span class="stage__number">3</span><div><p class="meta">Implementation</p><h3>Build the learning tunnel</h3></div></div>
+        <p class="workload">14–20 hours</p>
+      </div>
+      <p>Create a Linux TUN interface, read raw IP packets, frame them over UDP, write them to the peer, and make routing plus lifecycle behavior explicit.</p>
+      <p class="gate"><strong>Gate:</strong> Ping and send an application request through the isolated tunnel, then diagnose an injected route, loss, or shutdown failure.</p>
+      <div class="lesson-grid">
+        <article class="lesson-card planned"><span class="meta">0011 · planned</span><h3>TUN Is a File Descriptor</h3><p>Kernel route selection and user-space packet I/O.</p></article>
+        <article class="lesson-card planned"><span class="meta">0012 · planned</span><h3>Frame IP Packets Over UDP</h3><p>Versioned header, length, peer identity, counters, and parser tests.</p></article>
+        <article class="lesson-card planned"><span class="meta">0013 · planned</span><h3>Bidirectional Tunnel Loop</h3><p>Concurrent TUN/UDP pumps, cancellation, errors, and backpressure.</p></article>
+        <article class="lesson-card planned"><span class="meta">0014 · planned</span><h3>Routing Through the Tunnel</h3><p>Address assignment, forwarding, return routes, and optional NAT.</p></article>
+      </div>
+    </article>
+
+    <article class="stage" id="secure-protocol">
+      <div class="stage__head">
+        <div class="stage__title"><span class="stage__number">4</span><div><p class="meta">Security</p><h3>Authenticated transport and protocol limits</h3></div></div>
+        <p class="workload">10–14 hours</p>
+      </div>
+      <p>Threat-model the tunnel, add established AEAD with explicit nonce and replay rules, then compare the result with the much larger set of guarantees WireGuard provides.</p>
+      <p class="gate"><strong>Gate:</strong> Tampering, replay, truncation, wrong keys, malformed frames, and counter exhaustion fail closed in tests.</p>
+      <div class="lesson-grid">
+        <article class="lesson-card planned"><span class="meta">0015 · planned</span><h3>Encryption Is Not Authentication</h3><p>Confidentiality, integrity, authenticity, AEAD, and associated data.</p></article>
+        <article class="lesson-card planned"><span class="meta">0016 · planned</span><h3>Nonces and Replay Windows</h3><p>Unique nonces, sequence numbers, reordering, windows, and rekey limits.</p></article>
+        <article class="lesson-card planned"><span class="meta">0017 · planned</span><h3>Threat-Model the Learning Protocol</h3><p>Assets, attackers, trust boundaries, abuse cases, and explicit non-goals.</p></article>
+        <article class="lesson-card planned"><span class="meta">0018 · planned</span><h3>Read the WireGuard Protocol</h3><p>Noise-based handshake, identity, key rotation, cookies, transport, and cryptokey routing.</p></article>
+      </div>
+    </article>
+
+    <article class="stage" id="wireguard-production">
+      <div class="stage__head">
+        <div class="stage__title"><span class="stage__number">5</span><div><p class="meta">Production</p><h3>Deploy the personal WireGuard gateway</h3></div></div>
+        <p class="workload">10–14 hours</p>
+      </div>
+      <p>Place a small VPN gateway VM on Proxmox, establish a Mac peer, choose split versus full tunnel, and apply explicit forwarding and firewall policy.</p>
+      <p class="gate"><strong>Gate:</strong> Connect remotely, reach only approved destinations, prove blocked paths, revoke a peer, reboot safely, and recover from a broken rule.</p>
+      <div class="lesson-grid">
+        <article class="lesson-card planned"><span class="meta">0019 · planned</span><h3>Choose the Home-Lab Topology</h3><p>Dedicated VM, router forward, LAN route, NAT tradeoffs, and CGNAT fallback.</p></article>
+        <article class="lesson-card planned"><span class="meta">0020 · planned</span><h3>Bring Up the First WireGuard Peer</h3><p>Keys, interface addresses, endpoint, keepalive, and handshake evidence.</p></article>
+        <article class="lesson-card planned"><span class="meta">0021 · planned</span><h3>AllowedIPs Means Two Things</h3><p>Route installation and cryptokey authorization without accidental overlap.</p></article>
+        <article class="lesson-card planned"><span class="meta">0022 · planned</span><h3>Harden and Operate the Gateway</h3><p>Least privilege, firewall, updates, logs, peer lifecycle, backup, and recovery.</p></article>
+      </div>
+    </article>
+
+    <article class="stage" id="home-lab-integration">
+      <div class="stage__head">
+        <div class="stage__title"><span class="stage__number">6</span><div><p class="meta">Integration</p><h3>Reach Docker and k3s deliberately</h3></div></div>
+        <p class="workload">8–12 hours</p>
+      </div>
+      <p>Keep the VPN independent from workload orchestration, then add routes and firewall rules for the exact services that should be reachable.</p>
+      <p class="gate"><strong>Gate:</strong> Explain and prove the path from a remote peer to one LAN service, one Docker service, and one k3s entry point without exposing unrelated networks.</p>
+      <div class="lesson-grid">
+        <article class="lesson-card planned"><span class="meta">0023 · planned</span><h3>Docker Bridges and Firewall Order</h3><p>Published ports, masquerading, forwarding chains, and VPN policy.</p></article>
+        <article class="lesson-card planned"><span class="meta">0024 · planned</span><h3>k3s Has Multiple Networks</h3><p>Node, pod, service, ingress, and CNI paths; choose the stable access boundary.</p></article>
+      </div>
+    </article>
+
+    <article class="stage" id="portfolio-capstone">
+      <div class="stage__head">
+        <div class="stage__title"><span class="stage__number">7</span><div><p class="meta">Portfolio</p><h3>Evidence-backed capstone</h3></div></div>
+        <p class="workload">8–12 hours</p>
+      </div>
+      <p>Package both builds into one case study that separates educational protocol work from production security and demonstrates diagnosis, failure handling, and operations.</p>
+      <p class="gate"><strong>Gate:</strong> A reviewer can reproduce the namespace lab, inspect the protocol tests, understand the production topology, and watch a five-minute connect–deny–diagnose–revoke–recover demo.</p>
+      <div class="lesson-grid">
+        <article class="lesson-card planned"><span class="meta">0025 · planned</span><h3>VPN Engineering Capstone</h3><p>Architecture, threat model, protocol spec, packet evidence, test report, runbook, and demo.</p></article>
+      </div>
+    </article>
+  </section>
+
+  <section class="callout success" aria-labelledby="first-win-title">
+    <h2 id="first-win-title">Your first win takes about 30 minutes.</h2>
+    <p>Lesson 0001 gives you the durable mental model for everything that follows: a VPN is a route into a virtual interface, a protected packet carried inside another packet, and a policy-controlled route out at the far end.</p>
+    <div class="actions"><a class="button button--primary" href="lessons/0001-one-packet-two-journeys.html">Follow the first packet →</a><a class="button" href="RESOURCES.md">See trusted sources</a></div>
+  </section>
+
+  <footer>Track state: <a href="MISSION.md">mission</a> · <a href="RESOURCES.md">resources</a> · <a href="NOTES.md">teaching notes</a> · Source review: 2026-07-27.</footer>
+</main>
+</body>
+</html>

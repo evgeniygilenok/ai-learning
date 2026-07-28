@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Applied AI Engineering Course</title>
+<style>:root{color-scheme:light;--ink:#14202b;--muted:#5d6875;--line:#d7dee7;--paper:#f7f9fc;--panel:#fff;--teal:#0f766e;--blue:#2563eb;--amber:#b45309}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55}main{max-width:1120px;margin:auto;padding:38px 22px 64px}header{padding-bottom:26px;border-bottom:2px solid var(--line)}h1{max-width:900px;margin:0;font-size:clamp(2.2rem,6vw,4.8rem);line-height:1.02}h2{margin:0;font-size:clamp(1.35rem,3vw,2rem)}h3{margin:0 0 8px}p{margin:8px 0}.lede{max-width:780px;color:var(--muted);font-size:1.08rem}.eyebrow,.number{color:var(--teal);font-size:.76rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}.actions,.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.actions a,.legend span{padding:9px 12px;border-radius:999px;font-weight:700}.actions a{color:#fff;background:var(--blue);text-decoration:none}.legend span{border:1px solid var(--line);background:var(--panel);font-size:.86rem}.stage{margin:30px 0;padding-top:22px;border-top:1px solid var(--line)}.stage__head{display:flex;justify-content:space-between;gap:20px;align-items:end}.workload{white-space:nowrap;color:var(--muted);font-weight:700}.gate{max-width:900px;padding:10px 12px;border-left:4px solid var(--amber);background:#fff7ed}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px;margin-top:14px}.lesson{display:block;min-height:170px;padding:17px;border:1px solid var(--line);border-top:5px solid var(--teal);border-radius:8px;color:inherit;background:var(--panel);text-decoration:none}.lesson:hover{border-color:var(--blue);box-shadow:0 10px 26px rgba(20,32,43,.08)}.lesson p,.lesson code{color:var(--muted);font-size:.9rem}.reference{border-top-color:#6d28d9}footer{margin-top:34px;padding-top:18px;border-top:2px solid var(--line);color:var(--muted)}@media(max-width:650px){main{padding:26px 16px 46px}.stage__head{display:block}.lesson{min-height:0}}</style></head><body><main>
+<header><p><a href="../index.html">← All learning tracks</a></p><p class="eyebrow">Applied AI Engineering · reviewed 2026-07-27</p><h1>Build one reliable AI product, then prove it.</h1><p class="lede">The roadmap is organized by learning order, not lesson number. Follow the core stages sequentially; take supporting, career, and specialization tracks where marked.</p><div class="actions"><a href="applied-ai-engineering.html">Open the complete course contract</a><a href="ai-agent-security.html">Open the AI agent security path</a><a href="../starter/README.md">Start the flagship project</a></div></header>
+<section class="legend"><span>Core: sequential</span><span>Supporting: use when needed</span><span>Parallel: alongside the build</span><span>Advanced specialization: after the relevant core gate</span></section>
+<section class="stage" id="orientation">
+      <div class="stage__head"><div><p class="eyebrow">orientation</p><h2>0. Orientation and proof plan</h2></div><p class="workload">3-4 hours</p></div>
+      <p>Derive target-role proof from 15-20 live agent-engineering postings, inspect the flagship system, and choose the evidence you need.</p>
+      <p class="gate"><strong>Gate:</strong> Explain repeated market requirements, the chosen role, project domain, and proof gaps in five minutes.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0036-target-role-skill-matrix.html"><span class="number">0036 · orientation · introduce</span><h3>Target Role Skill Matrix</h3><p>35 min read + 70 min build</p><code>starter/evidence/orientation/role-proof-matrix.md</code></a></div>
+    </section>
+<section class="stage" id="foundations">
+      <div class="stage__head"><div><p class="eyebrow">core</p><h2>1. Product foundations</h2></div><p class="workload">8-12 hours</p></div>
+      <p>Ship a product-triage vertical slice with a real provider, validated output, visible streaming states, and bounded tools.</p>
+      <p class="gate"><strong>Gate:</strong> Show a real run, a fake-provider invalid-output failure, usage telemetry, and the recovery path within the spend guardrail.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0001-ai-engineering-map.html"><span class="number">0001 · core · introduce</span><h3>AI Engineering Map</h3><p>20 min read + 45 min build</p><code>MISSION.md and starter/README.md</code></a>
+<a class="lesson" href="../lessons/0002-anatomy-of-a-model-call.html"><span class="number">0002 · core · implement</span><h3>Anatomy of a Model Call</h3><p>25 min read + 50 min build</p><code>starter/src/provider.ts</code></a>
+<a class="lesson" href="../lessons/0003-structured-outputs.html"><span class="number">0003 · core · implement</span><h3>Structured Outputs</h3><p>30 min read + 60 min build</p><code>starter/src/triage.ts</code></a>
+<a class="lesson" href="../lessons/0004-streaming-ux.html"><span class="number">0004 · core · implement</span><h3>Streaming UX</h3><p>25 min read + 50 min build</p><code>starter/src/app.ts</code></a>
+<a class="lesson" href="../lessons/0005-tool-calling-boundaries.html"><span class="number">0005 · core · defend</span><h3>Tool Calling Boundaries</h3><p>30 min read + 60 min build</p><code>starter/src/tools.ts</code></a></div>
+    </section>
+<section class="stage" id="grounded-retrieval">
+      <div class="stage__head"><div><p class="eyebrow">core</p><h2>2. Minimum viable grounded retrieval</h2></div><p class="workload">10-14 hours</p></div>
+      <p>Ingest a local corpus, retrieve evidence, cite sources, evaluate search, and trace a real-model run.</p>
+      <p class="gate"><strong>Gate:</strong> Run representative retrieval cases and diagnose at least one real-model miss from its redacted trace.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0006-semantic-search-starts-with-chunks.html"><span class="number">0006 · core · introduce</span><h3>Semantic Search Starts With Chunks</h3><p>25 min read + 50 min build</p><code>starter/data/documents.json</code></a>
+<a class="lesson" href="../lessons/0007-rag-context-packets.html"><span class="number">0007 · core · implement</span><h3>RAG Context Packets</h3><p>30 min read + 60 min build</p><code>starter/src/retrieval.ts</code></a>
+<a class="lesson" href="../lessons/0008-retrieval-evals.html"><span class="number">0008 · core · implement</span><h3>Retrieval Evals</h3><p>30 min read + 60 min build</p><code>starter/evals/retrieval-cases.json</code></a>
+<a class="lesson" href="../lessons/0009-tracing-ai-runs.html"><span class="number">0009 · core · harden</span><h3>Tracing AI Runs</h3><p>30 min read + 60 min build</p><code>starter/src/trace.ts</code></a></div>
+    </section>
+<section class="stage" id="controlled-workflows">
+      <div class="stage__head"><div><p class="eyebrow">core</p><h2>3. Controlled workflows</h2></div><p class="workload">7-10 hours</p></div>
+      <p>Let the real model propose tools while the runtime enforces state, dry-run, approval, persistence, and resume behavior.</p>
+      <p class="gate"><strong>Gate:</strong> Block a real proposed write, resume safely, and prove the tool is not executed twice.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0010-controlled-workflow-agents.html"><span class="number">0010 · core · implement</span><h3>Controlled Workflow Agents</h3><p>35 min read + 70 min build</p><code>starter/src/workflow.ts</code></a>
+<a class="lesson" href="../lessons/0011-memory-and-persistence.html"><span class="number">0011 · core · harden</span><h3>Memory And Persistence</h3><p>30 min read + 60 min build</p><code>starter/src/state.ts</code></a></div>
+    </section>
+<section class="stage" id="production-boundaries">
+      <div class="stage__head"><div><p class="eyebrow">core</p><h2>4. Production boundaries</h2></div><p class="workload">14-20 hours</p></div>
+      <p>Set quality, tenancy, security, queue, retention, cost, latency, and infrastructure policies against real behavior.</p>
+      <p class="gate"><strong>Gate:</strong> Defend a release decision using a real trace plus eval, security, and operational evidence.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0012-model-routing-and-caching.html"><span class="number">0012 · core · harden</span><h3>Model Routing And Caching</h3><p>30 min read + 60 min build</p><code>starter/docs/optimization-decision.md</code></a>
+<a class="lesson" href="../lessons/0013-multi-tenant-ai-architecture.html"><span class="number">0013 · senior diff review · defend</span><h3>Multi-Tenant AI Architecture</h3><p>35 min read + 70 min build</p><code>starter/docs/tenant-boundaries.md</code></a>
+<a class="lesson" href="../lessons/0014-ai-security-threat-model.html"><span class="number">0014 · core · defend</span><h3>AI Security Threat Model</h3><p>35 min read + 70 min build</p><code>starter/docs/threat-model.md</code></a>
+<a class="lesson" href="../lessons/0015-portfolio-system-design-story.html"><span class="number">0015 · core · defend</span><h3>Portfolio System Design Story</h3><p>35 min read + 70 min build</p><code>starter/docs/architecture.md</code></a>
+<a class="lesson" href="../lessons/0016-eval-release-gates.html"><span class="number">0016 · core · harden</span><h3>Eval Release Gates</h3><p>30 min read + 60 min build</p><code>starter/evals/release-gate.json</code></a>
+<a class="lesson" href="../lessons/0017-llm-as-judge-tradeoffs.html"><span class="number">0017 · core · harden</span><h3>LLM-As-Judge Tradeoffs</h3><p>30 min read + 60 min build</p><code>starter/evals/judge-calibration.json</code></a>
+<a class="lesson" href="../lessons/0018-queues-and-background-jobs.html"><span class="number">0018 · senior diff review · harden</span><h3>Queues And Background Jobs</h3><p>30 min read + 60 min build</p><code>starter/docs/operations.md</code></a>
+<a class="lesson" href="../lessons/0019-data-retention-and-redaction.html"><span class="number">0019 · core · defend</span><h3>Data Retention And Redaction</h3><p>30 min read + 60 min build</p><code>starter/docs/data-policy.md</code></a>
+<a class="lesson" href="../lessons/0020-ai-infrastructure-decisions.html"><span class="number">0020 · senior diff review · defend</span><h3>AI Infrastructure Decisions</h3><p>35 min read + 70 min build</p><code>starter/docs/operations.md</code></a></div>
+    </section>
+<section class="stage" id="enterprise-hardening">
+      <div class="stage__head"><div><p class="eyebrow">core</p><h2>5. Enterprise retrieval and agent hardening</h2></div><p class="workload">14-20 hours</p></div>
+      <p>Harden Qdrant-backed ACL-aware retrieval, recovery, and trace-based real-agent evaluation.</p>
+      <p class="gate"><strong>Gate:</strong> Show a Qdrant authorization test, a measured retrieval tradeoff, a real trace, and a recovered agent failure.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0021-ingestion-pipeline-design.html"><span class="number">0021 · core · implement</span><h3>Ingestion Pipeline Design</h3><p>30 min read + 60 min build</p><code>starter/src/retrieval.ts</code></a>
+<a class="lesson" href="../lessons/0022-metadata-filters-and-acl.html"><span class="number">0022 · core · defend</span><h3>Metadata Filters And ACL</h3><p>30 min read + 60 min build</p><code>starter/src/retrieval.ts</code></a>
+<a class="lesson" href="../lessons/0023-hybrid-search-and-reranking.html"><span class="number">0023 · core · harden</span><h3>Hybrid Search And Reranking</h3><p>35 min read + 70 min build</p><code>starter/src/retrieval.ts</code></a>
+<a class="lesson" href="../lessons/0024-agent-retry-and-recovery.html"><span class="number">0024 · core · harden</span><h3>Agent Retry And Recovery</h3><p>30 min read + 60 min build</p><code>starter/src/workflow.ts</code></a>
+<a class="lesson" href="../lessons/0025-agent-evaluation.html"><span class="number">0025 · core · defend</span><h3>Agent Evaluation</h3><p>35 min read + 70 min build</p><code>starter/evals/agent-cases.json</code></a></div>
+    </section>
+<section class="stage" id="portfolio-gate">
+      <div class="stage__head"><div><p class="eyebrow">core</p><h2>6. Core portfolio and interview gate</h2></div><p class="workload">12-18 hours</p></div>
+      <p>Publish the cumulative support assistant as a recruiter-readable product and system-design case study.</p>
+      <p class="gate"><strong>Gate:</strong> From one public link, a reviewer can inspect the repo, run/watch the demo, and follow behavior, eval, trace, security, and tradeoffs.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0026-ai-support-assistant-design.html"><span class="number">0026 · core · defend</span><h3>AI Support Assistant Design</h3><p>35 min read + 70 min build</p><code>starter/docs/product-brief.md</code></a>
+<a class="lesson" href="../lessons/0027-enterprise-rag-design.html"><span class="number">0027 · core · defend</span><h3>Enterprise RAG Design</h3><p>35 min read + 70 min build</p><code>starter/docs/architecture.md</code></a>
+<a class="lesson" href="../lessons/0030-final-portfolio-and-interview-drill.html"><span class="number">0030 · core · defend</span><h3>Core Portfolio and Interview Gate</h3><p>45 min read + 90 min build</p><code>starter/evidence/completion-record.md</code></a><a class="lesson" href="../lessons/0028-coding-copilot-design.html"><span class="number">0028 · optional · defend</span><h3>Coding Copilot Design</h3><p>35 min read + 70 min build</p><code>starter/docs/optional-coding-copilot.md</code></a>
+<a class="lesson" href="../lessons/0029-personal-assistant-agent-design.html"><span class="number">0029 · optional · defend</span><h3>Personal Assistant Agent Design</h3><p>35 min read + 70 min build</p><code>starter/docs/optional-personal-assistant.md</code></a></div>
+    </section>
+<section class="stage" id="agent-runtime">
+      <div class="stage__head"><div><p class="eyebrow">advanced specialization</p><h2>7. Hardened agent runtime</h2></div><p class="workload">16-22 hours</p></div>
+      <p>Implement real-model orchestration, resumable state, governed memory, trace evals, and gated tool execution.</p>
+      <p class="gate"><strong>Gate:</strong> Recover from an interrupted or failed real tool proposal without duplicating side effects.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0031-agent-orchestration-patterns.html"><span class="number">0031 · advanced specialization · implement</span><h3>Agent Orchestration Patterns</h3><p>35 min read + 70 min build</p><code>starter/src/workflow.ts</code></a>
+<a class="lesson" href="../lessons/0032-agent-state-management.html"><span class="number">0032 · advanced specialization · harden</span><h3>Agent State Management</h3><p>35 min read + 70 min build</p><code>starter/src/state.ts</code></a>
+<a class="lesson" href="../lessons/0033-agent-memory-design.html"><span class="number">0033 · advanced specialization · defend</span><h3>Agent Memory Design</h3><p>35 min read + 70 min build</p><code>starter/docs/data-policy.md</code></a>
+<a class="lesson" href="../lessons/0034-agent-evaluation-harness.html"><span class="number">0034 · advanced specialization · defend</span><h3>Agent Evaluation Harness</h3><p>40 min read + 80 min build</p><code>starter/evals/agent-cases.json</code></a>
+<a class="lesson" href="../lessons/0035-tool-execution-runtime.html"><span class="number">0035 · advanced specialization · defend</span><h3>Tool Execution Runtime</h3><p>40 min read + 80 min build</p><code>starter/src/tools.ts</code></a></div>
+    </section>
+<section class="stage" id="deployment">
+      <div class="stage__head"><div><p class="eyebrow">core</p><h2>8. Deployment and adoption proof</h2></div><p class="workload">10-16 hours</p></div>
+      <p>Make the public system reproducible, roll it out safely, collect feedback, and improve it from evidence.</p>
+      <p class="gate"><strong>Gate:</strong> Reproduce the release from a clean checkout, open the public proof package, and show one feedback-driven measured change with a real trace.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0039-deployable-ai-portfolio.html"><span class="number">0039 · core · defend</span><h3>Deployable AI Portfolio</h3><p>45 min read + 90 min build</p><code>starter/docs/runbook.md</code></a>
+<a class="lesson" href="../lessons/0040-adoption-feedback-loop.html"><span class="number">0040 · core · defend</span><h3>Adoption Feedback Loop</h3><p>35 min read + 70 min build</p><code>starter/evidence/stage-8/feedback-report.md</code></a></div>
+    </section>
+<section class="stage" id="supporting">
+      <div class="stage__head"><div><p class="eyebrow">supporting</p><h2>9. Supporting technical tracks</h2></div><p class="workload">6-10 hours</p></div>
+      <p>Strengthen quantitative judgment and provider portability when the core project needs them.</p>
+      <p class="gate"><strong>Gate:</strong> Explain uncertainty in a score and defend a provider choice using the same task.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0037-practical-eval-data-analysis.html"><span class="number">0037 · supporting · harden</span><h3>Practical Eval Data Analysis</h3><p>40 min read + 80 min build</p><code>starter/evals/analysis.md</code></a>
+<a class="lesson" href="../lessons/0038-provider-comparison-and-tool-ecosystem.html"><span class="number">0038 · supporting · defend</span><h3>Provider Comparison And Tool Ecosystem</h3><p>45 min read + 90 min build</p><code>starter/docs/provider-decision.md</code></a></div>
+    </section>
+<section class="stage" id="career">
+      <div class="stage__head"><div><p class="eyebrow">parallel</p><h2>10. Parallel career loop</h2></div><p class="workload">1-2 hours weekly</p></div>
+      <p>Translate project proof into targeted applications and interview feedback.</p>
+      <p class="gate"><strong>Gate:</strong> Use interview or application evidence to make one specific portfolio improvement.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0041-ai-job-search-loop.html"><span class="number">0041 · parallel · defend</span><h3>AI Job Search Loop</h3><p>45 min read + 90 min build</p><code>starter/evidence/career/application-tracker.md</code></a></div>
+    </section>
+<section class="stage" id="workflow-specialization">
+      <div class="stage__head"><div><p class="eyebrow">advanced specialization</p><h2>11. Agentic workflow engineering</h2></div><p class="workload">18-26 hours</p></div>
+      <p>Turn AI-assisted engineering into blocks, gates, reusable harness behavior, reviews, and improvement loops.</p>
+      <p class="gate"><strong>Gate:</strong> A new teammate can run the workflow and obtain equivalent checked evidence.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0042-workflow-blocks-and-quality-gates.html"><span class="number">0042 · advanced specialization · implement</span><h3>Workflow Blocks And Quality Gates</h3><p>35 min read + 70 min build</p><code>starter/docs/workflow-graph.md</code></a>
+<a class="lesson" href="../lessons/0043-harness-skills-hooks-and-subagents.html"><span class="number">0043 · advanced specialization · harden</span><h3>Harness Skills Hooks And Subagents</h3><p>40 min read + 80 min build</p><code>starter/.codex/skills/</code></a>
+<a class="lesson" href="../lessons/0044-scriptable-agent-blocks.html"><span class="number">0044 · advanced specialization · harden</span><h3>Scriptable Agent Blocks</h3><p>40 min read + 80 min build</p><code>starter/scripts/</code></a>
+<a class="lesson" href="../lessons/0045-agent-implementation-strategies.html"><span class="number">0045 · advanced specialization · defend</span><h3>Agent Implementation Strategies</h3><p>40 min read + 80 min build</p><code>starter/docs/implementation-strategy.md</code></a>
+<a class="lesson" href="../lessons/0046-agentic-planning-definition-of-done.html"><span class="number">0046 · advanced specialization · defend</span><h3>Agentic Planning Definition Of Done</h3><p>40 min read + 80 min build</p><code>starter/docs/executable-plan.md</code></a>
+<a class="lesson" href="../lessons/0047-ai-assisted-code-review-system.html"><span class="number">0047 · advanced specialization · defend</span><h3>AI-Assisted Code Review System</h3><p>40 min read + 80 min build</p><code>starter/docs/review-checklist.md</code></a>
+<a class="lesson" href="../lessons/0048-workflow-continuous-improvement-loop.html"><span class="number">0048 · advanced specialization · defend</span><h3>Workflow Continuous Improvement Loop</h3><p>40 min read + 80 min build</p><code>starter/evidence/specialization-workflows/retrospective.md</code></a>
+<a class="lesson" href="../lessons/0049-team-agent-workflow-rollout.html"><span class="number">0049 · advanced specialization · defend</span><h3>Team Agent Workflow Rollout</h3><p>40 min read + 80 min build</p><code>starter/docs/team-rollout.md</code></a></div>
+    </section>
+<section class="stage" id="real-agent-stack">
+      <div class="stage__head"><div><p class="eyebrow">advanced specialization</p><h2>12. Real-world agent stack</h2></div><p class="workload">18-24 hours</p></div>
+      <p>Rebuild the flagship with LangGraph/Postgres, expose least-scope MCP tools, export hosted traces/evals, and measure context compaction.</p>
+      <p class="gate"><strong>Gate:</strong> Pause and resume through Postgres, invoke tools from a real MCP client, diagnose a hosted failed run, and defend measured context quality/cost.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0050-langgraph-with-durable-approval.html"><span class="number">0050 · advanced specialization · implement</span><h3>LangGraph With Durable Approval</h3><p>45 min read + 90 min build</p><code>starter/src/langgraph-workflow.ts</code></a>
+<a class="lesson" href="../lessons/0051-mcp-server-authoring.html"><span class="number">0051 · advanced specialization · defend</span><h3>MCP Server Authoring</h3><p>45 min read + 90 min build</p><code>starter/src/mcp-server.ts</code></a>
+<a class="lesson" href="../lessons/0052-hosted-observability-and-evals.html"><span class="number">0052 · advanced specialization · harden</span><h3>Hosted Observability And Evals</h3><p>45 min read + 90 min build</p><code>starter/src/trace.ts and starter/src/hosted-eval.ts</code></a>
+<a class="lesson" href="../lessons/0053-context-engineering-under-budget.html"><span class="number">0053 · advanced specialization · defend</span><h3>Context Engineering Under Budget</h3><p>45 min read + 90 min build</p><code>starter/src/state.ts</code></a></div>
+    </section>
+<section class="stage" id="ai-agent-security">
+      <div class="stage__head"><div><p class="eyebrow">advanced specialization</p><h2>13. AI agent security</h2></div><p class="workload">28-38 hours</p></div>
+      <p>Prevent manipulated content, components, context, or agents from becoming unauthorized authority, data movement, persistent policy, or uncontained execution.</p>
+      <p class="gate"><strong>Gate:</strong> In the isolated synthetic lab, demonstrate that direct and indirect manipulation cannot cross tenant, identity, egress, persistence, or execution boundaries, then defend the residual-risk and release decision from replayable evidence.</p>
+      <div class="grid"><a class="lesson" href="../lessons/0054-agentic-security-threat-modeling.html"><span class="number">0054 · advanced specialization · defend</span><h3>Agentic Security Threat Modeling</h3><p>50 min read + 100 min build</p><code>starter/docs/agent-security-threat-model.md</code></a>
+<a class="lesson" href="../lessons/0055-prompt-injection-and-goal-integrity.html"><span class="number">0055 · advanced specialization · defend</span><h3>Prompt Injection And Goal Integrity</h3><p>50 min read + 100 min build</p><code>starter/evals/security-agent-cases.json</code></a>
+<a class="lesson" href="../lessons/0056-agent-identity-and-tool-authorization.html"><span class="number">0056 · advanced specialization · defend</span><h3>Agent Identity And Tool Authorization</h3><p>50 min read + 100 min build</p><code>starter/src/security-policy.ts</code></a>
+<a class="lesson" href="../lessons/0057-mcp-and-agentic-supply-chain.html"><span class="number">0057 · advanced specialization · defend</span><h3>MCP And Agentic Supply Chain</h3><p>50 min read + 100 min build</p><code>starter/docs/agent-component-inventory.md</code></a>
+<a class="lesson" href="../lessons/0058-sandboxed-agent-execution.html"><span class="number">0058 · advanced specialization · harden</span><h3>Sandboxed Agent Execution</h3><p>50 min read + 100 min build</p><code>starter/docs/agent-sandbox-profile.md</code></a>
+<a class="lesson" href="../lessons/0059-context-memory-and-multi-agent-trust.html"><span class="number">0059 · advanced specialization · defend</span><h3>Context Memory And Multi-Agent Trust</h3><p>50 min read + 100 min build</p><code>starter/docs/context-integrity-policy.md</code></a>
+<a class="lesson" href="../lessons/0060-adversarial-evals-and-security-gates.html"><span class="number">0060 · advanced specialization · harden</span><h3>Adversarial Evals And Security Gates</h3><p>50 min read + 100 min build</p><code>starter/evals/security-release-gate.json</code></a>
+<a class="lesson" href="../lessons/0061-agent-security-operations-and-capstone.html"><span class="number">0061 · advanced specialization · defend</span><h3>Agent Security Operations And Capstone</h3><p>50 min read + 100 min build</p><code>starter/evidence/specialization-ai-agent-security/assurance-case.md</code></a></div>
+    </section>
+<section><h2>Reference companions</h2><div class="grid">
+<a class="lesson reference" href="../reference/ai-engineering-glossary.html"><span class="number">Reference</span><h3>AI Engineering Glossary</h3><p>Durable vocabulary for model, retrieval, eval, agent, and operations work.</p></a>
+<a class="lesson reference" href="../reference/agent-runtime-reference.html"><span class="number">Reference</span><h3>Agent Runtime Reference</h3><p>State, orchestration, memory, eval, and execution checklists.</p></a>
+<a class="lesson reference" href="../reference/agentic-workflow-reference.html"><span class="number">Reference</span><h3>Agentic Workflow Reference</h3><p>Blocks, gates, plans, review, and improvement loops.</p></a>
+<a class="lesson reference" href="../reference/ai-agent-security-reference.html"><span class="number">Reference</span><h3>AI Agent Security Reference</h3><p>Threats, trust boundaries, authorization, supply chain, sandboxing, context integrity, adversarial gates, and response.</p></a>
+<a class="lesson reference" href="../reference/ai-engineering-job-readiness.html"><span class="number">Reference</span><h3>Job Readiness and Completion Record</h3><p>Artifact rubric, evidence checklist, and interview proof.</p></a>
+</div></section>
+<footer>Curriculum metadata lives in <code>assets/curriculum.mjs</code>. Run <code>npm run curriculum:render</code> after changing learning order or lesson contracts.</footer>
+</main></body></html>

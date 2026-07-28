@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0058: Sandboxed Agent Execution</title>
+  <style>
+    :root{color-scheme:light;--ink:#14202b;--muted:#5d6875;--line:#d7dee7;--paper:#f7f9fc;--panel:#fff;--blue:#2563eb;--teal:#0f766e;--amber:#b45309;--rose:#be123c;--green:#15803d;--code:#0f172a}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.6}main{max-width:1080px;margin:auto;padding:38px 22px 64px}header{padding-bottom:24px;border-bottom:2px solid var(--line)}.back,a{color:var(--blue);text-decoration-thickness:2px}.back{display:inline-block;margin-bottom:18px;font-weight:750}.eyebrow{color:var(--teal);font-size:.78rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}h1{max-width:920px;margin:6px 0 0;font-size:clamp(2.15rem,5.5vw,4.4rem);line-height:1.03;letter-spacing:-.025em}h2{margin:0 0 12px;font-size:clamp(1.35rem,3vw,2rem);line-height:1.17}h3{margin:0 0 8px;font-size:1.04rem}p{margin:0 0 12px}ul,ol{margin:8px 0 0;padding-left:22px}li+li{margin-top:6px}section{margin:28px 0}.lede{max-width:830px;margin:16px 0 0;color:var(--muted);font-size:1.08rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px}.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card,.band,.callout{padding:18px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.card{border-top:5px solid var(--teal)}.card:nth-child(3n+2){border-top-color:var(--blue)}.card:nth-child(3n){border-top-color:var(--amber)}.callout{border-left:5px solid var(--amber);background:#fffaf2}.danger{border-left-color:var(--rose);background:#fff3f5}.success{border-left-color:var(--green);background:#f1fbf4}.muted,.small{color:var(--muted)}.small{font-size:.93rem}.meta{margin-top:22px}.meta strong{display:block;margin-bottom:3px}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}pre{margin:12px 0 0;overflow:auto;padding:17px;border-radius:9px;background:var(--code);color:#e2e8f0;line-height:1.48}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px;background:var(--panel)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#eef4fb;color:var(--muted);font-size:.76rem;letter-spacing:.07em;text-transform:uppercase}tr:last-child td{border-bottom:0}.checklist{columns:2;column-gap:30px}.checklist li{break-inside:avoid}nav.next{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid var(--line)}footer{margin-top:32px;padding-top:18px;border-top:2px solid var(--line);color:var(--muted);font-size:.94rem}@media(max-width:760px){main{padding:26px 16px 48px}.two{grid-template-columns:1fr}.checklist{columns:1}}@media print{body{background:#fff}main{padding:24px}.back,nav.next{display:none}.card,.band,.callout{break-inside:avoid}}
+  </style>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-lesson-id="0058"><main>
+  <header><a class="back" href="../courses/ai-agent-security.html">← AI Agent Security path</a><p class="eyebrow">Lesson 0058 · 50 min reading · 100 min build</p><h1>Assume the proposal is hostile; make the runtime boring.</h1><p class="lede">Turn host, filesystem, process, network, secret, data-flow, and resource limits into a tested sandbox profile for the synthetic procurement/support agent.</p><div class="grid meta"><article class="card"><strong>Prerequisite</strong><span class="small">Lessons 0054–0057 and an inventoried, pinned agent/tool stack.</span></article><article class="card"><strong>Artifact</strong><span class="small"><code>starter/docs/agent-sandbox-profile.md</code></span></article><article class="card"><strong>Done when</strong><span class="small">Safe local tests prove the agent cannot reach host control surfaces, undeclared files, network destinations, secrets, or unbounded resources.</span></article></div></header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#ai-agent-security">AI agent security</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>50 min reading · 100 min build · Artifact: <code>starter/docs/agent-sandbox-profile.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="harden">harden</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0057</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind sandboxed agent execution.</li><li>Specify and test a deny-by-default execution profile for filesystem, process, network, credentials, resources, artifacts, teardown, and escape detection.</li><li>Produce inspectable evidence in starter/docs/agent-sandbox-profile.md.</li></ul></div>
+        <div><h3>Done when</h3><p>untrusted synthetic code runs only in the named disposable sandbox profile and filesystem, network, secret, resource, and lifecycle escape tests fail predictably.</p><p><a href="../reference/ai-agent-security-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0057-mcp-and-agentic-supply-chain.html">← 0057: MCP And Agentic Supply Chain</a>
+        <a rel="next" href="../lessons/0059-context-memory-and-multi-agent-trust.html">0059: Context Memory And Multi-Agent Trust →</a>
+        
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0058"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0058">Sandbox policy is a tested capability envelope</h2><p>Run untrusted code only in a disposable, named profile with explicit filesystem mounts, blocked-by-default network, no ambient credentials, non-root identity, process and resource limits, controlled artifacts, timeouts, teardown, and escape telemetry. A container label is not evidence; preserve negative tests for filesystem, network, secret, resource, and lifecycle escapes.</p></section>
+    <!-- COURSE-DEPTH:END -->
+
+  <section class="callout danger"><h2>Lab safety boundary</h2><p>Use a disposable local runtime, synthetic files, fake credentials, inert canaries, and a fake transport that opens no socket. Do not attempt host escape, target a real endpoint, mount personal directories, expose a container engine socket, or put a live secret in the lab. A denied test should prove policy behavior—not execute a real exploit.</p></section>
+
+  <section class="band"><h2>The one idea</h2><p>A model may be manipulated and a tool may be buggy. The runtime therefore starts with no ambient authority and adds only what one declared task needs. A container is packaging and process isolation, not a complete security boundary: it shares a kernel unless a stronger runtime boundary is selected. Document both the controls and what they do <em>not</em> isolate.</p></section>
+
+  <section><h2>Layer containment around each capability</h2><div class="table-wrap"><table><thead><tr><th>Surface</th><th>Default</th><th>Narrow exception</th><th>Evidence</th></tr></thead><tbody>
+    <tr><td>Tools</td><td>No general shell, interpreter, package installer, browser, or arbitrary HTTP client.</td><td>Named adapter with strict schema, canonical arguments, tenant/action policy, timeout, and output cap.</td><td>Unknown-tool, unknown-field, argument, timeout, and extra-effect tests.</td></tr>
+    <tr><td>Host / runtime</td><td>Unprivileged, non-root, no privilege escalation, all Linux capabilities dropped, default seccomp.</td><td>Any capability addition has an owner, threat path, expiry, and dedicated test.</td><td>Effective UID/GID, capability, seccomp, privilege, namespace, and runtime inspection.</td></tr>
+    <tr><td>Filesystem</td><td>Read-only root; no host home, SSH, cloud config, container socket, device, or broad source-tree mount.</td><td>One read-only synthetic input and one empty task-scoped output; temporary storage is size-limited.</td><td>Mount inventory plus denied write, traversal, symlink, device, and socket cases.</td></tr>
+    <tr><td>Process</td><td>No privileged mode, host PID/IPC, setuid escalation, nested container engine, or undeclared child executable.</td><td>Only the pinned application entry point and required child processes.</td><td>Process tree, executable allowlist, PID limit, signal/cancellation test.</td></tr>
+    <tr><td>Network</td><td>No ingress and deny-all egress, including DNS.</td><td>Explicit scheme, hostname, resolved IP range, port, method, data class, and request/response budget through a broker.</td><td>Policy-unit and fake-transport tests for redirects, rebinding, private/link-local/loopback ranges, and destination drift.</td></tr>
+    <tr><td>Secrets / data</td><td>No ambient credentials in image, environment, prompt, files, logs, or model-visible tool output.</td><td>Task-scoped, short-lived secret handle injected directly into one adapter; model never sees value.</td><td>Canary/DLP scans of context, arguments, output, logs, memory, and artifacts.</td></tr>
+    <tr><td>Resources</td><td>Execution stops at explicit budgets.</td><td>Per-task CPU, memory, PIDs, wall time, disk, output bytes, model tokens/cost, tool calls, retries, and concurrency.</td><td>Boundary and over-limit tests with stable reason codes and prompt cancellation.</td></tr>
+  </tbody></table></div></section>
+
+  <section class="two"><article class="band"><h2>Profile skeleton</h2><pre><code>profileVersion: 1
+scope: synthetic-procurement-support
+runtime:
+  privileged: false
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities: { drop: [ALL], add: [] }
+  seccomp: RuntimeDefault
+  hostPID: false
+  hostIPC: false
+  hostNetwork: false
+mounts:
+  - { path: /task/input, mode: ro, source: synthetic }
+  - { path: /task/output, mode: rw, emptyAtStart: true }
+  - { path: /tmp, mode: tmpfs, maxMiB: 16 }
+denyMounts: [home, ssh, cloud-config, devices, docker-socket]
+network: { default: deny, broker: fake-no-socket }
+secrets: { ambient: deny, liveValues: forbidden }
+budgets:
+  wallSeconds: 30
+  pids: 32
+  memoryMiB: 256
+  outputMiB: 4
+  toolCalls: 8
+  retries: 1</code></pre></article><article class="band"><h2>Profile rules</h2><ul><li>Pin the runtime type/version, image digest, base OS, architecture, seccomp/AppArmor/SELinux profile, and policy-engine version.</li><li>Record Linux, macOS, Windows, container, VM, or sandbox differences; do not copy Linux settings to an environment where they have no effect.</li><li>Treat the container/VM boundary and the tool-policy boundary as separate layers.</li><li>Validate the <em>effective</em> runtime, not only YAML. Admission, defaults, or launch flags can change it.</li><li>Fail startup when a required control is unsupported; never silently fall back to privileged or network-open execution.</li><li>Choose a VM/microVM or dedicated worker for impact that a shared-kernel container cannot tolerate.</li></ul></article></section>
+
+  <section><h2>Egress and DLP are one decision</h2><p>An allowlisted host is not permission to send every byte. Resolve and validate the final destination at connection time, re-check each redirect, then apply data-class and purpose policy to the exact request. The lab tests these decisions with strings and a fake transport; it does not contact the destination.</p><div class="grid"><article class="card"><h3>Destination</h3><p class="small">Allow scheme, canonical host, port, method, path family, resolved address ranges, redirect count, and certificate policy. Deny userinfo, ambiguous encodings, wildcard hosts, private/link-local/loopback/metadata addresses, and destination drift.</p></article><article class="card"><h3>Data</h3><p class="small">Attach tenant, origin, sensitivity, purpose, and approved recipient to model/tool data. Deny secret, cross-tenant, or unapproved derived content even when the destination itself is allowed.</p></article><article class="card"><h3>Volume</h3><p class="small">Cap request and response bytes, rate, concurrency, and total egress. Stop decompression, streaming, and repeated-small-request amplification at bounded limits.</p></article><article class="card"><h3>Evidence</h3><p class="small">Log destination/policy IDs, data labels, byte counts, decision, and reason—not raw secret or content. Scan redacted outputs and evidence with unique inert canaries.</p></article></div></section>
+
+  <section class="callout"><h2>Do not turn a policy test into an escape test</h2><p>For path, URL, command, and secret cases, pass inert values to the validator and fake adapter, then assert denial and zero recorded effects. Do not run a shell string, follow the URL, touch a host service, or test the container engine. A security course can prove the boundary without demonstrating a weaponized bypass.</p></section>
+
+  <section class="band"><h2>Build <code>agent-sandbox-profile.md</code></h2><ol><li>Declare the synthetic task, data/effect classes, runtime and image digest, supported OS, threat IDs, owner, review date, and explicitly excluded production use.</li><li>Inventory every tool, executable, mount, environment variable, credential handle, network path, child process, and resource budget. Begin with none.</li><li>Write the effective runtime profile: identity, privilege, filesystem, namespace, kernel controls, network, secrets, logging, limits, cancellation, cleanup, and stronger-isolation trigger.</li><li>Implement local policy fixtures. The fake filesystem has only <code>/task/input</code>, <code>/task/output</code>, and an inaccessible sentinel reference; the fake transport records decisions but opens no socket.</li><li>Add paired cases for permitted input/output and denied traversal, symlink, host mount, engine socket, undeclared process, URL/destination, secret/canary, oversized output, timeout, retry, and PID/memory budget.</li><li>Inspect the effective runtime and preserve command/config output with sensitive values removed. Prove output cleanup and a fresh empty workspace on the next run.</li><li>Record gaps honestly. If the platform cannot enforce a requirement, fail the profile or move the task to a stronger boundary.</li></ol></section>
+
+  <section><h2>Required verification</h2><div class="table-wrap"><table><thead><tr><th>Case</th><th>Expected result</th><th>Oracle</th></tr></thead><tbody>
+    <tr><td>Read approved synthetic input; write declared output</td><td>Allowed within byte/time limits.</td><td>Only expected file/effect exists; content passes schema/DLP.</td></tr>
+    <tr><td>Write root/input; read outside task mount; traverse or follow escaping link</td><td>Denied without revealing host path/content.</td><td>Stable reason; sentinel absent; mount state unchanged.</td></tr>
+    <tr><td>Request privileged mode, added capability, root UID, host namespace/device/socket</td><td>Rejected before launch.</td><td>Admission/profile test plus effective runtime inspection.</td></tr>
+    <tr><td>Unknown executable or unbounded child creation</td><td>Denied or stopped at PID/process policy.</td><td>Bounded process tree; cancellation completes.</td></tr>
+    <tr><td>Arbitrary URL, redirect, disallowed address class, or DNS change</td><td>Policy denies; fake transport records zero send.</td><td>Canonical destination decision and empty fake outbox.</td></tr>
+    <tr><td>Canary in proposed request/output/log</td><td>DLP blocks sink and redacts evidence.</td><td>No canary outside test fixture; alert has opaque reference.</td></tr>
+    <tr><td>CPU/memory/time/disk/output/tool/retry limit</td><td>Run stops once, children cancel, partial output quarantines.</td><td>Budget counters, terminal state, cleanup proof.</td></tr>
+  </tbody></table></div></section>
+
+  <section class="callout success"><h2>Acceptance gate</h2><ul class="checklist"><li>Artifact identifies exact runtime/image/policy versions and shared-kernel limitations.</li><li>Runtime is non-root, non-privileged, no-escalation, capability-drop-all, read-only root, and default seccomp where supported.</li><li>No host/PID/IPC/network namespace, device, home, cloud config, or container socket exposure.</li><li>Only task-scoped mounts and adapters exist; unknown tools/fields/executables deny.</li><li>Egress is deny-by-default and validates destination plus data class through a no-socket fake.</li><li>No live secret is present; canary and DLP tests cover every output surface.</li><li>All resource budgets, cancellation, cleanup, and fresh-workspace behavior are tested.</li><li>Any unenforceable control has a stronger-runtime decision or blocks completion.</li></ul></section>
+
+  <section><h2>Primary sources</h2><ul><li><a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/">OWASP Top 10 for Agentic Applications for 2026 — ASI02 and ASI05</a></li><li><a href="https://genai.owasp.org/resource/securing-agentic-applications-guide-1-0/">OWASP Securing Agentic Applications Guide 1.0</a></li><li><a href="https://doi.org/10.6028/NIST.SP.800-190">NIST SP 800-190: Application Container Security Guide</a></li><li><a href="https://kubernetes.io/docs/concepts/security/pod-security-standards/">Kubernetes Pod Security Standards</a> and <a href="https://kubernetes.io/docs/tasks/configure-pod-container/security-context/">Security Context documentation</a></li><li><a href="https://docs.docker.com/engine/security/rootless/">Docker rootless-mode documentation</a></li></ul></section>
+
+  <nav class="next" aria-label="Lesson navigation"><a rel="prev" href="0057-mcp-and-agentic-supply-chain.html">← 0057: MCP and Agentic Supply Chain</a><a rel="next" href="0059-context-memory-and-multi-agent-trust.html">0059: Context, Memory, and Multi-Agent Trust →</a></nav>
+  <footer>Source review: 2026-07-27. Runtime features and defaults vary by OS, orchestrator, and version; verify the effective profile on the environment that will execute the task.</footer>
+</main></body></html>

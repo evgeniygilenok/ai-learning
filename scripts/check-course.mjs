@@ -7,8 +7,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
 const forbidden = [/plan-v\d+\.md/i, /developers\.openai\.com\/api\/docs\/guides\/evals(?:["'#?]|$)/, /owasp\.org\/www-project-top-10-for-large-language-model-applications/];
 
-if (lessons.length !== 53) errors.push(`Expected 53 lesson records, found ${lessons.length}`);
-if (stages.length !== 13) errors.push(`Expected 13 stage/track records, found ${stages.length}`);
+if (lessons.length !== 61) errors.push(`Expected 61 lesson records, found ${lessons.length}`);
+if (stages.length !== 14) errors.push(`Expected 14 stage/track records, found ${stages.length}`);
 const ids = new Set();
 for (const lesson of lessons) {
   if (ids.has(lesson.id)) errors.push(`Duplicate lesson ID ${lesson.id}`);
@@ -30,11 +30,21 @@ for (const stage of stages) {
   for (const id of [...stage.lessons, ...(stage.optionalLessons ?? [])]) if (!ids.has(id)) errors.push(`${stage.id} references unknown lesson ${id}`);
 }
 
-for (const relative of ["index.html", "courses/applied-ai-engineering.html", "courses/agentic-workflow-engineering.html", "reference/ai-engineering-glossary.html", "reference/agent-runtime-reference.html", "reference/agentic-workflow-reference.html", "reference/ai-engineering-job-readiness.html", "RESOURCES.md", "NOTES.md"]) {
+for (const relative of ["index.html", "courses/applied-ai-engineering-roadmap.html", "courses/applied-ai-engineering.html", "courses/agentic-workflow-engineering.html", "courses/ai-agent-security.html", "reference/ai-engineering-glossary.html", "reference/agent-runtime-reference.html", "reference/agentic-workflow-reference.html", "reference/ai-agent-security-reference.html", "reference/ai-engineering-job-readiness.html", "tracks/vpn-engineering/index.html", "tracks/vpn-engineering/lessons/0001-one-packet-two-journeys.html", "tracks/vpn-engineering/reference/networking-vpn-glossary.html", "tracks/vpn-engineering/MISSION.md", "tracks/vpn-engineering/RESOURCES.md", "tracks/vpn-engineering/NOTES.md", "RESOURCES.md", "NOTES.md"]) {
   const path = resolve(root, relative);
   const text = await readFile(path, "utf8");
   checkForbidden(relative, text);
   if (relative.endsWith(".html")) await checkLinks(path, text);
+}
+
+const hub = await readFile(resolve(root, "index.html"), "utf8");
+for (const phrase of ["Applied AI Engineering", "VPN &amp; Network Engineering", "tracks/vpn-engineering/index.html"]) {
+  if (!hub.includes(phrase)) errors.push(`Learning hub missing track contract: ${phrase}`);
+}
+
+const vpnLesson = await readFile(resolve(root, "tracks/vpn-engineering/lessons/0001-one-packet-two-journeys.html"), "utf8");
+for (const phrase of ["data-lesson-id=\"0001\"", "Inner packet", "Outer packet", "Source review:", "Exit ticket"]) {
+  if (!vpnLesson.includes(phrase)) errors.push(`VPN lesson 0001 missing teaching contract: ${phrase}`);
 }
 
 const course = await readFile(resolve(root, "courses/applied-ai-engineering.html"), "utf8");

@@ -12,6 +12,7 @@
     "starter:mcp": "node --experimental-strip-types starter/src/mcp-server.ts",
     "starter:vector": "node --experimental-strip-types starter/src/vector-demo.ts",
     "starter:eval:hosted": "node --experimental-strip-types starter/src/hosted-eval.ts",
+    "starter:security": "node --experimental-strip-types --test starter/test/security-policy.test.ts",
     "starter:test": "node --experimental-strip-types --test starter/test/*.test.ts",
     "test": "npm run curriculum:check && npm run starter:test"
   },

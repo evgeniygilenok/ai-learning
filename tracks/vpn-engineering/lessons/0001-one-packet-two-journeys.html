@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Learn the core VPN packet path: route selection, TUN, encryption, UDP encapsulation, decryption, policy, and forwarding.">
+  <title>Lesson 0001: One Packet, Two Journeys</title>
+  <link rel="stylesheet" href="../assets/vpn-course.css">
+</head>
+<body data-lesson-id="0001">
+<main>
+  <header class="hero">
+    <a class="back" href="../index.html">← VPN &amp; Network Engineering track</a>
+    <p class="eyebrow">Lesson 0001 · packet mental model · 20 min learn + 15 min practice</p>
+    <h1>One packet takes two journeys.</h1>
+    <p class="lede">A VPN does not “send your Internet through encryption.” More precisely, the operating system routes an IP packet into a virtual interface; VPN software protects that complete packet and carries it inside another packet to a peer.</p>
+  </header>
+
+  <section class="contract" aria-labelledby="contract-title">
+    <p class="meta">Lesson contract</p>
+    <h2 id="contract-title">Learn one mechanism: how a packet enters and leaves a VPN.</h2>
+    <div class="contract__grid">
+      <div><h3>Prerequisites</h3><ul><li>You know an IP address identifies a network endpoint.</li><li>No Linux, socket, or cryptography experience is required.</li></ul></div>
+      <div><h3>Observable outcomes</h3><ul><li>Distinguish the inner packet from the outer transport packet.</li><li>Predict whether a route sends a destination through the VPN.</li><li>Name the client and server responsibilities in order.</li></ul></div>
+      <div><h3>Done when</h3><p>You can trace a home-service packet and a public-web packet, pass the three checks, and inspect the route your current computer selects.</p><p><a href="../reference/networking-vpn-glossary.html">Keep the glossary open</a>.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">The central idea</p>
+    <h2>A VPN is five cooperating mechanisms.</h2>
+    <div class="grid">
+      <article class="card"><p class="meta">1 · policy</p><h3>Route selection</h3><p>The destination address is matched against the routing table. The most specific matching route wins and chooses an outgoing interface plus, sometimes, a next-hop router.</p></article>
+      <article class="card"><p class="meta">2 · virtualization</p><h3>Virtual interface</h3><p>A TUN-style interface behaves like a network interface to the kernel, but a user-space program reads and writes its IP packets. Linux documents TUN as IP-packet I/O and TAP as Ethernet-frame I/O.</p></article>
+      <article class="card"><p class="meta">3 · protection</p><h3>Authenticated encryption</h3><p>The VPN authenticates the peer and protects the inner packet's confidentiality and integrity. A receiver must reject altered, forged, stale, or replayed traffic according to the protocol.</p></article>
+      <article class="card"><p class="meta">4 · transport</p><h3>Outer packet</h3><p>The protected bytes become the payload of an outer packet addressed to the VPN peer's reachable Internet endpoint. WireGuard carries these packets over UDP.</p></article>
+      <article class="card"><p class="meta">5 · gateway policy</p><h3>Decrypt, filter, route</h3><p>The peer authenticates and decrypts the inner packet, then its routing and firewall policy decides whether the packet may reach a LAN service, another peer, or the Internet.</p></article>
+    </div>
+    <p>The operating system's route decision is the front door. Installing a VPN normally creates or changes routes so selected destinations enter the virtual interface. The exact Linux mechanisms are described by <a href="https://man7.org/linux/man-pages/man8/ip-route.8.html">ip-route(8)</a>; the virtual-device boundary is described by the <a href="https://docs.kernel.org/networking/tuntap.html">Linux TUN/TAP documentation</a>.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Encapsulation</p>
+    <h2>The protected packet becomes payload.</h2>
+    <p>Suppose your remote Mac has VPN address <code>10.44.0.2</code> and wants a home service at <code>192.168.50.20</code>. The application and the home service communicate using the <em>inner</em> addresses:</p>
+    <div class="packet" aria-label="Inner packet from VPN client address 10.44.0.2 to home service 192.168.50.20">
+      <span>Inner IP header<br>10.44.0.2 → 192.168.50.20</span>
+      <span>TCP/UDP header + application data</span>
+    </div>
+    <p>The VPN protects that complete packet. It then sends the resulting bytes inside a reachable outer packet:</p>
+    <div class="packet" aria-label="Outer Internet packet from the client's public address to the home router's public address, containing encrypted inner packet bytes">
+      <span class="outer">Outer IP + UDP<br>client public IP → home public IP:51820</span>
+      <span class="sealed">Authenticated ciphertext<br>encrypted inner IP packet</span>
+    </div>
+    <p>Internet routers need the outer destination to deliver the datagram, so the outer header cannot be secret from them. The inner destination and application payload are protected from observers between the peers. The VPN server necessarily handles the decrypted packet, and the final service still sees traffic permitted by the gateway. The <a href="https://www.wireguard.com/">WireGuard conceptual overview</a> describes this as securely encapsulating IP packets over UDP; <a href="https://www.rfc-editor.org/info/rfc4301/">RFC 4301</a> uses the same inner/outer distinction for IPsec tunnel mode.</p>
+  </section>
+
+  <section class="simulator" aria-labelledby="simulator-title">
+    <p class="eyebrow">Interactive packet journey</p>
+    <h2 id="simulator-title">Change the destination and routing policy.</h2>
+    <div class="sim-controls" aria-label="Packet journey controls">
+      <button type="button" id="target-home" class="primary" aria-pressed="true">Home service · 192.168.50.20</button>
+      <button type="button" id="target-web" aria-pressed="false">Public website · 93.184.216.34</button>
+      <button type="button" id="mode-split" class="primary" aria-pressed="true">Split tunnel</button>
+      <button type="button" id="mode-full" aria-pressed="false">Full tunnel</button>
+    </div>
+    <div class="progress" id="sim-progress" aria-hidden="true"></div>
+    <div class="simulator__visual" id="sim-visual" role="img" aria-label="Step-by-step packet path">
+      <div class="hop" data-hop="0"><strong>Application</strong><span>creates inner packet</span></div>
+      <div class="hop-arrow">→</div>
+      <div class="hop" data-hop="1"><strong>Route table</strong><span>chooses interface</span></div>
+      <div class="hop-arrow">→</div>
+      <div class="hop" data-hop="2"><strong>VPN client</strong><span>protects packet</span></div>
+      <div class="hop-arrow">→</div>
+      <div class="hop" data-hop="3"><strong>Internet / peer</strong><span>carries or receives</span></div>
+    </div>
+    <div class="simulator__detail" id="sim-detail" aria-live="polite"></div>
+    <div class="sim-controls">
+      <button type="button" id="sim-prev">← Previous step</button>
+      <button type="button" id="sim-next" class="primary">Next step →</button>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Split versus full tunnel</p>
+    <h2>The difference is primarily routing policy.</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Destination</th><th>Split-tunnel route</th><th>Full-tunnel route</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td><code>192.168.50.20</code> home service</td><td><code>192.168.50.0/24 → VPN</code></td><td><code>0.0.0.0/0 → VPN</code></td><td>Both policies send it through the VPN; the /24 is more specific if both exist.</td></tr>
+          <tr><td><code>93.184.216.34</code> public site</td><td>Normal default route → Wi-Fi/Ethernet</td><td>VPN default route → virtual interface</td><td>Split goes directly; full goes to the VPN server before the public site.</td></tr>
+          <tr><td>VPN server's public IP</td><td>Normal physical route</td><td>Explicit physical route</td><td>The outer transport must not recursively enter its own tunnel.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <aside class="callout">
+      <h3>DNS follows routes too</h3>
+      <p>A hostname lookup is separate network traffic. A VPN may set a resolver and routes for it, but encryption of other packets does not automatically guarantee where DNS queries go. Later lessons treat resolver choice, split DNS, and leak testing as a separate packet path.</p>
+    </aside>
+  </section>
+
+  <section>
+    <p class="eyebrow">Four boundaries to remember</p>
+    <h2>A VPN protects a path, not the entire system.</h2>
+    <div class="two">
+      <article class="card"><h3>The ISP still sees a VPN flow</h3><p>It can normally see your public source, the VPN endpoint, timing, direction, and sizes, but not the protected inner addresses and payload.</p></article>
+      <article class="card"><h3>The VPN peer is inside the trust boundary</h3><p>It authenticates and decrypts packets. For Internet egress, it can observe the post-decryption destination and any application data not separately protected by TLS or another end-to-end protocol.</p></article>
+      <article class="card"><h3>Encryption does not grant authorization</h3><p>A valid peer should not automatically reach every LAN, container, cluster, or management address. Routes and firewall policy still enforce least access.</p></article>
+      <article class="card"><h3>Encapsulation consumes packet budget</h3><p>Outer IP, UDP, and VPN headers add bytes. If the inner packet is too large for the path MTU, performance may collapse in confusing ways; a later lab measures this.</p></article>
+    </div>
+  </section>
+
+  <section class="quiz" aria-labelledby="quiz-title">
+    <p class="eyebrow">Immediate check</p>
+    <h2 id="quiz-title">Can you predict the boundary?</h2>
+    <form id="lesson-quiz">
+      <fieldset data-answer="routing">
+        <legend>1. What makes an ordinary application packet enter a VPN interface?</legend>
+        <label><input type="radio" name="q1" value="cipher"> The encryption algorithm scans every packet.</label>
+        <label><input type="radio" name="q1" value="routing"> The operating system selects a matching route.</label>
+        <label><input type="radio" name="q1" value="website"> The destination website requests a tunnel.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset data-answer="outer">
+        <legend>2. Which information must remain usable by Internet routers between VPN peers?</legend>
+        <label><input type="radio" name="q2" value="inner"> The inner home-service destination.</label>
+        <label><input type="radio" name="q2" value="payload"> The application payload.</label>
+        <label><input type="radio" name="q2" value="outer"> The outer destination address of the VPN peer.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+      <fieldset data-answer="server">
+        <legend>3. After a valid packet reaches the home VPN endpoint, who decides whether it may reach the LAN service?</legend>
+        <label><input type="radio" name="q3" value="isp"> The remote client's ISP.</label>
+        <label><input type="radio" name="q3" value="server"> The VPN gateway's peer policy, routes, and firewall.</label>
+        <label><input type="radio" name="q3" value="cipher"> The cipher alone.</label>
+        <p class="feedback" aria-live="polite"></p>
+      </fieldset>
+    </form>
+  </section>
+
+  <section class="lab" aria-labelledby="lab-title">
+    <p class="eyebrow">Read-only lab · 5 minutes</p>
+    <h2 id="lab-title">Ask your operating system which path it would choose.</h2>
+    <p>Run the commands for your current computer. They inspect state; they do not change networking.</p>
+    <div class="two">
+      <article>
+        <h3>macOS</h3>
+        <pre><code>route -n get 1.1.1.1
+route -n get 192.168.50.20
+ifconfig</code></pre>
+        <p>Find <code>interface</code> and <code>gateway</code>. Without a route for the home subnet, both destinations may currently use the normal default route.</p>
+      </article>
+      <article>
+        <h3>Linux</h3>
+        <pre><code>ip route get 1.1.1.1
+ip route get 192.168.50.20
+ip -brief address</code></pre>
+        <p>Find the selected <code>dev</code>, next hop after <code>via</code>, and chosen source after <code>src</code>.</p>
+      </article>
+    </div>
+    <aside class="callout success">
+      <h3>Exit ticket</h3>
+      <p>Send me three things: the interface selected for <code>1.1.1.1</code>, whether a gateway/next hop was shown, and one sentence explaining the difference between the inner and outer packet. I will check the interpretation before lesson 0002.</p>
+    </aside>
+  </section>
+
+  <section>
+    <p class="eyebrow">Primary sources</p>
+    <h2>Verify the model.</h2>
+    <ul>
+      <li><a href="https://www.wireguard.com/">WireGuard conceptual overview</a> — IP packet encapsulation over UDP and cryptokey routing.</li>
+      <li><a href="https://docs.kernel.org/networking/tuntap.html">Linux TUN/TAP documentation</a> — user-space reads/writes IP packets through TUN.</li>
+      <li><a href="https://man7.org/linux/man-pages/man8/ip-route.8.html">ip-route(8)</a> — Linux route-table behavior and inspection.</li>
+      <li><a href="https://www.rfc-editor.org/info/rfc4301/">RFC 4301</a> — protected/unprotected boundaries and inner/outer headers in IPsec tunnel mode.</li>
+    </ul>
+    <p>Ask follow-up questions whenever a hop, address, observer, or route is unclear. The goal is not to memorize the diagram; it is to predict a packet path and verify it against the system.</p>
+  </section>
+
+  <nav class="actions" aria-label="Lesson navigation">
+    <a class="button" href="../index.html">← Track roadmap</a>
+    <a class="button" href="../reference/networking-vpn-glossary.html">Glossary →</a>
+  </nav>
+  <footer>Source review: 2026-07-27. This lesson changes no network state and makes no claim that a custom tunnel is safe for production traffic.</footer>
+</main>
+
+<script>
+(() => {
+  const state = { target: "home", mode: "split", step: 0 };
+  const buttons = {
+    home: document.getElementById("target-home"),
+    web: document.getElementById("target-web"),
+    split: document.getElementById("mode-split"),
+    full: document.getElementById("mode-full"),
+    previous: document.getElementById("sim-prev"),
+    next: document.getElementById("sim-next")
+  };
+  const detail = document.getElementById("sim-detail");
+  const visual = document.getElementById("sim-visual");
+  const progress = document.getElementById("sim-progress");
+
+  const tunneled = {
+    home: [
+      ["1 · Application creates the inner packet", "<code>10.44.0.2 → 192.168.50.20</code>. The application does not need to know a VPN exists; it simply asks the operating system to send data."],
+      ["2 · Longest-prefix route selects the VPN", "A route such as <code>192.168.50.0/24 → wg0</code> is more specific than the ordinary default route <code>0.0.0.0/0</code>, so the kernel sends the packet to the virtual interface."],
+      ["3 · The VPN client protects and encapsulates", "The client authenticates the session, encrypts the complete inner packet, and creates an outer UDP datagram addressed to the home VPN endpoint."],
+      ["4 · The Internet carries only the outer packet", "Routers forward using the visible outer destination. They do not need the protected home-service address. Timing, size, and both public endpoints remain observable metadata."],
+      ["5 · The home peer authenticates and decrypts", "The VPN endpoint rejects invalid or replayed protocol messages, recovers the inner IP packet, and associates it with the authenticated peer."],
+      ["6 · Gateway policy filters and routes", "Peer policy, the routing table, and the firewall decide whether <code>10.44.0.2</code> may reach <code>192.168.50.20</code>. Encryption does not replace authorization."],
+      ["7 · The service receives the inner flow", "The home service replies toward the VPN client's tunnel address. The gateway protects the reply, sends it to the client's current endpoint, and the reverse path completes."]
+    ],
+    web: [
+      ["1 · Application creates the inner packet", "<code>10.44.0.2 → 93.184.216.34</code>. In full-tunnel mode, even public destinations are candidates for the VPN default route."],
+      ["2 · VPN default route wins", "The VPN installs a default route or policy-routing equivalent while preserving a physical path to the VPN server itself. Otherwise, the tunnel could recursively try to carry its own outer packets."],
+      ["3 · The VPN client protects and encapsulates", "The public-site packet becomes ciphertext inside an outer UDP datagram addressed to the VPN server."],
+      ["4 · The Internet delivers the outer packet", "The first Internet path ends at the VPN server. Observers on this leg see the VPN endpoints and metadata, not the protected public-site destination."],
+      ["5 · The VPN server authenticates and decrypts", "The server recovers the packet for <code>93.184.216.34</code> and applies peer authorization."],
+      ["6 · The server routes toward the public Internet", "The gateway commonly forwards and source-NATs the packet so replies return to it. A firewall still decides which egress is permitted."],
+      ["7 · The website sees the VPN server path", "The public site sees the server's egress address rather than the client's original public address. End-to-end HTTPS remains important because VPN protection ended at the gateway."]
+    ]
+  };
+
+  const direct = [
+    ["1 · Application creates a public-site packet", "The destination is <code>93.184.216.34</code>. The application still does not select an interface."],
+    ["2 · The ordinary default route wins", "No more-specific VPN route matches this public address in split-tunnel mode, so the kernel selects the normal Wi-Fi or Ethernet interface."],
+    ["3 · The packet bypasses the VPN", "It goes directly toward the local router and ISP. The VPN client and VPN server do not process this flow."],
+    ["4 · The public site receives the direct flow", "The site sees the client's normal Internet egress address. HTTPS may protect application content, but this flow has no VPN outer packet."]
+  ];
+
+  function steps() {
+    if (state.target === "web" && state.mode === "split") return direct;
+    return tunneled[state.target];
+  }
+
+  function setPressed(group, active) {
+    for (const key of group) {
+      const pressed = key === active;
+      buttons[key].setAttribute("aria-pressed", String(pressed));
+      buttons[key].classList.toggle("primary", pressed);
+    }
+  }
+
+  function render() {
+    const currentSteps = steps();
+    state.step = Math.max(0, Math.min(state.step, currentSteps.length - 1));
+    const [title, copy] = currentSteps[state.step];
+    detail.innerHTML = `<h3>${title}</h3><p>${copy}</p><p class="meta">Step ${state.step + 1} of ${currentSteps.length}</p>`;
+    buttons.previous.disabled = state.step === 0;
+    buttons.next.disabled = state.step === currentSteps.length - 1;
+
+    progress.innerHTML = currentSteps.map((_, index) => `<span class="${index <= state.step ? "active" : ""}"></span>`).join("");
+    const hops = [...visual.querySelectorAll(".hop")];
+    const activeHop = Math.round(state.step * (hops.length - 1) / (currentSteps.length - 1));
+    hops.forEach((hop, index) => {
+      hop.classList.toggle("active", index === activeHop);
+      hop.classList.toggle("bypassed", currentSteps.length === 4 && index === 2);
+    });
+
+    if (currentSteps.length === 4) {
+      hops[2].querySelector("strong").textContent = "VPN path";
+      hops[2].querySelector("span").textContent = "bypassed";
+      hops[3].querySelector("strong").textContent = "Internet / website";
+      hops[3].querySelector("span").textContent = "direct route";
+    } else {
+      hops[2].querySelector("strong").textContent = "VPN client";
+      hops[2].querySelector("span").textContent = "protects packet";
+      hops[3].querySelector("strong").textContent = "Internet / peer";
+      hops[3].querySelector("span").textContent = "carries or receives";
+    }
+  }
+
+  buttons.home.addEventListener("click", () => { state.target = "home"; state.step = 0; setPressed(["home", "web"], "home"); render(); });
+  buttons.web.addEventListener("click", () => { state.target = "web"; state.step = 0; setPressed(["home", "web"], "web"); render(); });
+  buttons.split.addEventListener("click", () => { state.mode = "split"; state.step = 0; setPressed(["split", "full"], "split"); render(); });
+  buttons.full.addEventListener("click", () => { state.mode = "full"; state.step = 0; setPressed(["split", "full"], "full"); render(); });
+  buttons.previous.addEventListener("click", () => { state.step -= 1; render(); });
+  buttons.next.addEventListener("click", () => { state.step += 1; render(); });
+
+  document.querySelectorAll("#lesson-quiz fieldset").forEach((fieldset) => {
+    fieldset.addEventListener("change", (event) => {
+      const feedback = fieldset.querySelector(".feedback");
+      const correct = event.target.value === fieldset.dataset.answer;
+      feedback.textContent = correct
+        ? "Correct. That is the application-owned boundary to remember."
+        : "Not quite. Revisit the route, outer-header, or gateway-policy section above.";
+      feedback.className = `feedback ${correct ? "correct" : "incorrect"}`;
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

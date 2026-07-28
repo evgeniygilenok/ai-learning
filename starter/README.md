@@ -31,6 +31,7 @@ npm run starter:agent
 | `npm run starter:langgraph` | Same pause/resume flow on LangGraph with a Postgres checkpointer | OpenAI API + Postgres |
 | `npm run starter:mcp` | Least-scope MCP server over stdio | MCP client |
 | `npm run starter:vector` | OpenAI embeddings and ACL-filtered Qdrant retrieval | OpenAI API + Qdrant |
+| `npm run starter:security` | Deterministic identity, fresh-clock expiry, trusted provenance/egress DLP, sandbox, approval-binding, atomic-use, and replay policy tests | None |
 | `npm run starter:eval:hosted` | Agent release gate exported with OTLP GenAI attributes | Hosted OTLP endpoint |
 | `REAL_MODEL_EVAL=1 npm run starter:eval:hosted` | The hosted gate against the real model | OpenAI API + hosted OTLP endpoint |
 
@@ -52,6 +53,27 @@ export QDRANT_URL="http://localhost:6333"
 - `src/trace.ts`: redacted OTLP/HTTP JSON export using the OpenTelemetry GenAI 1.42 schema URL.
 - `src/state.ts`: just-in-time context assembly, per-step budgeting, and provenance-preserving history compaction.
 - `evals/*.json`: local and hosted release-gate cases to expand with representative real-model failures.
+
+## AI agent security specialization
+
+Follow the [AI Agent Security Engineering path](../courses/ai-agent-security.html) after completing [Lesson 0014](../lessons/0014-ai-security-threat-model.html) and the Agent Runtime sequence, [Lessons 0031](../lessons/0031-agent-orchestration-patterns.html) through [0035](../lessons/0035-tool-execution-runtime.html). Keep the specialization isolated, synthetic, and offline: use fake identities, canaries, approvals, tools, and effects; allow no live credentials, customer data, network access, or external actions.
+
+```bash
+npm run starter:security
+```
+
+The runnable boundary is `src/security-policy.ts`, verified by `test/security-policy.test.ts`. `SecurityPolicyRuntime` owns the clock and provenance classifier: every `authorize` call samples fresh time, and `TrustedContext` carries no authority timestamp. `prepareAction(trusted, capability, proposal)` requires runtime-verified brands and checks fresh capability expiry plus tenant/run/audience, tool/scope, object, and destination grants before it gives the resolver frozen `{ proposal, tenantId, runId }`; the result, exact payload/tool/destination, trusted tenant/run, and source lineage are bound into one immutable action digest. Model-provided classification claims carry no authority; missing, downgraded, or forged provenance and exact/encoded canaries in final outbound arguments fail closed before the single atomic capability/approval transition. Complete these eight reviewable artifacts against the same pinned fixture:
+
+1. `docs/agent-security-threat-model.md`
+2. `evals/security-agent-cases.json`
+3. `src/security-policy.ts`
+4. `docs/agent-component-inventory.md`
+5. `docs/agent-sandbox-profile.md`
+6. `docs/context-integrity-policy.md`
+7. `evals/security-release-gate.json`
+8. `evidence/specialization-ai-agent-security/assurance-case.md`
+
+Use `docs/agent-security-runbook.md` as the supporting response and tabletop document. The templates intentionally contain `REPLACE` placeholders and are not release-ready until every pin, owner, result, residual-risk decision, and evidence link is resolved and the JSON gate passes.
 
 ## MCP client setup and security gate
 
@@ -90,6 +112,7 @@ Every core stage leaves working behavior, one preserved failure, an eval/review 
 | Enterprise hardening | Qdrant hybrid retrieval, ACLs, failure analysis, and recovery | `evidence/stage-5/` |
 | Portfolio gate | Public case study, demo, video, deep dive, and interview package | `evidence/stage-6/` |
 | Agent runtime | Hardened state, memory, orchestration, eval, and tools | `evidence/specialization-agent-runtime/` |
+| AI agent security | Threat model, policy tests, component/sandbox/context controls, security gate, response exercise, and assurance case | `evidence/specialization-ai-agent-security/` |
 | Real agent stack | LangGraph, MCP, hosted traces/evals, and context tradeoff | `evidence/specialization-real-agent-stack/` |
 | Deployment/adoption | Hosted or reproducible release and feedback-driven change | `evidence/stage-8/` |
 

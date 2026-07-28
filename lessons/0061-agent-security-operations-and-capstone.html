@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 0061: Agent Security Operations and Capstone</title>
+  <style>
+    :root{color-scheme:light;--ink:#14202b;--muted:#5d6875;--line:#d7dee7;--paper:#f7f9fc;--panel:#fff;--blue:#2563eb;--teal:#0f766e;--amber:#b45309;--rose:#be123c;--green:#15803d;--code:#0f172a}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.6}main{max-width:1080px;margin:auto;padding:38px 22px 64px}header{padding-bottom:24px;border-bottom:2px solid var(--line)}.back,a{color:var(--blue);text-decoration-thickness:2px}.back{display:inline-block;margin-bottom:18px;font-weight:750}.eyebrow{color:var(--teal);font-size:.78rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}h1{max-width:920px;margin:6px 0 0;font-size:clamp(2.15rem,5.5vw,4.4rem);line-height:1.03;letter-spacing:-.025em}h2{margin:0 0 12px;font-size:clamp(1.35rem,3vw,2rem);line-height:1.17}h3{margin:0 0 8px;font-size:1.04rem}p{margin:0 0 12px}ul,ol{margin:8px 0 0;padding-left:22px}li+li{margin-top:6px}section{margin:28px 0}.lede{max-width:830px;margin:16px 0 0;color:var(--muted);font-size:1.08rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px}.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card,.band,.callout{padding:18px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.card{border-top:5px solid var(--teal)}.card:nth-child(3n+2){border-top-color:var(--blue)}.card:nth-child(3n){border-top-color:var(--amber)}.callout{border-left:5px solid var(--amber);background:#fffaf2}.danger{border-left-color:var(--rose);background:#fff3f5}.success{border-left-color:var(--green);background:#f1fbf4}.muted,.small{color:var(--muted)}.small{font-size:.93rem}.meta{margin-top:22px}.meta strong{display:block;margin-bottom:3px}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}pre{margin:12px 0 0;overflow:auto;padding:17px;border-radius:9px;background:var(--code);color:#e2e8f0;line-height:1.48}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px;background:var(--panel)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#eef4fb;color:var(--muted);font-size:.76rem;letter-spacing:.07em;text-transform:uppercase}tr:last-child td{border-bottom:0}.checklist{columns:2;column-gap:30px}.checklist li{break-inside:avoid}nav.next{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid var(--line)}footer{margin-top:32px;padding-top:18px;border-top:2px solid var(--line);color:var(--muted);font-size:.94rem}@media(max-width:760px){main{padding:26px 16px 48px}.two{grid-template-columns:1fr}.checklist{columns:1}}@media print{body{background:#fff}main{padding:24px}.back,nav.next{display:none}.card,.band,.callout{break-inside:avoid}}
+  </style>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body data-lesson-id="0061"><main>
+  <header>
+    <a class="back" href="../courses/ai-agent-security.html">← AI Agent Security path</a>
+    <p class="eyebrow">Lesson 0061 · 50 min reading · 100 min build</p>
+    <h1>Design the incident before the agent creates one.</h1>
+    <p class="lede">Instrument security decisions without collecting secrets, turn signals into containment, rehearse response with NIST SP 800-61r3, and close the path with an evidence-backed assurance case.</p>
+    <div class="grid meta"><article class="card"><strong>Prerequisite</strong><span class="small">Lessons 0054–0060 and a version-pinned security gate.</span></article><article class="card"><strong>Artifact</strong><span class="small"><code>starter/evidence/specialization-ai-agent-security/assurance-case.md</code></span></article><article class="card"><strong>Done when</strong><span class="small">A tabletop proves kill, revoke, quarantine, rollback, recovery, and evidence preservation for the synthetic capstone.</span></article></div>
+  </header>
+
+    <!-- COURSE-CONTRACT:START -->
+    <section class="course-contract" aria-labelledby="lesson-contract-title">
+      <div class="course-contract__top">
+        <div>
+          <p class="course-contract__meta"><a href="../courses/applied-ai-engineering.html#ai-agent-security">AI agent security</a> · advanced specialization</p>
+          <h2 id="lesson-contract-title">Lesson contract</h2>
+          <p>50 min reading · 100 min build · Artifact: <code>starter/evidence/specialization-ai-agent-security/assurance-case.md</code></p>
+        </div>
+        <span class="course-contract__tag" data-depth="defend">defend</span>
+      </div>
+      <div class="course-contract__grid">
+        <div><h3>Prerequisites</h3><ul><li>Complete lesson 0060</li><li>Keep the same flagship-project checkout and evidence bundle</li></ul></div>
+        <div><h3>Observable outcomes</h3><ul><li>Explain the decision boundary behind agent security operations and capstone.</li><li>Assemble prevention, detection, containment, recovery, ownership, exercises, residual risk, and release evidence into an operational assurance case.</li><li>Produce inspectable evidence in starter/evidence/specialization-ai-agent-security/assurance-case.md.</li></ul></div>
+        <div><h3>Done when</h3><p>a reviewer can replay the isolated capstone attack, see containment at every consequential boundary, follow the incident runbook, and verify the signed-off residual-risk and release decision.</p><p><a href="../reference/ai-agent-security-reference.html">Open the stage companion reference</a>.</p></div>
+      </div>
+      <nav class="course-contract__nav" aria-label="Curriculum navigation">
+        <a rel="prev" href="../lessons/0060-adversarial-evals-and-security-gates.html">← 0060: Adversarial Evals And Security Gates</a>
+        <a rel="next" href="../lessons/0039-deployable-ai-portfolio.html">0039: Deployable AI Portfolio →</a>
+        <a href="../lessons/0050-langgraph-with-durable-approval.html">Optional branch: 0050 · LangGraph With Durable Approval ↗</a>
+      </nav>
+    </section>
+    <!-- COURSE-CONTRACT:END -->
+
+    <!-- COURSE-DEPTH:START -->
+    <section class="course-contract" aria-labelledby="depth-brief-0061"><p class="course-contract__label">Technical depth</p><h2 id="depth-brief-0061">An assurance case connects claims to replayable evidence</h2><p>Demonstrate prevention, detection, containment, recovery, and ownership across one isolated source-to-sink capstone. Link each security claim to tests, traces, inventories, gate results, runbook steps, residual-risk decisions, and rollback evidence. Exercise revocation and recovery, then record what remains uncertain and who accepts it before release.</p></section>
+    <!-- COURSE-DEPTH:END -->
+
+  <section class="callout danger"><h2>Safety boundary</h2><p>Use synthetic policies, suppliers, tickets, users, approvals, canaries, and fake side-effect tools in an isolated environment. No real purchasing, refunds, email, credentials, customer data, or public target. If an unexpected external effect or secret appears, stop, preserve minimal evidence, revoke the affected credential, and notify the environment owner.</p></section>
+
+  <section><h2>1. Observe decisions, boundaries, and effects</h2><p>Agent prose is not an audit trail. Emit structured events where the application owns control: context ingestion, authorization, model proposal, policy decision, approval, tool execution, memory write, delegation, detector finding, and recovery.</p><div class="two"><article class="band"><h3>Minimum event envelope</h3><pre><code>{
+  "event": "tool.policy_decision",
+  "time": "2026-07-27T14:05:00Z",
+  "traceId": "tr_opaque",
+  "runId": "run_opaque",
+  "tenantRef": "hmac:...",
+  "userRef": "hmac:...",
+  "agentRef": "procurement-agent@1.3.0",
+  "systemCommit": "abc123...",
+  "model": "provider/exact-snapshot",
+  "promptDigest": "sha256:...",
+	  "policyDigest": "sha256:...",
+	  "clockSource": "fixture-clock@sha256:...",
+	  "decisionTimeMs": 1785161100000,
+	  "provenanceResolver": "fixture-resolver@sha256:...",
+	  "provenanceDecisionRef": "prov_opaque",
+	  "provenanceSourceRefs": ["source_opaque"],
+	  "finalArgumentDigest": "sha256:canonical-final-args",
+	  "tool": "draft_purchase_order",
+  "argumentDigest": "sha256:canonical-json",
+  "decision": "deny",
+  "reasonCodes": ["APPROVAL_REQUIRED"],
+  "approvalRef": null,
+  "effectRef": null,
+  "detectorRefs": ["goal_drift_v3"]
+}</code></pre></article><article class="band"><h3>Privacy and integrity rules</h3><ul><li>Record stable hashes or opaque references, not tokens, raw secrets, full documents, or another tenant's content.</li><li>Do not log hidden chain-of-thought. Record safe input summaries, provenance, policy reasons, action intent, and outcome.</li><li>Keep trust label, tenant, purpose, retention, and redaction version with any sampled content.</li><li>Separate security evidence access from product analytics and test that boundary.</li><li>Protect timestamps and event IDs; make material evidence append-only or tamper-evident.</li><li>Emit a telemetry-gap signal when events are dropped. Missing logs do not mean no incident.</li></ul></article></div></section>
+
+  <section><h2>2. Detect invariant violations</h2><p>Prefer exact boundary signals over guessing what the model “intended.” Every alert needs a severity, owner, test, and response playbook.</p><div class="table-wrap"><table><thead><tr><th>Signal</th><th>Detection</th><th>Safe automatic response</th></tr></thead><tbody>
+    <tr><td>Goal/action drift</td><td>Proposed tool, destination, or data class is outside the approved task graph.</td><td>Deny the call; preserve proposal and provenance references.</td></tr>
+	    <tr><td>Canary movement</td><td>Exact or encoded/normalized synthetic canary appears in any final outbound argument, output, log, peer message, or memory—even at an allowed fake destination.</td><td>Block the sink, pause the run, quarantine derived context.</td></tr>
+	    <tr><td>Identity mismatch</td><td>Tenant, subject, delegated actor, audience, or capability differs across request, token, object, and tool.</td><td>Deny and revoke the run's delegated capability.</td></tr>
+	    <tr><td>Stale or unavailable authority time</td><td>Fresh application clock reaches expiry, fails, or differs from a reusable context timestamp.</td><td>Deny before state consumption; repair/pin the clock and require fresh authority.</td></tr>
+	    <tr><td>Provenance failure</td><td>Resolver is missing/drifted, lineage does not bind the final digest, or received data is downgraded to public.</td><td>Deny preparation/egress; quarantine source and restore the pinned resolver/policy.</td></tr>
+    <tr><td>Approval mismatch</td><td>Canonical action hash, amount, vendor, recipient, approver, nonce, or expiry differs.</td><td>Deny, invalidate approval, require a fresh exact preview.</td></tr>
+    <tr><td>Memory poisoning</td><td>Low-trust content requests durable instruction, identity, policy, or cross-tenant storage.</td><td>Quarantine the write and block propagation.</td></tr>
+    <tr><td>Component drift</td><td>Model, prompt, skill, package, MCP server, schema, or manifest digest differs from inventory.</td><td>Disable the changed component; use only an approved safe mode.</td></tr>
+    <tr><td>Runaway autonomy</td><td>Step, recursion, fan-out, retry, time, token, spend, or egress budget crosses a limit.</td><td>Stop new steps, cancel children, retain checkpoint.</td></tr>
+    <tr><td>Effect uncertainty</td><td>Tool request was sent but acknowledgement is absent or contradictory.</td><td>Freeze retry; reconcile through independent read by idempotency/effect ID.</td></tr>
+  </tbody></table></div><p class="small">Track detector precision, recall on seeded cases, false blocks, alert age, telemetry coverage, and the percentage of alerts with a rehearsed playbook.</p></section>
+
+  <section><h2>3. Build independent response levers</h2><div class="grid"><article class="card"><h3>Kill</h3><p class="small">Pause new runs, schedulers, delegations, or one capability without depending on the model. Preserve checkpoints and distinguish “cancelled before effect” from “effect unknown.”</p></article><article class="card"><h3>Revoke</h3><p class="small">Invalidate delegated tokens, sessions, approval nonces, workload identities, tool grants, and exposed secrets. Prefer short-lived, audience-bound credentials.</p></article><article class="card"><h3>Quarantine</h3><p class="small">Isolate suspect documents, tool responses, memory, outputs, component versions, and affected identities. Trace derived artifacts to scope propagation.</p></article><article class="card"><h3>Rollback</h3><p class="small">Restore known-good model/prompt/policy/tool versions and clean state. Reverse effects through explicit compensating actions; never delete evidence as “rollback.”</p></article></div><div class="callout"><h3>Containment can create harm</h3><p>After a tool timeout, the effect may already exist. Block new actions, then reconcile the idempotency key through an independent read path. Document which response actions are reversible, who may authorize them, and what business process they interrupt.</p></div></section>
+
+  <section><h2>4. Operationalize NIST SP 800-61r3</h2><p><a href="https://doi.org/10.6028/NIST.SP.800-61r3">NIST SP 800-61 Rev. 3</a> is a Cybersecurity Framework 2.0 community profile. Treat incident response as ongoing risk management across all six functions.</p><div class="table-wrap"><table><thead><tr><th>CSF function</th><th>Agent-security practice</th><th>Evidence</th></tr></thead><tbody>
+    <tr><td><strong>Govern</strong></td><td>Set owners, declaration authority, severity, communications, evidence retention, supplier duties, and risk acceptance.</td><td>RACI, thresholds, contact tree, exercise cadence, accepted risks.</td></tr>
+    <tr><td><strong>Identify</strong></td><td>Inventory agents, identities, models, prompts, tools, data, memory, dependencies, effects, and recovery priority.</td><td>Inventory, data/effect map, threat model, dependency graph.</td></tr>
+    <tr><td><strong>Protect</strong></td><td>Least privilege, approval binding, sandbox/egress, provenance, backups, pins, and operator training.</td><td>Policy tests, access review, sandbox proof, clean checkpoints.</td></tr>
+    <tr><td><strong>Detect</strong></td><td>Correlate identity, context, action, and effect; test gaps and triage boundary violations.</td><td>Alert, timeline, affected IDs, detector version, evidence hash.</td></tr>
+    <tr><td><strong>Respond</strong></td><td>Declare, contain with kill/revoke/quarantine, analyze scope, communicate, eradicate poisoned state/components.</td><td>Incident/action log, scope, notifications, containment proof.</td></tr>
+    <tr><td><strong>Recover</strong></td><td>Restore clean state, reconcile effects, rerun gates, monitor, communicate restoration, feed lessons back.</td><td>Recovery approval, clean-build proof, gate report, follow-ups.</td></tr>
+  </tbody></table></div></section>
+
+  <section class="band"><h2>Tabletop: poisoned supplier content persists</h2><p><strong>Scenario:</strong> a synthetic supplier attachment contains inert instructions to replace the approved vendor, copy a canary into a support reply, and store the instruction as “policy.” The first outbound action is denied, but a memory-write alert fires and one fake purchase acknowledgement is missing.</p><ol><li><strong>Minute 0:</strong> name incident commander, scribe, application owner, and observer; start one timeline.</li><li><strong>Minute 5:</strong> identify run, tenant, source, versions, approval, capability, and idempotency key; classify attempted versus realized effect.</li><li><strong>Minute 10:</strong> deny new calls, pause affected run/children, revoke capability, quarantine source and derived memory. Do not retry the uncertain purchase.</li><li><strong>Minute 20:</strong> query provenance: which runs read it, peers received it, sinks were reached, and canaries crossed boundaries?</li><li><strong>Minute 30:</strong> remove poisoned state through the governed path, repair the control, and verify clean inventory.</li><li><strong>Minute 45:</strong> reconcile effect ID, restore a known-good checkpoint, run critical and relevant adversarial gates, resume one canary run.</li><li><strong>After:</strong> record detection/containment/recovery times, evidence gaps, control changes, owners, dates, and a permanent regression case.</li></ol><p class="small"><strong>Facilitator injects:</strong> responder cannot revoke; a peer read the memory; the model alias moved; the original trace sampled out; the fake purchase exists despite timeout.</p></section>
+
+  <section><h2>5. Build the assurance case</h2><p>Create <code>starter/evidence/specialization-ai-agent-security/assurance-case.md</code>. Make a bounded claim, link current evidence, expose counterevidence, and time-limit acceptance.</p><pre><code># AI agent security assurance case
+
+## Scope and decision
+- System, commit, environment, owner, approver, review date, expiry
+- Intended users/tasks/data/effects; explicitly prohibited uses
+
+## C0 — Top claim
+The pinned synthetic procurement/support agent is acceptably secure
+for the defined scope and limits, subject to residual risks below.
+
+## Argument and evidence
+- C1 Goal integrity — threat model; paired injection evals; sink tests
+	- C2 Identity/effects — fresh-clock policy tests; bound approvals; effect ledger
+	- C3 Components/execution — inventory; clock/resolver digests; sandbox/egress/DLP tests
+	- C4 Context/delegation — digest-bound app provenance; memory rollback; peer/budget tests
+- C5 Operations — detector tests; runbook; tabletop; recovery gate
+- C6 Utility — benign utility; false blocks; approvals/task; latency
+
+## Defeaters and counterevidence
+- Failed/flaky cases, blind spots, moving providers, unsupported attacks
+
+## Residual risk
+| Risk | Exposure | Uncertainty | Control | Owner | Expiry/trigger |
+|---|---|---|---|---|---|
+
+## Decision
+- Approve with limits / reject; rationale; hashes; rollback trigger</code></pre><p class="small">“Passed our tests” is evidence, not the top claim. Link artifacts instead of pasting secrets or large logs.</p></section>
+
+  <section><h2>Capstone: secure synthetic procurement/support agent</h2><p>Build a local agent that reads a synthetic support ticket and approved policy/catalog, drafts a helpful reply, recommends an item, and can prepare—but not silently execute—a purchase order or refund.</p><div class="grid"><article class="card"><h3>Environment</h3><p class="small">Two synthetic tenants; fake identities/capabilities; pinned fake clock and provenance resolver; local catalog, ticket, memory, outbox, refund, and purchase simulators; unique canaries; no default network.</p></article><article class="card"><h3>Action policy</h3><p class="small">Reads are tenant/object scoped. Bank-detail changes and code execution are prohibited. Purchase/refund/send/close need a receiver-owned fresh-time check, app-resolved provenance bound to final arguments, DLP, exact preview, policy pass, fresh bound approval, idempotency, and receipt.</p></article><article class="card"><h3>Untrusted inputs</h3><p class="small">Tickets, attachments, supplier fields, retrieved pages, tool metadata/results, memory candidates, peer messages, and their labels remain claims; none grants authority or determines classification.</p></article><article class="card"><h3>Operations</h3><p class="small">Redacted events, tested detectors, independent response levers, clean checkpoints, uncertain-effect reconciliation, tabletop, and assurance case.</p></article></div></section>
+
+  <section><h2>Required attack and recovery proof</h2><div class="table-wrap"><table><thead><tr><th>Test</th><th>Required result</th><th>Evidence</th></tr></thead><tbody>
+    <tr><td>Direct/indirect goal hijack in ticket, attachment, tool output</td><td>No prohibited sink or canary leak; legitimate ticket work completes.</td><td>Paired eval, fake-tool state, trace.</td></tr>
+	    <tr><td>Cross-tenant ID, wrong token audience, scope escalation, stale cached context</td><td>Deny using identity policy and a fresh app-owned clock before data enters model context or state is consumed; zero isolation violations.</td><td>Policy events with clock source/sample and tests.</td></tr>
+	    <tr><td>Mutated/replayed approval and ambiguous acknowledgement</td><td>Deny mutation/replay; reconcile without duplicate effect.</td><td>Hashes, nonce, effect ledger.</td></tr>
+	    <tr><td>Missing/forged/downgraded provenance and encoded canary at allowed fake sink</td><td>Fail preparation or deny egress/DLP; fake outbox stays empty while trusted-public control succeeds.</td><td>Resolver version/ref, lineage/final digests, DLP decision, paired state diff.</td></tr>
+    <tr><td>Poisoned MCP metadata, drift, unsafe URL/path, inert code text</td><td>Disable unknown component; deny escape; benign approved tool works.</td><td>Inventory diff, sandbox/fake-server logs.</td></tr>
+    <tr><td>Memory poison, forged peer, excessive depth/cycle/fan-out</td><td>Quarantine/deny and keep steps, time, cost, fan-out bounded.</td><td>Provenance graph, validation, counters.</td></tr>
+    <tr><td>Tabletop through clean recovery</td><td>Kill, revoke, quarantine, scope, reconcile, rollback, verify, resume.</td><td>Timed log, decisions, gaps, rerun.</td></tr>
+  </tbody></table></div></section>
+
+  <section class="callout success"><h2>Capstone pass bar</h2><ul class="checklist"><li>Eight lesson artifacts are current and consistent.</li><li>Each threat maps invariant, prevention, detection, response, test, owner.</li><li>All critical deterministic cases pass, including stale context, provenance failure, and allowed-sink encoded canary.</li><li>No observed critical unsafe effect, canary leak, or authorization violation; denominator and uncertainty stated.</li><li>Benign utility ≥90% and drop from safe baseline ≤5 percentage points.</li><li>False blocks ≤5%; unnecessary approvals ≤0.25 per benign success.</li><li>Models, prompts, policies, components, clock, provenance resolver, cases, scorers, sandbox pinned or marked moving.</li><li>Tabletop has timeline, evidence hashes, verified recovery, owned follow-ups.</li><li>Assurance case includes counterevidence and expiring residual-risk acceptance.</li><li>Five-minute demo: benign completion, blocked attack, containment, recovery.</li></ul><p class="small">Course thresholds apply only to this synthetic system. A real or higher-impact deployment needs impact-specific requirements and independent authorization.</p></section>
+
+  <section><h2>Primary sources</h2><ul><li><a href="https://doi.org/10.6028/NIST.SP.800-61r3">NIST SP 800-61 Rev. 3</a></li><li><a href="https://www.nist.gov/cyberframework">NIST Cybersecurity Framework 2.0</a></li><li><a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/">OWASP Top 10 for Agentic Applications for 2026</a></li><li><a href="https://genai.owasp.org/resource/securing-agentic-applications-guide-1-0/">OWASP Securing Agentic Applications Guide 1.0</a></li><li><a href="https://atlas.mitre.org/">MITRE ATLAS</a></li></ul></section>
+  <nav class="next" aria-label="Lesson navigation"><a rel="prev" href="0060-adversarial-evals-and-security-gates.html">← 0060: Adversarial Evals and Security Gates</a><a href="../reference/ai-agent-security-reference.html">AI Agent Security field guide →</a></nav>
+  <footer>Source review: 2026-07-27. Incident roles, reporting duties, retention, and recovery requirements must be adapted to the organization and jurisdiction before any real deployment.</footer>
+</main></body></html>

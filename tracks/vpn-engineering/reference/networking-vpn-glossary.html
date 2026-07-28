@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Printable glossary and packet-tracing checklist for the VPN and Network Engineering track.">
+  <title>VPN &amp; Networking Field Glossary</title>
+  <link rel="stylesheet" href="../assets/vpn-course.css">
+  <style>
+    .alphabet{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0}.alphabet a{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:var(--panel);font-weight:800;text-decoration:none}.terms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}.term{padding:14px 0;border-top:1px solid var(--line);break-inside:avoid}.term h3{display:inline;margin:0;font-size:1rem}.term p{margin:4px 0;color:var(--muted)}.term code{font-size:.85em}.flow{counter-reset:flow;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0;list-style:none}.flow li{padding:14px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.flow li::before{counter-increment:flow;content:counter(flow);display:grid;place-items:center;width:28px;height:28px;margin-bottom:8px;border-radius:50%;color:#fff;background:var(--deep);font-weight:850}@media(max-width:760px){.terms,.flow{grid-template-columns:1fr}}@media print{.alphabet,.back{display:none}.terms{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <a class="back" href="../index.html">← VPN &amp; Network Engineering track</a>
+    <p class="eyebrow">Reference · printable field guide</p>
+    <h1>VPN &amp; networking glossary.</h1>
+    <p class="lede">Use these terms consistently when predicting, capturing, debugging, and explaining a packet path.</p>
+    <nav class="alphabet" aria-label="Glossary sections"><a href="#addressing">A</a><a href="#interfaces">I</a><a href="#routing">R</a><a href="#transport">T</a><a href="#tunneling">V</a><a href="#security">S</a><a href="#operations">O</a><a href="#containers">C</a></nav>
+  </header>
+
+  <section id="packet-trace">
+    <p class="eyebrow">Packet-tracing algorithm</p>
+    <h2>Ask these questions in order.</h2>
+    <ol class="flow">
+      <li><strong>Name the packet.</strong><br>Source/destination IP, protocol, ports, size, and whether it is inner or outer.</li>
+      <li><strong>Choose the route.</strong><br>Which routing table and policy apply? Which longest matching prefix wins?</li>
+      <li><strong>Name the boundary.</strong><br>Local delivery, forwarding, TUN, bridge, NAT, firewall, encapsulation, or decryption?</li>
+      <li><strong>Prove the decision.</strong><br>Inspect route, interface, counters, firewall state, socket, capture, and return path.</li>
+    </ol>
+  </section>
+
+  <section id="addressing">
+    <p class="eyebrow">Addressing</p>
+    <h2>Where is the packet trying to go?</h2>
+    <div class="terms">
+      <article class="term"><h3>IP address</h3><p>A Layer-3 address assigned to an interface and used as a packet source or destination. An address is meaningful together with its prefix and routing context.</p></article>
+      <article class="term"><h3>Prefix / CIDR</h3><p>A set of addresses written as address plus prefix length, such as <code>192.168.50.0/24</code>. Longer prefix length means a smaller, more specific set.</p></article>
+      <article class="term"><h3>Subnet</h3><p>A prefix treated as one directly reachable or administratively grouped network. Do not assume two private addresses share a subnet without checking their prefix lengths.</p></article>
+      <article class="term"><h3>Private address</h3><p>An address from a range intended for private networks, commonly translated at an Internet boundary. “Private” does not imply authenticated or safe.</p></article>
+      <article class="term"><h3>Public address</h3><p>An Internet-routable address. A home router often owns the public address while internal hosts use private addresses.</p></article>
+      <article class="term"><h3>Overlapping prefixes</h3><p>Two networks use the same or intersecting address space. Remote hotel Wi-Fi and a home LAN both using <code>192.168.1.0/24</code> can make route intent ambiguous.</p></article>
+    </div>
+  </section>
+
+  <section id="interfaces">
+    <p class="eyebrow">Interfaces and links</p>
+    <h2>Which boundary receives the packet?</h2>
+    <div class="terms">
+      <article class="term"><h3>Network interface</h3><p>The kernel object through which packets or frames enter and leave: physical Ethernet/Wi-Fi, loopback, bridge, veth, TUN, or WireGuard.</p></article>
+      <article class="term"><h3>Frame</h3><p>A Layer-2 unit, such as an Ethernet frame, carrying a network-layer payload on one link. MAC addresses belong to this local-link delivery layer.</p></article>
+      <article class="term"><h3>Packet</h3><p>A Layer-3 unit, usually IPv4 or IPv6, with source/destination IP addresses and a transport payload.</p></article>
+      <article class="term"><h3>TUN</h3><p>A virtual point-to-point interface that transfers IP packets between the kernel and a user-space program through a file descriptor.</p></article>
+      <article class="term"><h3>TAP</h3><p>A virtual Ethernet interface that transfers complete Layer-2 frames. Use it when bridging Ethernet is required; routed VPNs usually prefer TUN semantics.</p></article>
+      <article class="term"><h3>veth pair</h3><p>Two connected virtual Ethernet interfaces. A frame sent into one emerges from the other, which makes veth useful for connecting Linux namespaces or containers.</p></article>
+      <article class="term"><h3>Bridge</h3><p>A Layer-2 forwarding device—physical or software—that learns which MAC addresses are reachable through its ports. Proxmox and Docker commonly create Linux bridges.</p></article>
+      <article class="term"><h3>Network namespace</h3><p>An isolated Linux network stack with its own interfaces, routes, firewall rules, and sockets. It is the safe default for the learning-tunnel lab.</p></article>
+    </div>
+  </section>
+
+  <section id="routing">
+    <p class="eyebrow">Routing and policy</p>
+    <h2>What happens after destination lookup?</h2>
+    <div class="terms">
+      <article class="term"><h3>Route</h3><p>A rule mapping a destination prefix to an action such as local delivery, an outgoing interface, a next hop, unreachable, or a different routing table.</p></article>
+      <article class="term"><h3>Longest-prefix match</h3><p>The most specific matching route normally wins. A <code>/24</code> route beats a <code>/0</code> default for an address inside that /24.</p></article>
+      <article class="term"><h3>Default route</h3><p>The least-specific route, IPv4 <code>0.0.0.0/0</code> or IPv6 <code>::/0</code>, used when no more-specific route matches.</p></article>
+      <article class="term"><h3>Next hop / gateway</h3><p>The router on the current link that should receive the frame for a destination not directly reachable on that link.</p></article>
+      <article class="term"><h3>Forwarding</h3><p>Routing a packet received on one interface out another. A host must enable forwarding and pass firewall policy before it acts as a router.</p></article>
+      <article class="term"><h3>Firewall</h3><p>Policy that accepts, rejects, or drops traffic based on interfaces, addresses, protocols, ports, state, identity, or other metadata. It is distinct from routing and NAT.</p></article>
+      <article class="term"><h3>Stateful firewall</h3><p>A firewall that tracks flows and can permit return traffic associated with an allowed outbound or established flow.</p></article>
+      <article class="term"><h3>Return route</h3><p>The route used for the reply. Many “one-way VPN” failures occur because the request arrives but the destination or gateway has no correct path back.</p></article>
+    </div>
+  </section>
+
+  <section id="transport">
+    <p class="eyebrow">Transport and sockets</p>
+    <h2>How does a process exchange bytes?</h2>
+    <div class="terms">
+      <article class="term"><h3>UDP</h3><p>A message-oriented transport. Datagrams may be lost, duplicated, delayed, or reordered; the application or higher protocol owns any required recovery.</p></article>
+      <article class="term"><h3>TCP</h3><p>A reliable, ordered byte stream with connection state, retransmission, flow control, and congestion control. Tunneling TCP inside TCP can cause interacting recovery behavior.</p></article>
+      <article class="term"><h3>Port</h3><p>A 16-bit transport-layer number used with an IP address and protocol to identify a socket endpoint.</p></article>
+      <article class="term"><h3>Socket</h3><p>An operating-system object a process uses to send and receive network data, usually bound or connected to protocol/address/port information.</p></article>
+      <article class="term"><h3>MTU</h3><p>Maximum Transmission Unit: the largest network-layer packet an interface or link accepts without additional handling. Tunnel overhead reduces the safe inner MTU.</p></article>
+      <article class="term"><h3>Path MTU</h3><p>The smallest supported packet size across the complete path. Broken discovery or blocked ICMP can create “small packets work, large requests hang” failures.</p></article>
+      <article class="term"><h3>Fragmentation</h3><p>Splitting a packet so pieces fit a link. Losing one fragment loses the original packet; tunnels should avoid depending on fragmentation.</p></article>
+      <article class="term"><h3>MSS</h3><p>TCP Maximum Segment Size: the largest TCP payload a peer advertises. MSS clamping can keep inner TCP packets within a tunnel's effective MTU.</p></article>
+    </div>
+  </section>
+
+  <section id="tunneling">
+    <p class="eyebrow">VPN and tunneling</p>
+    <h2>Which packet is inside which?</h2>
+    <div class="terms">
+      <article class="term"><h3>Tunnel</h3><p>A mechanism that carries one protocol unit inside another transport across a network that does not directly route the inner traffic.</p></article>
+      <article class="term"><h3>Encapsulation</h3><p>Wrapping an inner packet in protocol metadata and an outer packet. Decapsulation removes the outer representation at the tunnel peer.</p></article>
+      <article class="term"><h3>Inner packet</h3><p>The original IP packet between tunnel addresses or protected destinations. VPN protection normally covers this packet.</p></article>
+      <article class="term"><h3>Outer packet</h3><p>The Internet-routable transport between VPN endpoints. Routers require its destination, and observers can see its endpoints, timing, direction, and size.</p></article>
+      <article class="term"><h3>Peer</h3><p>An authenticated VPN participant identified by protocol key material and constrained by address/policy configuration.</p></article>
+      <article class="term"><h3>Endpoint</h3><p>The currently reachable outer address and port used to send encrypted protocol packets to a peer.</p></article>
+      <article class="term"><h3>Split tunnel</h3><p>Only selected destination prefixes use the VPN. Other traffic follows normal local routes.</p></article>
+      <article class="term"><h3>Full tunnel</h3><p>The VPN becomes the default route for general traffic while a separate physical route preserves reachability to the VPN endpoint.</p></article>
+      <article class="term"><h3><code>AllowedIPs</code></h3><p>In WireGuard, configured prefixes participate in outbound peer selection/routing and inbound source-address authorization. It is not merely a descriptive list.</p></article>
+      <article class="term"><h3>Persistent keepalive</h3><p>An optional periodic authenticated packet that refreshes NAT/firewall state so an otherwise idle peer behind a middlebox can receive later traffic.</p></article>
+    </div>
+  </section>
+
+  <section id="security">
+    <p class="eyebrow">Cryptographic protocol</p>
+    <h2>What security property is actually provided?</h2>
+    <div class="terms">
+      <article class="term"><h3>Confidentiality</h3><p>Unauthorized observers cannot feasibly recover protected plaintext. It does not hide all metadata.</p></article>
+      <article class="term"><h3>Integrity</h3><p>Unauthorized modification is detected. A receiver must reject rather than use altered data.</p></article>
+      <article class="term"><h3>Authentication</h3><p>Evidence that a message or session corresponds to an expected key or identity under the protocol's threat model.</p></article>
+      <article class="term"><h3>AEAD</h3><p>Authenticated Encryption with Associated Data: one construction protects confidentiality and integrity while binding selected unencrypted metadata.</p></article>
+      <article class="term"><h3>Nonce</h3><p>A value used once under a given key as required by the AEAD construction. Reuse can catastrophically break security.</p></article>
+      <article class="term"><h3>Replay</h3><p>Resending a previously valid protected message. Protocols use sequence numbers, windows, epochs, or other state to reject it.</p></article>
+      <article class="term"><h3>Handshake</h3><p>A protocol exchange that authenticates participants as required and derives fresh session keys plus negotiated state.</p></article>
+      <article class="term"><h3>Forward secrecy</h3><p>Compromise of a long-term key should not reveal properly erased past session keys and recorded traffic protected by them.</p></article>
+      <article class="term"><h3>Public/private key pair</h3><p>Related asymmetric keys. The private key remains secret; the public key can identify a peer or verify operations, depending on the protocol.</p></article>
+      <article class="term"><h3>Session key</h3><p>A symmetric key derived for a bounded communication period. Rotation limits exposure and supports forward-secrecy goals.</p></article>
+    </div>
+  </section>
+
+  <section id="operations">
+    <p class="eyebrow">Home network operations</p>
+    <h2>Which middlebox changed the path?</h2>
+    <div class="terms">
+      <article class="term"><h3>NAT</h3><p>Network Address Translation rewrites addresses and often ports while maintaining mapping state. NAT is not itself an access-control policy.</p></article>
+      <article class="term"><h3>SNAT / masquerade</h3><p>Source NAT rewrites the source so replies return through the translator. Masquerade is dynamic SNAT commonly tied to an interface address.</p></article>
+      <article class="term"><h3>DNAT / port forwarding</h3><p>Destination NAT rewrites the destination. A home-router UDP port forward sends traffic arriving at the public address/port to the VPN gateway.</p></article>
+      <article class="term"><h3>CGNAT</h3><p>Carrier-grade NAT places another provider-operated NAT outside the home router. Ordinary inbound port forwarding may be impossible without a public address, IPv6 design, outbound rendezvous, or relay/VPS.</p></article>
+      <article class="term"><h3>Hairpinning</h3><p>A NAT behavior allowing internal clients to reach another internal endpoint through the NAT's external address and mapping.</p></article>
+      <article class="term"><h3>Split DNS</h3><p>Resolver policy returning different answers or using different resolvers based on name, network, or VPN state.</p></article>
+    </div>
+  </section>
+
+  <section id="containers">
+    <p class="eyebrow">Containers and k3s</p>
+    <h2>Which address space belongs to which layer?</h2>
+    <div class="terms">
+      <article class="term"><h3>Docker bridge network</h3><p>A host-local Layer-2 network with container interfaces, a bridge gateway, DNS behavior, firewall rules, and commonly NAT for egress.</p></article>
+      <article class="term"><h3>Published port</h3><p>A host address/port mapped or routed to a container port. Publishing can interact with firewall evaluation order and may expose more interfaces than intended.</p></article>
+      <article class="term"><h3>CNI</h3><p>Container Network Interface: the plugin contract and implementations that configure pod connectivity, addresses, routes, and sometimes network policy.</p></article>
+      <article class="term"><h3>Pod CIDR</h3><p>The address range used by Kubernetes pods. Reachability depends on the CNI and node routing; it is not automatically a stable client-facing network.</p></article>
+      <article class="term"><h3>Service CIDR</h3><p>The virtual address range used by Kubernetes Services. Implementations translate or route these virtual destinations to workload endpoints.</p></article>
+      <article class="term"><h3>Ingress</h3><p>An application-layer entry point—typically HTTP(S)—that routes named requests to services. It is often a safer stable VPN target than exposing pod networks.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Fast failure map</p>
+    <h2>Start diagnosis at the observable boundary.</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Symptom</th><th>First checks</th><th>Likely class</th></tr></thead>
+        <tbody>
+          <tr><td>No handshake</td><td>Endpoint DNS/IP, UDP socket, router forward, host firewall, CGNAT, clock</td><td>Outer-path reachability or identity/key mismatch</td></tr>
+          <tr><td>Handshake, no tunnel ping</td><td>Tunnel addresses, <code>AllowedIPs</code>, local routes, peer counters, firewall</td><td>Inner routing or peer authorization</td></tr>
+          <tr><td>Gateway reachable, LAN not reachable</td><td>Forwarding sysctl, FORWARD policy, LAN route back, NAT choice</td><td>Gateway forwarding/return path</td></tr>
+          <tr><td>IP works, names fail</td><td>Resolver address, route to resolver, search domain, firewall port 53/853</td><td>DNS path</td></tr>
+          <tr><td>Small traffic works, large hangs</td><td>Ping sizes, effective MTU, ICMP handling, TCP MSS</td><td>Path MTU or fragmentation</td></tr>
+          <tr><td>LAN works, Docker/k3s fails</td><td>Bridge/CNI CIDRs, route overlap, published address, firewall order, NetworkPolicy</td><td>Nested routing/filter/NAT layer</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Primary references</p>
+    <h2>Keep terminology anchored to specifications and system docs.</h2>
+    <ul>
+      <li><a href="https://www.wireguard.com/">WireGuard conceptual overview</a> and <a href="https://www.wireguard.com/protocol/">protocol summary</a></li>
+      <li><a href="https://docs.kernel.org/networking/tuntap.html">Linux TUN/TAP documentation</a></li>
+      <li><a href="https://man7.org/linux/man-pages/man8/ip-route.8.html">ip-route(8)</a> and <a href="https://man7.org/linux/man-pages/man8/ip-netns.8.html">ip-netns(8)</a></li>
+      <li><a href="https://www.rfc-editor.org/info/rfc8085/">RFC 8085: UDP Usage Guidelines</a></li>
+      <li><a href="https://www.rfc-editor.org/info/rfc4787/">RFC 4787: NAT Behavioral Requirements for Unicast UDP</a></li>
+      <li><a href="https://docs.docker.com/engine/network/">Docker networking overview</a> and <a href="https://docs.k3s.io/networking">k3s networking</a></li>
+    </ul>
+  </section>
+
+  <footer>Source review: 2026-07-27. Prefer measured packet paths and current system documentation over memorized folklore.</footer>
+</main>
+</body>
+</html>

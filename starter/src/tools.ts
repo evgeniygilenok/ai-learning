@@ -21,7 +21,12 @@ export class ToolPolicyError extends Error {
   }
 }
 
-export class InMemoryToolExecutionStore {
+export interface ToolExecutionStore {
+  get(key: string): ToolResult | undefined;
+  set(key: string, result: ToolResult): void;
+}
+
+export class InMemoryToolExecutionStore implements ToolExecutionStore {
   readonly #results = new Map<string, ToolResult>();
 
   get(key: string): ToolResult | undefined {
@@ -113,7 +118,7 @@ export function executeTool(
     approved?: boolean;
     dryRun?: boolean;
     idempotencyKey?: string;
-    store?: InMemoryToolExecutionStore;
+    store?: ToolExecutionStore;
   } = {}
 ): ToolResult {
   const context = options.context ?? syntheticToolContext;
@@ -131,8 +136,10 @@ export function executeTool(
   }
 
   const output = request.name === "lookupTransfer"
-    ? { transferId: request.args.transferId, status: "pending", synthetic: true }
-    : { transferId: request.args.transferId, drafted: true, synthetic: true };
+    ? request.args.transferId === "tr_001"
+      ? { transferId: request.args.transferId, status: "pending", businessDaysPending: 3, riskFlag: false, synthetic: true }
+      : { transferId: request.args.transferId, status: "not-found", synthetic: true }
+    : { transferId: request.args.transferId, tenantId: request.args.tenantId, reason: request.args.reason, drafted: true, synthetic: true };
   const result: ToolResult = {
     status: dryRun ? "dry-run" : "executed",
     auditId: auditIdFor(request, context, idempotencyKey),

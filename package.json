@@ -5,6 +5,9 @@
   "scripts": {
     "curriculum:render": "node scripts/render-curriculum.mjs",
     "curriculum:check": "node scripts/check-course.mjs",
+    "starter:practice": "node --experimental-strip-types starter/src/practice-cli.ts",
+    "starter:practice:eval": "node --experimental-strip-types starter/src/practice-eval.ts",
+    "starter:mcp:check": "node --experimental-strip-types starter/src/mcp-client-check.ts",
     "starter:demo": "node --experimental-strip-types starter/src/app.ts",
     "starter:demo:fake": "node --experimental-strip-types --eval \"import('./starter/src/app.ts').then(({runDeterministicTriage}) => runDeterministicTriage('Why is my synthetic transfer still pending?').then(console.log))\"",
     "starter:agent": "node --experimental-strip-types starter/src/agent-demo.ts",
@@ -17,7 +20,7 @@
     "test": "npm run curriculum:check && npm run starter:test"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22.13"
   },
   "dependencies": {
     "@langchain/langgraph": "^1.4.7",

@@ -1,0 +1,50 @@
+:root { color-scheme: light; --ink: #182c29; --muted: #51655f; --paper: #f5f6ef; --panel: #fff; --line: #d4ddd3; --accent: #17694c; --warm: #fff4db; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: ui-sans-serif, system-ui, sans-serif; line-height: 1.65; }
+main { max-width: 1180px; margin: auto; padding: 40px 28px 72px; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid #a75218; outline-offset: 5px; }
+header { padding: 10px 0 32px; border-bottom: 2px solid var(--line); }
+header nav { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; }
+h1 { max-width: 950px; font-size: clamp(2.5rem, 6vw, 4.8rem); line-height: 1.08; letter-spacing: -.045em; margin: 10px 0 22px; }
+h2 { font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.25; margin: 0 0 16px; letter-spacing: -.02em; }
+h3 { font-size: 1.12rem; line-height: 1.35; margin: 8px 0 12px; }
+p { margin: 12px 0; }
+li + li { margin-top: 9px; }
+.eyebrow, .session-card > span { color: var(--accent); font-size: .78rem; letter-spacing: .06em; font-weight: 750; }
+.lede { max-width: 760px; color: var(--muted); font-size: 1.2rem; }
+.actions, .module-nav, .next-prev { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0 0; }
+.actions a { padding: 10px 16px; background: var(--accent); color: white; border-radius: 5px; text-decoration: none; font-weight: 650; }
+section { margin: 36px 0; }
+.intro-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.contract { padding: 24px; background: var(--panel); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 6px; }
+.intro-grid .contract { margin: 0; }
+.session-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.session-card { display: block; padding: 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; text-decoration: none; color: var(--ink); }
+.session-card:hover { border-color: var(--accent); }
+.session-card p { color: var(--muted); margin-bottom: 0; }
+.studio { padding: 26px; border-left: 4px solid #a65d20; background: var(--warm); margin-top: 18px; }
+.handoff { color: var(--muted); }
+.module-nav { padding: 20px 0; border-block: 1px solid var(--line); }
+.module-nav a { flex: 1 1 220px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; background: var(--panel); }
+th, td { padding: 12px 18px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: #e9eee4; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+pre { background: #162f29; color: #e3f5e8; padding: 22px; border-radius: 6px; overflow-x: auto; font-size: .87rem; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .9em; overflow-wrap: anywhere; }
+.session-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 38px; align-items: start; }
+aside { position: sticky; top: 20px; margin-top: 36px; font-size: .87rem; }
+aside nav { display: grid; gap: 10px; padding: 16px 0; border-block: 1px solid var(--line); }
+.failure { padding: 24px; border-left: 4px solid #a65d20; background: var(--warm); }
+.muted { color: var(--muted); font-size: .87rem; }
+.next-prev { justify-content: space-between; border-top: 2px solid var(--line); padding-top: 20px; }
+.next-prev a { flex: 1 1 220px; }
+footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+.skip { position: absolute; left: 20px; top: -100px; background: white; padding: 12px; z-index: 10; }
+.skip:focus { top: 10px; }
+@media (max-width: 760px) { main { padding: 24px 18px 50px; } .intro-grid, .session-layout { grid-template-columns: 1fr; } .session-layout { gap: 0; } aside { position: static; margin-top: 20px; } aside nav { grid-template-columns: repeat(2, minmax(0, 1fr)); } .session-card, .contract, .studio { padding: 20px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print { body { background: white; } aside, .next-prev, .actions { display: none; } .session-layout { display: block; } pre { color: black; background: #eee; } .session-card { break-inside: avoid; } }

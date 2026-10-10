@@ -4,12 +4,12 @@ This TypeScript starter grows from deterministic contracts into a real, model-dr
 
 ## Prerequisites and spend guardrail
 
-- Node.js 22+ and `npm install`.
+- Node.js 22.13+ and `npm install`.
 - An OpenAI API key for real-model and embedding paths.
 - Docker for the local Postgres and Qdrant paths.
 - A hosted OTLP/HTTP trace endpoint for the observability gate.
 
-Set a **$15 course hard stop** in the provider dashboard before the first real run. Use `gpt-5.6-terra` by default, keep the supplied token/step caps, and stop to review the cost-per-success signal before raising either. Pricing changes, so the dashboard limit—not a static per-run estimate—is authoritative.
+Choose an API spend ceiling before the first real run and check whether your provider's dashboard enforces it or only sends alerts. Keep application token and step caps. The existing demos default to `gpt-5.6-terra`; confirm model access and current pricing before use. The separate practice route requires an explicit model in real mode and records local estimated spend reservations.
 
 ```bash
 cp starter/.env.example starter/.env
@@ -21,6 +21,16 @@ npm run starter:agent
 `npm run starter:demo` is intentionally a real-provider path and fails clearly without `OPENAI_API_KEY`. Use `npm run starter:demo:fake` and `npm run starter:test` for deterministic work.
 
 ## Runnable paths
+
+The [agentic engineering practice course](../courses/agentic-engineering-practice.html) adds a local terminal flow, SQLite state and synthetic effects, stable event intake, and a finite worker. It defaults to fake mode and needs no external services. Start with the [practice operating guide](docs/agentic-engineering-practice.md).
+
+```bash
+npm run starter:practice
+npm run starter:practice:eval
+npm run starter:mcp:check
+```
+
+The practice sessions require learner changes, failure investigation, and independent explanation. The supplied implementation and blank evidence forms do not establish course completion.
 
 | Command | What it proves | External dependency |
 | --- | --- | --- |

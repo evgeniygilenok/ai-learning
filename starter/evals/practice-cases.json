@@ -1,0 +1,9 @@
+[
+  { "id": "ordinary", "slice": "answerable", "request": "Why is my pending transfer delayed?", "decision": "approve", "expectedStatus": "complete", "expectedEffects": 1 },
+  { "id": "rejected", "slice": "human rejection", "request": "Why is my pending transfer delayed?", "decision": "reject", "expectedStatus": "rejected", "expectedEffects": 0 },
+  { "id": "no-policy", "slice": "missing evidence", "request": "Unrelated question with no useful policy", "expectedStatus": "failed", "expectedEffects": 0 },
+  { "id": "denied", "slice": "denied access", "request": "Why is my pending transfer delayed?", "scopes": [], "expectedStatus": "failed", "expectedEffects": 0 },
+  { "id": "budget", "slice": "exhausted steps", "request": "Why is my pending transfer delayed?", "maxCalls": 1, "expectedStatus": "failed", "expectedEffects": 0 },
+  { "id": "malformed", "slice": "malformed proposal", "request": "Why is my pending transfer delayed?", "fixture": "malformed", "expectedStatus": "failed", "expectedEffects": 0 },
+  { "id": "unknown", "slice": "missing transfer", "request": "Why is my pending transfer delayed?", "transferId": "tr_missing", "expectedStatus": "failed", "expectedEffects": 0 }
+]

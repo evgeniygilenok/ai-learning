@@ -1,7 +1,8 @@
 import { access, readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { lessons, stages } from "../assets/curriculum.mjs";
+import { lessons, stages, practiceCourse, practiceSessions, practiceStudios } from "../assets/curriculum.mjs";
+import { practicePages } from "./render-practice.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
@@ -38,6 +39,7 @@ for (const relative of ["index.html", "courses/applied-ai-engineering-roadmap.ht
 }
 
 const hub = await readFile(resolve(root, "index.html"), "utf8");
+if (!hub.includes('href="courses/agentic-engineering-practice.html"')) errors.push("Learning hub missing practice route");
 for (const phrase of ["Applied AI Engineering", "VPN &amp; Network Engineering", "tracks/vpn-engineering/index.html"]) {
   if (!hub.includes(phrase)) errors.push(`Learning hub missing track contract: ${phrase}`);
 }
@@ -52,11 +54,43 @@ for (const phrase of ["experienced-engineer agentic track", "10-12 weeks", "reda
   if (!course.toLowerCase().includes(phrase)) errors.push(`Course page missing upgrade contract: ${phrase}`);
 }
 
+// Practice sessions are a separate route, not additional lesson or stage records.
+if (practiceSessions.length !== 20 || practiceStudios.length !== 4) errors.push("Practice route needs 20 sessions and four studios");
+const practiceIds = new Set(["practice-setup", ...practiceStudios.map(studio => studio.id)]);
+for (const [index, session] of practiceSessions.entries()) {
+  if (practiceIds.has(session.id) || ids.has(session.id)) errors.push(`Duplicate practice ID ${session.id}`);
+  for (const prerequisite of session.prerequisites) if (!practiceIds.has(prerequisite)) errors.push(`${session.id} unknown or later prerequisite ${prerequisite}`);
+  practiceIds.add(session.id);
+  if (session.module !== Math.ceil((index + 1) / 5)) errors.push(`${session.id} has the wrong module`);
+  if (Object.values(session.minutes).reduce((sum, value) => sum + value, 0) !== 90) errors.push(`${session.id} must budget 90 minutes`);
+  for (const field of ["title", "exercise", "workedExample", "example", "failure", "exit", "doneWhen", "artifact"]) if (!session[field]) errors.push(`${session.id} missing ${field}`);
+  if (session.explanation.length < 2 || session.guided.length < 3 || session.objectives.length < 2) errors.push(`${session.id} missing teaching depth`);
+  for (const id of session.supportingLessons) if (!ids.has(id)) errors.push(`${session.id} references unknown lesson ${id}`);
+}
+const practiceMinutes = practiceCourse.setupMinutes + practiceCourse.handoffMinutes.reduce((sum, value) => sum + value, 0)
+  + practiceSessions.reduce((sum, session) => sum + Object.values(session.minutes).reduce((a,b) => a+b,0), 0)
+  + practiceStudios.reduce((sum, studio) => sum + studio.minutes, 0);
+if (practiceMinutes !== practiceCourse.hours * 60 || practiceCourse.weeklyHours.reduce((a,b) => a+b,0) !== practiceCourse.hours) errors.push("Practice workload must total 44 hours");
+for (const [index, hours] of practiceCourse.weeklyHours.entries()) {
+  const expected = 5 * 90 + practiceStudios[index].minutes + practiceCourse.handoffMinutes[index] + (index === 0 ? practiceCourse.setupMinutes : 0);
+  if (hours * 60 !== expected) errors.push(`Practice week ${index+1} has an inconsistent workload`);
+}
+for (const [relative, expected] of practicePages()) {
+  const path = resolve(root, relative);
+  const html = await readFile(path, "utf8").catch(() => "");
+  if (html !== expected) errors.push(`${relative} is stale; run npm run curriculum:render`);
+  checkForbidden(relative, html);
+  await checkLinks(path, html);
+  if (relative.includes("/practice/")) {
+    for (const section of ["understand", "example", "guided", "exercise", "failure", "exit"]) if (!html.includes(`id="${section}"`)) errors.push(`${relative} missing ${section}`);
+  }
+}
+
 if (errors.length) {
   console.error(errors.map((error) => `- ${error}`).join("\n"));
   process.exit(1);
 }
-console.log(`Course checks passed: ${lessons.length} lessons, ${stages.length} stage/track contracts, local links resolved.`);
+console.log(`Course checks passed: ${lessons.length} lessons, ${stages.length} stage/track contracts, ${practiceSessions.length} practice sessions, 44-hour workload, generated pages and local links resolved.`);
 
 function checkForbidden(file, text) {
   for (const pattern of forbidden) if (pattern.test(text)) errors.push(`${file} contains forbidden stale reference ${pattern}`);

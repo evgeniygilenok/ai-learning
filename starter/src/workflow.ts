@@ -6,16 +6,19 @@ import {
 } from "./provider.ts";
 import {
   InMemoryToolExecutionStore,
+  authorizeTool,
   executeTool,
   syntheticToolContext,
   toolDefinitions,
   validateToolRequest,
+  type ToolContext,
+  type ToolExecutionStore,
   type ToolRequest,
   type ToolResult
 } from "./tools.ts";
 
 export type WorkflowStatus = "triage" | "research" | "awaiting-approval" | "execute" | "complete" | "rejected" | "failed";
-export type WorkflowDeviation = { code: "wrong-tool" | "malformed-args" | "premature-termination" | "multiple-tools"; detail: string };
+export type WorkflowDeviation = { code: "wrong-tool" | "malformed-args" | "premature-termination" | "multiple-tools" | "tool-denied" | "missing-evidence"; detail: string };
 export type WorkflowState = {
   runId: string;
   status: WorkflowStatus;
@@ -28,6 +31,8 @@ export type WorkflowState = {
   deviations?: WorkflowDeviation[];
   toolResults?: Array<{ callId: string; result: ToolResult }>;
   usage?: { inputTokens: number; outputTokens: number; latencyMs: number };
+  continuation?: { responseId: string; callId: string; output: string };
+  modelIdentity?: string;
 };
 
 export function nextState(state: WorkflowState, event: "researched" | "approve" | "reject" | "executed"): WorkflowState {
@@ -52,7 +57,12 @@ export type ModelDrivenWorkflowOptions = {
   decision?: "approve" | "reject";
   model?: string;
   maxSteps?: number;
-  executionStore?: InMemoryToolExecutionStore;
+  executionStore?: ToolExecutionStore;
+  context?: ToolContext;
+  instructions?: string;
+  checkpoint?: (state: WorkflowState) => Promise<void>;
+  beforeModelCall?: (state: WorkflowState) => Promise<void>;
+  expectedTransferId?: string;
 };
 
 /**
@@ -69,7 +79,7 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
     deviations: options.state.deviations ?? [],
     toolResults: options.state.toolResults ?? []
   };
-  let continuation: { responseId: string; callId: string; output: string } | undefined;
+  let continuation = state.continuation;
 
   if (state.status === "awaiting-approval") {
     if (!options.decision) return state;
@@ -80,7 +90,7 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
     const request = asToolRequest(state.pendingToolCall);
     const idempotencyKey = `${state.runId}:${state.pendingToolCall.callId}`;
     const result = executeTool(request, {
-      context: syntheticToolContext,
+      context: options.context ?? syntheticToolContext,
       approved: true,
       dryRun: false,
       idempotencyKey,
@@ -95,14 +105,17 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
       toolResults: [...(state.toolResults ?? []), { callId: request.callId!, result }]
     };
     continuation = { responseId: state.lastResponseId, callId: request.callId!, output: JSON.stringify(result.output) };
-  } else if (state.status !== "research") {
+    state.continuation = continuation;
+    await options.checkpoint?.(state);
+  } else if (state.status !== "research" && state.status !== "execute") {
     return state;
   }
 
   while ((state.stepCount ?? 0) < maxSteps) {
+    await options.beforeModelCall?.(state);
     const response = await options.provider.generate({
       input: options.userRequest,
-      instructions: agentInstructions,
+      instructions: options.instructions ?? agentInstructions,
       model: options.model ?? process.env.OPENAI_MODEL ?? DEFAULT_OPENAI_MODEL,
       modelVersion: "course-agent-2026-07-20",
       maxInputTokens: 1_500,
@@ -110,7 +123,7 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
       timeoutMs: 30_000,
       reasoningEffort: "low",
       tools: toolDefinitions,
-      toolChoice: continuation ? "auto" : "required",
+      toolChoice: state.status === "execute" ? "none" : continuation ? "auto" : "required",
       previousResponseId: continuation?.responseId,
       toolOutputs: continuation ? [{ callId: continuation.callId, output: continuation.output }] : undefined
     });
@@ -118,6 +131,7 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
       ...state,
       stepCount: (state.stepCount ?? 0) + 1,
       lastResponseId: response.responseId ?? state.lastResponseId,
+      modelIdentity: response.model,
       usage: {
         inputTokens: (state.usage?.inputTokens ?? 0) + response.usage.inputTokens,
         outputTokens: (state.usage?.outputTokens ?? 0) + response.usage.outputTokens,
@@ -127,6 +141,7 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
 
     if (response.toolCalls.length > 1) return fail(state, "multiple-tools", "The controlled workflow accepts one proposed tool call per step");
     if (response.toolCalls.length === 0) return finishFromModel(state, response);
+    if (hasExecutedDraft(state)) return fail(state, "wrong-tool", "A draft was already recorded; no additional tool calls are permitted");
 
     const call = response.toolCalls[0];
     if (!isKnownTool(call.name)) return fail(state, "wrong-tool", `Model proposed unknown tool ${call.name}`);
@@ -134,6 +149,11 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
     try {
       request = asToolRequest(call);
       validateToolRequest(request);
+      const authorization = authorizeTool(request, options.context ?? syntheticToolContext);
+      if (!authorization.allowed) return fail(state, "tool-denied", authorization.reason);
+      if (options.expectedTransferId && request.args.transferId !== options.expectedTransferId) {
+        return fail(state, "tool-denied", "Proposed transfer does not match the trusted case");
+      }
     } catch (error) {
       return fail(state, "malformed-args", error instanceof Error ? error.message : "Malformed tool arguments");
     }
@@ -146,7 +166,7 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
 
     let result: ToolResult;
     try {
-      result = executeTool(request, { context: syntheticToolContext, dryRun: false });
+      result = executeTool(request, { context: options.context ?? syntheticToolContext, dryRun: false });
     } catch (error) {
       return fail(state, "malformed-args", error instanceof Error ? error.message : "Tool request failed validation");
     }
@@ -154,8 +174,11 @@ export async function runModelDrivenWorkflow(options: ModelDrivenWorkflowOptions
       ...state,
       toolResults: [...(state.toolResults ?? []), { callId: request.callId!, result }]
     };
+    if (result.output.status === "not-found") return fail(state, "missing-evidence", "Synthetic transfer not found; no escalation is permitted");
     if (!response.responseId) return fail(state, "premature-termination", "Provider did not return a resumable response ID");
     continuation = { responseId: response.responseId, callId: request.callId!, output: JSON.stringify(result.output) };
+    state.continuation = continuation;
+    await options.checkpoint?.(state);
   }
   return fail(state, "premature-termination", `Step budget of ${maxSteps} was exhausted`);
 }

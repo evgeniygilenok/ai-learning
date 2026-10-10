@@ -1,4 +1,5 @@
 // Central curriculum source of truth. Run `npm run curriculum:render` after edits.
+export { practiceCourse, practiceSessions, practiceStudios } from "./practice.mjs";
 export const reviewed = "2026-07-27";
 
 export const stages = [

@@ -1,0 +1,106 @@
+/* Shared quiet ocean surface for lesson, course, reference, and VPN pages. */
+html {
+  color-scheme: dark;
+  background: #1c3648;
+}
+
+body {
+  color: #b7cdd6;
+  background:
+    radial-gradient(ellipse 70% 42% at 8% -8%, rgba(56, 130, 150, .22), transparent 58%),
+    radial-gradient(ellipse 55% 36% at 100% 0%, rgba(70, 140, 130, .14), transparent 52%),
+    linear-gradient(180deg, #214258 0%, #1c3648 46%, #1a3344 100%);
+}
+
+::selection {
+  background: rgba(126, 179, 171, .35);
+  color: #e7f2f4;
+}
+
+.card,
+.band,
+.contract,
+.q,
+.lesson,
+.stage,
+.lab,
+.simulator,
+.lesson-card,
+.course-contract,
+.table-wrap,
+.quiz,
+.reference {
+  background: linear-gradient(180deg, #23485c, #1e3e50);
+}
+
+.actions a,
+.button--primary,
+button.primary,
+button[aria-pressed="true"] {
+  color: #d7e6ee;
+  background: #2f5a6c;
+  border-color: #2f5a6c;
+}
+
+.course-contract__tag {
+  color: #1c3648;
+}
+
+.stage__number {
+  color: #d7e6ee;
+  background: #2a5568;
+}
+
+th {
+  background: #2a4d60;
+  color: #9bb6c2;
+}
+
+pre,
+.prompt-box {
+  background: #173044;
+  color: #c5d6de;
+  border-color: #2c4d60;
+}
+
+:not(pre) > code {
+  background: rgba(142, 184, 202, .16);
+  color: #c5d8e2;
+  border-color: #2c4d60;
+}
+
+@media print {
+  html,
+  body,
+  .card,
+  .band,
+  .contract,
+  .callout,
+  .course-contract,
+  .lesson,
+  .stage,
+  .lab,
+  .q,
+  table,
+  th,
+  td,
+  button,
+  pre,
+  code,
+  .prompt-box,
+  .danger,
+  .safe,
+  .success,
+  .gate,
+  header {
+    background: #fff !important;
+    color: #14202b !important;
+    border-color: #d7dee7 !important;
+  }
+
+  a,
+  .eyebrow,
+  .back {
+    color: #0f5132 !important;
+  }
+}

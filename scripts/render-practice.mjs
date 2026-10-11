@@ -1,11 +1,23 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { lessons, practiceCourse as course, practiceSessions as sessions, practiceStudios as studios } from "../assets/curriculum.mjs";
+import { practiceDiagrams, practiceProductDiagram } from "../assets/practice-diagrams.mjs";
 
 const root = new URL("../", import.meta.url);
 const lessonById = new Map(lessons.map(lesson => [lesson.id, lesson]));
 const escape = value => String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 const list = values => `<ul>${values.map(value => `<li>${escape(value)}</li>`).join("")}</ul>`;
 const paragraphs = values => values.map(value => `<p>${escape(value)}</p>`).join("\n");
+
+function renderDiagram(diagram, id) {
+  if (!diagram) throw new Error(`Missing teaching diagram for ${id}`);
+  const groups = diagram.groups.map(group => {
+    const content = group.kind === "schema"
+      ? `<dl class="diagram-fields">${group.fields.map(([field, description]) => `<div><dt>${escape(field)}</dt><dd>${escape(description)}</dd></div>`).join("")}</dl>`
+      : `<${group.kind === "flow" ? "ol" : "ul"} class="diagram-nodes diagram-nodes--${group.kind}">${group.nodes.map(node => `<li class="diagram-node">${node.owner ? `<span class="diagram-owner">${escape(node.owner)}</span>` : ""}<strong>${escape(node.title)}</strong><p>${escape(node.detail)}</p></li>`).join("")}</${group.kind === "flow" ? "ol" : "ul"}>`;
+    return `<div class="diagram-group"><h3>${escape(group.label)}</h3>${content}</div>`;
+  }).join("\n");
+  return `<figure class="teaching-diagram" aria-labelledby="${id}-title" aria-describedby="${id}-caption"><h2 id="${id}-title">${escape(diagram.title)}</h2>${groups}<figcaption id="${id}-caption">${escape(diagram.caption)}</figcaption></figure>`;
+}
 
 function page(title, body, prefix) {
   return `<!doctype html>
@@ -25,10 +37,11 @@ function sessionPage(session, index) {
 <header><nav aria-label="Breadcrumb"><a href="../../index.html">Learning hub</a><span>/</span><a href="../agentic-engineering-practice.html">Practice course</a></nav>
 <p class="eyebrow">Week ${session.module} · ${escape(module.title)}</p><h1>${String(session.number).padStart(2, "0")}. ${escape(session.title)}</h1>
 <p class="lede">${session.minutes.explain} minutes explanation · ${session.minutes.build} minutes building · ${session.minutes.review} minutes review</p></header>
-<div class="session-layout"><aside aria-label="Session guide"><p>Prerequisites: ${prerequisiteLinks}.</p><nav aria-label="Page sections"><a href="#understand">Understand</a><a href="#example">Worked example</a><a href="#guided">Guided build</a><a href="#exercise">Your task</a><a href="#failure">Failure investigation</a><a href="#exit">Exit explanation</a></nav><p>Record the result in <a href="../../starter/evidence/agentic-engineering-practice/module-${session.module}.md"><code>${escape(session.artifact)}</code></a>.</p></aside>
+<div class="session-layout"><aside aria-label="Session guide"><p>Prerequisites: ${prerequisiteLinks}.</p><nav aria-label="Page sections"><a href="#understand">Understand</a><a href="#diagram">Diagram and schema</a><a href="#example">Worked example</a><a href="#guided">Guided build</a><a href="#exercise">Your task</a><a href="#failure">Failure investigation</a><a href="#exit">Exit explanation</a></nav><p>Record the result in <a href="../../starter/evidence/agentic-engineering-practice/module-${session.module}.md"><code>${escape(session.artifact)}</code></a>.</p></aside>
 <article data-practice-id="${session.id}">
 <section class="contract"><h2>What you will demonstrate</h2>${list(session.objectives)}<p>${escape(session.doneWhen)}</p></section>
 <section id="understand"><h2>Understand the mechanism</h2>${paragraphs(session.explanation)}</section>
+<section id="diagram">${renderDiagram(practiceDiagrams[session.id], session.id)}<p class="diagram-prompt">Trace the diagram against the worked example. Explain who owns each decision and what evidence reaches the next step.</p></section>
 <section id="example"><h2>Worked example</h2><p>${escape(session.workedExample)}</p><pre><code>${escape(session.example)}</code></pre><p class="muted">Run shell examples at the repository root. Commented sketches describe learner code to write; they are not additional installed commands.</p></section>
 <section id="guided"><h2>Guided build · 30 minutes</h2><ol>${session.guided.map(item => `<li>${escape(item)}</li>`).join("")}</ol></section>
 <section id="exercise"><h2>Your task · 15 minutes</h2><p>${escape(session.exercise)}</p></section>
@@ -51,6 +64,7 @@ ${course.handoffMinutes[index] ? `<p class="handoff">Reserve ${course.handoffMin
   return page(course.title, `
 <header><nav aria-label="Breadcrumb"><a href="../index.html">Learning hub</a><span>/</span><a href="applied-ai-engineering-roadmap.html">Full AI roadmap</a></nav><p class="eyebrow">Four weeks · 20 sessions · one evolving product</p><h1>Build it. Explain it. Recover it.</h1><p class="lede">Use a coding agent to develop a support assistant. Build its runtime agent, give an operator a clear approval decision, and recover queued work after interruption.</p><div class="actions"><a href="#setup">Start with setup</a><a href="#module-1">Browse the sessions</a><a href="../starter/docs/agentic-engineering-practice.md">Open the operating guide</a></div></header>
 <section class="intro-grid"><article class="contract"><h2>The working product</h2><p>A local support operator submits a synthetic transfer case, reads policy evidence, reviews an escalation proposal, and approves or rejects it. Later, the same assistant processes a finite queue with durable state and synthetic effects.</p><p>Keep the coding agent's project instructions separate from the runtime agent's inputs and authority. The application owns authorization and approval.</p></article><article class="contract"><h2>Who this is for</h2><p>Experienced TypeScript engineers comfortable with async code, HTTP, Git, and a terminal. Use Node.js 22.13 or newer and one coding-agent environment. The required product interface is a terminal; local retrieval and SQLite keep the setup small.</p><p>Framework comparison, hosted observability, vector databases, and public hosting are optional. The existing main course remains a separate path.</p></article></section>
+<section id="product-map">${renderDiagram(practiceProductDiagram, "practice-product")}</section>
 <section id="pace"><h2>44 hours over four weeks</h2><p>Expect 10-12 hours per week. Each weekday has one 90-minute lesson; each weekend has a two-hour integration studio. Reserve 15 minutes for explanation, 55 for building and investigation, and 20 for review. Resolve a failed prerequisite before moving on.</p><div class="table-wrap"><table><thead><tr><th>Work</th><th>Hours</th></tr></thead><tbody><tr><td>Setup and baseline</td><td>2</td></tr><tr><td>20 lessons</td><td>30</td></tr><tr><td>Four studios</td><td>8</td></tr><tr><td>Demonstration and handoff across weeks 2-4</td><td>4</td></tr><tr><th>Total</th><th>44</th></tr></tbody></table></div><p>The estimate needs learner feedback. Durable recovery is the largest likely overrun; reduce optional breadth before cutting recovery or approval work.</p></section>
 <section id="setup"><p class="eyebrow">Setup · 2 hours</p><h2>Capture a baseline before changing code</h2><ol><li>Use 20 minutes to check Node, install dependencies with <code>npm ci</code>, and run <code>npm test</code>.</li><li>Use 30 minutes to follow the fake case in the operating guide. Inspect the approval pause and effect count.</li><li>Use 30 minutes to configure one coding-agent environment and locate the project brief, runtime, tools, and local corpus.</li><li>Use 40 minutes to choose a learner-approved real API spend ceiling, check current model access and prices, configure the explicit real mode, and capture one bounded baseline. A dashboard alert may not enforce a cutoff. Keep the application call caps.</li></ol><pre><code>npm ci\nnpm run starter:practice -- add setup Why is my pending transfer delayed?\nnpm run starter:practice -- run setup\nnpm run starter:practice -- show setup</code></pre><p><a href="../starter/docs/agentic-engineering-practice.md#real-provider-run">Real-provider setup</a> explains the required settings and record. Without API access, continue deterministic implementation, but leave real-model completion items pending.</p><p>Inspect and change the supplied implementation. Every module requires a learner-owned decision or code change and an independently explained result.</p></section>
 <nav class="module-nav" aria-label="Module navigation">${course.modules.map((module,index) => `<a href="#module-${index + 1}">Week ${index + 1}: ${escape(module.title)}</a>`).join("")}</nav>

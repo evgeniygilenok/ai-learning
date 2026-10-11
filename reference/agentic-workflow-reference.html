@@ -6,47 +6,46 @@
   <title>Agentic Workflow Reference</title>
   <style>
     :root {
-      color-scheme: light;
-      --ink:#14202b;
-      --muted:#5d6875;
-      --line:#d7dee7;
-      --paper:#f7f9fc;
-      --panel:#ffffff;
-      --teal:#0f766e;
-      --blue:#2563eb;
-      --amber:#b45309;
-      --green:#15803d;
-      --rose:#be123c;
-      --violet:#6d28d9;
-    }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
-    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px; }
-    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px; }
-    h1 { margin:0 0 8px; font-size:clamp(2rem, 5vw, 3.25rem); line-height:1.05; letter-spacing:0; }
-    .lede { margin:0; max-width:780px; color:var(--muted); font-size:1.05rem; }
-    section { margin:26px 0; }
-    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 1.9rem); line-height:1.15; letter-spacing:0; }
-    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0; }
-    p { margin:0 0 12px; }
-    a { color:var(--blue); text-decoration-thickness:2px; }
-    ul { margin:8px 0 0; padding-left:20px; }
-    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; }
-    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
-    .muted, .small { color:var(--muted); font-size:.94rem; }
-    pre { margin:0; overflow:auto; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:8px; font-size:.88rem; line-height:1.5; }
-    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
-    th, td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
-    th { background:#eef4fb; color:var(--muted); font-size:.78rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
-    tr:last-child td { border-bottom:0; }
-    .callout { border-left:5px solid var(--teal); background:#e6f4f1; border-radius:8px; padding:16px; }
-    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem; }
-    @media (max-width:760px) { .two { grid-template-columns:1fr; } main { padding:26px 16px 48px; } }
+      color-scheme:dark;
+      --ink:#b7cdd6;
+      --muted:#9bb6c2;
+      --line:#2c4d60;
+      --paper:#1c3648;
+      --panel:#1e3e50;
+      --teal:#8abab2;
+      --blue:#8eb8ca;
+      --amber:#c4a574;
+      --green:#8aab96;
+      --rose:#d0a3ae;
+      --violet:#b0a0c8;}
+    * { box-sizing:border-box;}
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--paper); line-height:1.55;}
+    main { max-width:1060px; margin:0 auto; padding:38px 22px 64px;}
+    header { border-bottom:2px solid var(--line); padding-bottom:22px; margin-bottom:26px;}
+    h1 { margin:0 0 8px; font-size:clamp(2rem, 5vw, 3.25rem); line-height:1.05; letter-spacing:0;}
+    .lede { margin:0; max-width:780px; color:var(--muted); font-size:1.05rem;}
+    section { margin:26px 0;}
+    h2 { margin:0 0 12px; font-size:clamp(1.3rem, 3vw, 1.9rem); line-height:1.15; letter-spacing:0;}
+    h3 { margin:0 0 8px; font-size:1.03rem; letter-spacing:0;}
+    p { margin:0 0 12px;}
+    a { color:var(--blue); text-decoration-thickness:2px;}
+    ul { margin:8px 0 0; padding-left:20px;}
+    .band, .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px;}
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;}
+    .two { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px;}
+    .muted, .small { color:var(--muted); font-size:.94rem;}
+    pre { margin:0; overflow:auto; background:#173044; color:#c5d6de; padding:16px; border-radius:8px; font-size:.88rem; line-height:1.5;}
+    code { font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;}
+    table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+    th, td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+    th { background:#2a4d60; color:var(--muted); font-size:.78rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase;}
+    tr:last-child td { border-bottom:0;}
+    .callout { border-left:5px solid var(--teal); background:#1c3a38; border-radius:8px; padding:16px;}
+    footer { margin-top:30px; padding-top:18px; border-top:2px solid var(--line); color:var(--muted); font-size:.95rem;}
+    @media (max-width:760px) { .two { grid-template-columns:1fr;} main { padding:26px 16px 48px;} }
     @media print { body { background:#fff; } main { padding:24px; } section, .card, .band { break-inside:avoid; } }
   </style>
-</head>
+<link rel="stylesheet" href="../assets/ocean.css"></head>
 <body>
   <main>
     <header>

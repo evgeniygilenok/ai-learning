@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02. SQL and data modeling</title><style>
+:root{color-scheme:dark;--bg:#1c3648;--panel:#23485c;--ink:#d0e0e6;--muted:#aac4ce;--line:#426479;--accent:#a5d4c4}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 system-ui,-apple-system,sans-serif}
+main{max-width:920px;margin:auto;padding:38px 24px 80px}a{color:var(--accent);text-underline-offset:4px}a:hover{text-decoration-thickness:2px}
+nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:32px;font-size:15px}h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.12;letter-spacing:-.03em;margin:20px 0 28px}h2{font-size:1.6rem;line-height:1.25;margin:44px 0 16px}h3{font-size:1.15rem;margin-top:28px}
+p{margin:16px 0}li{margin:8px 0}code{font:0.9em/1.6 ui-monospace,monospace;background:#173044;padding:2px 5px;border-radius:4px}pre{background:#122b3d;padding:20px;overflow:auto;border-radius:10px}pre code{padding:0;background:none}
+.table-wrap{overflow:auto;margin:24px 0}table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--line);padding:12px;text-align:left;vertical-align:top}th{background:var(--panel)}
+.module-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0}.module-card{display:block;background:var(--panel);padding:20px;border:1px solid var(--line);border-radius:10px;text-decoration:none}.module-card span{display:block;font-size:14px;color:var(--muted)}.module-card strong{font-size:19px;font-weight:600}
+button,select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:9px 13px}button{cursor:pointer}button:hover{border-color:var(--accent)}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.sim{background:#173044;border:1px solid var(--line);padding:24px;border-radius:12px;margin:28px 0}.sim h3{margin:0 0 14px}.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.controls label{display:block;width:100%}.readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}.readouts div{background:var(--panel);padding:14px;border-radius:8px}.readouts strong{display:block;font-size:26px}.readouts span{font-size:14px;color:var(--muted)}#timeline{padding-left:24px}.notice{color:var(--muted);font-size:15px}.quiz-choice{display:block;width:100%;text-align:left;margin:10px 0}.feedback{min-height:2em;color:var(--accent)}footer{border-top:1px solid var(--line);margin-top:45px;padding-top:18px;font-size:14px;color:var(--muted)}
+@media(max-width:620px){main{padding:22px 18px 50px}.module-grid{grid-template-columns:1fr}.sim{padding:16px}.readouts{grid-template-columns:1fr}.readouts div{display:flex;gap:15px;align-items:center}h2{font-size:1.35rem}}
+@media print{:root{color-scheme:light}body{background:white;color:#14202b;font-size:11pt}main{max-width:none;padding:0}a{color:#163d53}pre,code,.module-card,th,.sim,.readouts div{background:#f1f4f6;color:#14202b}nav,.controls,button,.quiz-panel{display:none}h1{font-size:28pt}h2{break-after:avoid;font-size:18pt}pre,tr,.module-card{break-inside:avoid}}
+</style></head><body><main><nav aria-label="Course navigation"><a href="../index.html">Course home</a><a href="../modules/08-llm-system-contracts.html">Start with LLM contracts</a><a href="../00-entry-assessment.html">Optional gap review</a><a href="../reference/system-boundaries.html">Reference</a><a href="https://app.notion.com/p/4104ac599693812bac7ced2e34a09582">Open course in Notion</a></nav><h1>02. SQL and data modeling</h1>
+<p>18 hours. Turn operational rules into a schema and answer useful questions without corrupting their meaning. Requires module 01.</p>
+<h2>Lesson 1. Put invariants in the database</h2>
+<p>Model tenants, accounts, tickets, ticket events, and sync runs. Decide whether an identifier is global or source-local. Use composite uniqueness when a ticket ID is only unique within a tenant and source. Make foreign keys preserve that same scope. A tenant column on every table is insufficient if a ticket can still reference another tenant&#x27;s account. <a href="https://www.postgresql.org/docs/current/ddl-constraints.html">PostgreSQL constraints</a></p>
+<p>Worked example:</p>
+<pre><code>CREATE TABLE account (
+  tenant_id text NOT NULL,
+  account_id text NOT NULL,
+  PRIMARY KEY (tenant_id, account_id)
+);
+CREATE TABLE ticket (
+  tenant_id text NOT NULL,
+  source text NOT NULL,
+  ticket_id text NOT NULL,
+  account_id text NOT NULL,
+  status text NOT NULL CHECK (status IN (&#x27;open&#x27;, &#x27;pending&#x27;, &#x27;closed&#x27;)),
+  updated_at timestamptz NOT NULL,
+  PRIMARY KEY (tenant_id, source, ticket_id),
+  FOREIGN KEY (tenant_id, account_id)
+    REFERENCES account (tenant_id, account_id)
+);</code></pre>
+<p>This teaches key scope. It is not the complete app schema. Try inserting a ticket whose account belongs to a different tenant and inspect the failure.</p>
+<h2>Lesson 2. Queries have a grain</h2>
+<p>State what one result row means before writing SQL. Joining tickets to events multiplies rows. Counting after that join can count events when you intended tickets. Aggregate at the right grain, and test with an account that has zero tickets and a ticket with multiple events.</p>
+<p>Use GROUP BY when reducing rows and window functions when keeping row identity while calculating a rank or aggregate across a partition. Add deterministic tie-breakers when selecting the latest or oldest records. <a href="https://www.postgresql.org/docs/current/tutorial-window.html">PostgreSQL window functions</a></p>
+<p>Write five queries: unresolved tickets by tenant, accounts with no unresolved tickets, oldest three tickets per account, latest event per ticket, and daily counts by event time. For each, write a tiny fixture whose expected answer you can compute by hand.</p>
+<h2>Lesson 3. A query plan explains work</h2>
+<p>EXPLAIN describes the selected plan. EXPLAIN ANALYZE runs the statement and reports observed execution information. Use a disposable database for experiments, especially with writes. Compare estimated and actual row counts, loops, scans, and buffer work. Planner cost is not elapsed milliseconds. An index also consumes storage and write effort. <a href="https://www.postgresql.org/docs/current/using-explain.html">PostgreSQL EXPLAIN</a></p>
+<p>Seed 100,000 tickets with a reproducible distribution. Measure a tenant-filtered recent-ticket query before and after a composite index. Explain why the column order matches the predicate and ordering. Also measure an unfiltered query where a sequential scan may be reasonable.</p>
+<h2>Lab and failure drill</h2>
+<p>Apply schema changes through migrations, not manual edits. Add a nullable field, backfill it, validate it, and then enforce the intended constraint. Record how old application code behaves during the transition.</p>
+<p>Introduce a join that doubles a dashboard count. First identify the row grain. Repair the query and add the smallest fixture that detects the error. Then introduce a slow query by changing data distribution. Compare the plan and observations before proposing an index.</p>
+<h2>Mastery gate</h2>
+<p>Deliver the schema, migration history, five tested queries, and two query plans with interpretation. Explain one integrity rule that belongs in a constraint. Diagnose a wrong aggregate and a slow query. Transfer the design to a second source whose identifiers collide with the first.</p>
+<p>Questions: Can a correct foreign key still permit a tenant mismatch? Why can a query become slower after adding an index? How does a window function differ from GROUP BY?</p>
+<h2>Answer guide</h2>
+<p>A foreign key on account_id alone can lose tenant scope. An index is not necessarily useful for a broad scan and adds maintenance work. A window function computes across related rows while retaining the selected row grain. Good evidence includes result correctness and a causal explanation of the measured work.</p>
+<p>Ask the tutor to challenge your schema with a record that violates one of your assumed invariants.</p><footer>FDE hard-skills course. Sources reviewed 2026-11-06. Gates require demonstrated behavior. Ask the tutor for feedback on your explanation and failure evidence.</footer></main></body></html>

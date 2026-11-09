@@ -1,0 +1,105 @@
+{
+  "home": {
+    "id": "4104ac59-9693-812b-ac7c-ed2e34a09582",
+    "url": "https://app.notion.com/p/4104ac599693812bac7ced2e34a09582",
+    "title": "FDE hard-skills course: build, explain, operate"
+  },
+  "pages": [
+    {
+      "file": "00-entry-assessment.md",
+      "id": "4104ac59-9693-8159-9051-c4e3aa1de849",
+      "url": "https://app.notion.com/p/4104ac59969381599051c4e3aa1de849?pvs=204",
+      "title": "Optional gap review"
+    },
+    {
+      "file": "modules/01-python-service-contracts.md",
+      "id": "4104ac59-9693-815e-b4a3-cce74ec04724",
+      "url": "https://app.notion.com/p/4104ac599693815eb4a3cce74ec04724?pvs=204",
+      "title": "01. Python checklist for experienced engineers"
+    },
+    {
+      "file": "modules/02-sql-data-modeling.md",
+      "id": "4104ac59-9693-8148-8a47-c7afdd4b26a9",
+      "url": "https://app.notion.com/p/4104ac59969381488a47c7afdd4b26a9?pvs=204",
+      "title": "02. SQL and data modeling"
+    },
+    {
+      "file": "modules/03-http-and-integrations.md",
+      "id": "4104ac59-9693-81e1-abb5-c402b3329304",
+      "url": "https://app.notion.com/p/4104ac59969381e1abb5c402b3329304?pvs=204",
+      "title": "03. HTTP and integration contracts"
+    },
+    {
+      "file": "modules/04-data-ingestion.md",
+      "id": "4104ac59-9693-8117-a5f5-da73a6b53034",
+      "url": "https://app.notion.com/p/4104ac5996938117a5f5da73a6b53034?pvs=204",
+      "title": "04. Data ingestion and reconciliation"
+    },
+    {
+      "file": "modules/05-transactions-and-jobs.md",
+      "id": "4104ac59-9693-81de-ab48-d3855256773a",
+      "url": "https://app.notion.com/p/4104ac59969381deab48d3855256773a?pvs=204",
+      "title": "05. Transactions, jobs, and distributed state"
+    },
+    {
+      "file": "modules/06-identity-and-authorization.md",
+      "id": "4104ac59-9693-8166-b56f-f0db7d3491a1",
+      "url": "https://app.notion.com/p/4104ac5996938166b56ff0db7d3491a1?pvs=204",
+      "title": "06. Identity, authorization, and tenant isolation"
+    },
+    {
+      "file": "modules/07-deploy-and-operate.md",
+      "id": "4104ac59-9693-8121-bdd2-f84b000d0e21",
+      "url": "https://app.notion.com/p/4104ac5996938121bdd2f84b000d0e21?pvs=204",
+      "title": "07. Deploy and operate the integration app"
+    },
+    {
+      "file": "modules/08-llm-system-contracts.md",
+      "id": "4104ac59-9693-81eb-89d0-d365a6350511",
+      "url": "https://app.notion.com/p/4104ac59969381eb89d0d365a6350511?pvs=204",
+      "title": "08. LLM system contracts"
+    },
+    {
+      "file": "modules/09-retrieval-and-rag.md",
+      "id": "4104ac59-9693-81be-83cc-f9c9ddfb46b2",
+      "url": "https://app.notion.com/p/4104ac59969381be83ccf9c9ddfb46b2?pvs=204",
+      "title": "09. Retrieval and permission-safe RAG"
+    },
+    {
+      "file": "modules/10-agent-runtime-and-mcp.md",
+      "id": "4104ac59-9693-81f4-ab71-cc9147011d78",
+      "url": "https://app.notion.com/p/4104ac59969381f4ab71cc9147011d78?pvs=204",
+      "title": "10. Agent runtime and MCP"
+    },
+    {
+      "file": "modules/11-evaluation-and-reliability.md",
+      "id": "4104ac59-9693-81f9-9b69-c2ab5d14889d",
+      "url": "https://app.notion.com/p/4104ac59969381f99b69c2ab5d14889d?pvs=204",
+      "title": "11. Evaluation and operational quality"
+    },
+    {
+      "file": "modules/12-decomposition-and-delivery.md",
+      "id": "4104ac59-9693-813b-a1ce-c3a7e6aab1ff",
+      "url": "https://app.notion.com/p/4104ac599693813ba1cec3a7e6aab1ff?pvs=204",
+      "title": "12. Decomposition, debugging, and delivery"
+    },
+    {
+      "file": "lessons/0001-timeouts-and-idempotency.md",
+      "id": "4104ac59-9693-815d-b1db-dc283c6e3eeb",
+      "url": "https://app.notion.com/p/4104ac599693815db1dbdc283c6e3eeb?pvs=204",
+      "title": "A timeout does not tell you what happened"
+    },
+    {
+      "file": "reference/system-boundaries.md",
+      "id": "4104ac59-9693-81bb-9167-f805913793d2",
+      "url": "https://app.notion.com/p/4104ac59969381bb9167f805913793d2?pvs=204",
+      "title": "System boundaries reference"
+    },
+    {
+      "file": "RESOURCES.md",
+      "id": "4104ac59-9693-81ae-84aa-f2f4c92e023c",
+      "url": "https://app.notion.com/p/4104ac59969381ae84aaf2f4c92e023c?pvs=204",
+      "title": "Forward deployed engineering resources"
+    }
+  ]
+}

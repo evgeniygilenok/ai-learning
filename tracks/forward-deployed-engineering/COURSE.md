@@ -14,13 +14,29 @@ This course makes five changes:
 - Identify gaps by topic. Reuse an existing implementation or try a module's failure drill before deciding whether its lessons are useful.
 - Trace a request through every boundary. Explain what each component knows, what it stores, what it trusts, and what happens when it stops.
 - Use one evolving system for the first two portfolio milestones. Reuse its ingestion, identity, data, and deployment work when adding AI. Transfer the skills to a second workflow in the capstone.
-- Budget 15 or more hours per week. The full route contains about 232 hours, including a 4-hour allowance for optional Python review, plus up to 90 minutes for the gap review. At 15 hours per week, plan around 16 weeks of core work and another 3 to 4 weeks for repairs and deeper experiments. Reusing familiar systems work shortens this. These are planning estimates, not a hiring timeline.
+- Budget 15 or more hours per week. The full route contains about 241 hours, including a 4-hour allowance for optional Python review, up to 90 minutes for the gap review, 3 hours for the week-1 target and domain decision, and 6 hours for the real-user discovery pipeline. Stakeholder-delivery artifacts and the domain lens are produced inside the existing build and capstone hours, not as extra projects. At 15 hours per week, plan around 16 weeks of core work and another 3 to 4 weeks for repairs and deeper experiments. Reusing familiar systems work shortens this. These are planning estimates, not a hiring timeline.
 
 The source plan's posting counts describe its sample. This course does not independently re-audit those postings or treat their counts as a complete measure of the job market. Eligibility, applications, and interview strategy remain in the career plan. This course concentrates on technical competence.
 
+## Choose the target segment and domain in week 1
+
+Forward deployed engineering is not one job. Spend up to 3 hours in week 1 on a written decision, then revisit it for 30 minutes each month against 15 to 20 current postings. Record each posting's company, role, location, date accessed, and direct source. Deduplicate mirrored recruiter copies. Cluster what repeats. Do not treat the counts as a market statistic; use them to decide where your evidence should be strongest.
+
+| Segment | Typical centre of gravity | What this core already proves | Decision it forces |
+| --- | --- | --- | --- |
+| AI-lab or applied-AI FDE | Production agents, tools, MCP, evaluation, customer discovery | Modules 08 to 12, governed execution, held-out evaluation | Weight the AI workflow and evaluation report most heavily |
+| SaaS or platform FDE | Migrations, integrations, data quality, rollout, handoff | Modules 02 to 07 and 12, reconciliation, recovery, runbooks | Weight data correctness, rollout, and reusable delivery patterns most heavily |
+| Infrastructure or data-platform FDE | Customer environments, data platforms, deployment constraints | Modules 02 to 07 provide the foundation only | Decide explicitly whether the optional depth after the core is required before targeting these roles |
+
+Apply an eligibility and constraints filter before falling in love with a segment. Record location and work authorisation, travel range you can actually accept, on-site or hybrid requirements, customer-site work, clearance eligibility where a posting requires it, and any language or domain prerequisite. Write down non-targets as well as targets. A role you cannot accept is not evidence about what to study.
+
+In the same week-1 decision, choose one domain wedge for the workbench. Good candidates have a repeated workflow, policy documents that genuinely govern decisions, a costly and recognisable failure, data you can reach through people you can talk to, and a result you can measure. Examples are regulated financial operations, healthcare administration, public-sector casework, and B2B software support. Change the vocabulary, actor roles, permissions, policy corpus, data sensitivity, retention constraints, failure cost, and success metric to match the domain. Renaming tickets is not a domain choice. Keep the same architecture and synthetic data unless a real user consents to more.
+
+Deliverable: a one-page segment and domain decision with the dated posting sample, eligibility filter, chosen domain, rejected alternatives, the evidence this route will weight most heavily, and a revisit date. Module 12 cannot start until this page exists and names the domain the capstone will use.
+
 ## What you will build
 
-Build an operations workbench for a fictional B2B support team. It imports customer accounts from a paginated API, tickets from CSV, ticket updates from signed webhooks, and versioned policy documents. Use synthetic records for the course.
+Build an operations workbench for a fictional B2B support team, viewed through the domain lens chosen in week 1. It imports customer accounts from a paginated API, tickets from CSV, ticket updates from signed webhooks, and versioned policy documents. Use synthetic records for the course.
 
 An operator can see stale data, investigate a ticket, read a policy answer with citations, and approve a draft update. The system keeps tenants separate. AI can propose an action, while application code validates and authorizes execution.
 
@@ -30,7 +46,7 @@ The milestones align with the source plan's projects:
 
 1. After module 07, deliver the operational integration app. Include migrations, authentication, CI, deployment, telemetry, a runbook, and recovery evidence.
 2. After module 11, deliver the evaluated AI workflow on top of it. Include retrieval measurements, tools, an MCP adapter, a bounded execution loop, and an evaluation report.
-3. In module 12, deliver a small deployment for a real consenting user, or record a simulated customer exercise honestly until a real user is available.
+3. In module 12, deliver a small deployment for a real consenting user found through the discovery pipeline defined there and started in week 1. If no user has consented by the end of module 11, record a simulated customer exercise honestly, label the real-user milestone still open, and keep working the pipeline. A simulated exercise never closes this milestone.
 
 ## How to study
 
@@ -66,7 +82,7 @@ Use the 16-week budget as an upper starting allocation for the full route. Move 
 
 | Weeks | Full-route allocation |
 | --- | --- |
-| 1 to 4 | Python checklist as needed, SQL and integration drills, ingestion, and the first transaction exercise |
+| 1 to 4 | Week-1 segment and domain decision, Python checklist as needed, SQL and integration drills, ingestion, the first transaction exercise, and the first discovery conversations |
 | 5 to 8 | Transaction recovery, authorization, deployment, and the start of LLM work |
 | 9 to 12 | LLM contracts, retrieval experiments, agent execution, MCP, and the start of evaluation |
 | 13 to 16 | Evaluation comparisons, capstone delivery, usage observation, and handoff |
@@ -89,10 +105,11 @@ Keep TypeScript as the default UI language. Use Python for selected service and 
 
 ## Start here
 
-1. Start module 08 and choose an existing app or the course workbench as the base.
-2. Skim the Python checklist and look up unfamiliar items during implementation.
-3. Use the optional gap review and systems failure drills when deciding what to revisit. The timeout lesson is available as a reference if that behavior needs review.
-4. Bring your first model-backed workflow, its deterministic baseline, and observed failures to the next learning session.
+1. Write the one-page segment and domain decision. Name the target segment, the eligibility constraints, and the domain wedge for the capstone.
+2. Start module 08 and choose an existing app or the course workbench as the base. Open the real-user pipeline in the same week: list 10 named teams or people in the chosen domain, and book the first discovery conversations.
+3. Skim the Python checklist and look up unfamiliar items during implementation.
+4. Use the optional gap review and systems failure drills when deciding what to revisit. The timeout lesson is available as a reference if that behavior needs review.
+5. Bring your first model-backed workflow, its deterministic baseline, and observed failures to the next learning session.
 
 ## Optional depth after the core
 

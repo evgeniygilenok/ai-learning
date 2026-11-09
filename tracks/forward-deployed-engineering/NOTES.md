@@ -7,3 +7,4 @@
 - The user confirmed 15 or more hours per week. Plan a 16-week full-route core with 3 to 4 additional weeks for repairs or deeper experiments. Familiar systems work can shorten the route.
 - Course publication and reading do not establish learned skills. Add learning records only after demonstrated understanding.
 - The original career plan remains the source for job-search strategy and eligibility. This course adds technical depth.
+- Revision 2026-11-09: added the week-1 target-segment and eligibility decision with monthly posting refresh, a domain wedge applied to the existing workbench, a real-user discovery pipeline starting in week 1 with a fallback ladder that leaves the milestone open, and a stakeholder delivery packet in module 12. Interview preparation, application timing, deep Python fluency, public portfolio packaging, and expanded enterprise-deployment depth were explicitly left out of scope for this revision.

@@ -44,4 +44,4 @@ Bring a concrete artifact to a working engineer or project maintainer: a failing
 
 ## Gaps
 
-The user confirmed 15 or more hours per week and stronger systems understanding. Python is a reference checklist. Specific gaps can be identified while building or through a short optional review. Cloud/provider choices, capstone user, budget, and target-company specialization can be settled during the matching module.
+The user confirmed 15 or more hours per week and stronger systems understanding. Python is a reference checklist. Specific gaps can be identified while building or through a short optional review. Cloud/provider choices and budget can be settled during the matching module. The target segment, eligibility constraints, and domain wedge are settled in the week-1 decision in COURSE.md and revisited monthly; the capstone user is found through the discovery pipeline in module 12, which starts in week 1 rather than at the capstone.
